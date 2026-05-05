@@ -44,6 +44,12 @@
     color: var(--cv-text-primary);
   }
 
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+    color: var(--cv-text-primary);
+  }
+
   &--active {
     color: var(--cv-text-primary);
   }

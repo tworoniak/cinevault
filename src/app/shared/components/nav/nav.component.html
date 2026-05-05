@@ -12,7 +12,7 @@
         <a routerLink="/watchlist" routerLinkActive="nav__link--active" class="nav__link">
           Watchlist
           @if (watchlistService.watchlist().length > 0) {
-            <span class="nav__badge">{{ watchlistService.watchlist().length }}</span>
+            <span class="nav__badge" [attr.aria-label]="watchlistService.watchlist().length + ' items in watchlist'">{{ watchlistService.watchlist().length }}</span>
           }
         </a>
       </li>

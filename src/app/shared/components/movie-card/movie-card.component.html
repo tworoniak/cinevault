@@ -1,4 +1,4 @@
-<article class="movie-card">
+<article class="movie-card" [attr.aria-label]="movie().title">
   <a class="movie-card__poster-link" [routerLink]="['/movies', movie().imdbID]">
     @if (hasPoster) {
       <img class="movie-card__poster" [src]="movie().poster" [alt]="movie().title" loading="lazy" />
@@ -21,7 +21,7 @@
 
     @if (mode() === 'search') {
       @if (inWatchlist()) {
-        <button class="movie-card__btn movie-card__btn--added" disabled>✓ In Watchlist</button>
+        <button class="movie-card__btn movie-card__btn--added" aria-disabled="true" tabindex="0" aria-label="Already in watchlist">✓ In Watchlist</button>
       } @else {
         <button class="movie-card__btn movie-card__btn--add" (click)="onAdd()">+ Watchlist</button>
       }
