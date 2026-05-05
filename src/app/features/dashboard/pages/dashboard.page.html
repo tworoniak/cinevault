@@ -28,17 +28,14 @@
     }
   </section>
 
-  <section class="dashboard-page__section">
-    <h2 class="dashboard-page__section-title">Recently Searched</h2>
-
-    @if (movieService.movies().length === 0) {
-      <p class="dashboard-page__empty">Search for movies to see them here.</p>
-    } @else {
+  @if (movieService.movies().length > 0) {
+    <section class="dashboard-page__section">
+      <h2 class="dashboard-page__section-title">Current Search Results</h2>
       <div class="dashboard-page__grid">
         @for (movie of movieService.movies(); track movie.imdbID) {
           <app-movie-card [movie]="movie" mode="preview" />
         }
       </div>
-    }
-  </section>
+    </section>
+  }
 </div>

@@ -15,9 +15,11 @@
   overflow: hidden;
   transition: border-color 0.15s ease, transform 0.15s ease;
 
-  &:hover {
-    border-color: var(--cv-accent);
-    transform: translateY(-2px);
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--cv-accent);
+      transform: translateY(-2px);
+    }
   }
 }
 

@@ -1,4 +1,7 @@
 import { Component, inject } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MovieService } from '../../../core/services/movie.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
 import { MovieCardComponent } from '../../../shared/components/movie-card/movie-card.component';
@@ -14,11 +17,19 @@ export class MovieSearchPage {
   movieService = inject(MovieService);
   watchlistService = inject(WatchlistService);
 
+  private search$ = new Subject<string>();
+
+  constructor() {
+    this.search$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      filter((v) => v.length > 2),
+      takeUntilDestroyed(),
+    ).subscribe((query) => this.movieService.searchMovies(query));
+  }
+
   onSearch(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    if (value.length > 2) {
-      this.movieService.searchMovies(value);
-    }
+    this.search$.next((event.target as HTMLInputElement).value);
   }
 
   onAdd(movie: Movie) {
