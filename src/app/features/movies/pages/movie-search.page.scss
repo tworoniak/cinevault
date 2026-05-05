@@ -1,7 +1,19 @@
 @use '../../../../styles/abstracts/mixins' as *;
 
+.search-page__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: var(--cv-space-5);
+}
+
 .search-page__bar {
-  margin-bottom: var(--cv-space-6);
+  margin-bottom: var(--cv-space-4);
+}
+
+.search-page__count {
+  font-size: 0.75rem;
+  color: var(--cv-text-muted);
+  margin-bottom: var(--cv-space-4);
 }
 
 .search-page__input {
@@ -38,6 +50,22 @@
   &--error {
     color: var(--cv-error);
   }
+}
+
+.search-page__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cv-space-4);
+  padding: var(--cv-space-10) 0;
+  color: var(--cv-text-muted);
+  font-size: 0.875rem;
+}
+
+.search-page__empty-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.3;
 }
 
 .search-page__grid {

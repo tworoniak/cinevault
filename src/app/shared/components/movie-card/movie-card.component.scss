@@ -129,6 +129,10 @@
   }
 
   &--remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--cv-space-2);
     background-color: var(--cv-bg-elevated);
     color: var(--cv-text-muted);
     border: 1px solid var(--cv-border);

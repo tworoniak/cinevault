@@ -2,7 +2,7 @@
   <div class="nav__inner cv-container">
     <a class="nav__brand" routerLink="/movies">CineVault</a>
 
-    <ul class="nav__links">
+    <ul class="nav__links" role="list">
       <li>
         <a routerLink="/movies" routerLinkActive="nav__link--active" class="nav__link">
           Search
@@ -22,5 +22,36 @@
         </a>
       </li>
     </ul>
+
+    <button
+      class="nav__hamburger"
+      [class.nav__hamburger--open]="isMenuOpen()"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="isMenuOpen()"
+      aria-label="Open navigation menu"
+      aria-controls="mobile-menu"
+    >
+      <span class="nav__hamburger-line"></span>
+      <span class="nav__hamburger-line"></span>
+      <span class="nav__hamburger-line"></span>
+    </button>
   </div>
+
+  @if (isMenuOpen()) {
+    <div class="nav__backdrop" (click)="closeMenu()" aria-hidden="true"></div>
+    <div class="nav__mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation menu">
+      <a routerLink="/movies" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
+        Search
+      </a>
+      <a routerLink="/watchlist" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
+        Watchlist
+        @if (watchlistService.watchlist().length > 0) {
+          <span class="nav__badge">{{ watchlistService.watchlist().length }}</span>
+        }
+      </a>
+      <a routerLink="/dashboard" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
+        Dashboard
+      </a>
+    </div>
+  }
 </nav>

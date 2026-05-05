@@ -13,6 +13,7 @@ export class MovieService {
   movies = signal<Movie[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+  totalResults = signal<number>(0);
 
   movieDetail = signal<MovieDetail | null>(null);
   detailLoading = signal(false);
@@ -21,6 +22,7 @@ export class MovieService {
   searchMovies(query: string) {
     this.loading.set(true);
     this.error.set(null);
+    this.totalResults.set(0);
 
     this.http.get<OmdbSearchResponse>(`${this.apiUrl}?s=${query}&apikey=${this.apiKey}`).subscribe({
       next: (res) => {
@@ -33,6 +35,7 @@ export class MovieService {
             type: m.Type,
           }))
         );
+        this.totalResults.set(Number(res.totalResults) || 0);
         this.loading.set(false);
       },
       error: (err) => {

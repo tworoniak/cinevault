@@ -54,3 +54,4 @@ CLAUDE.md
 .claude/
 .mcp.json
 context/
+.playwright-mcp/

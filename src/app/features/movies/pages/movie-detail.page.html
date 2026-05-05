@@ -1,8 +1,8 @@
 <div class="detail-page cv-container cv-page">
-  <a class="detail-page__back" routerLink="/movies">← Back to Search</a>
+  <a class="detail-page__back" routerLink="/movies">← Back</a>
 
   @if (movieService.detailLoading()) {
-    <p class="detail-page__status">Loading...</p>
+    <div class="detail-page__spinner" role="status" aria-label="Loading"></div>
   }
 
   @if (movieService.detailError()) {
