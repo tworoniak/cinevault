@@ -57,3 +57,56 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+```text
+
+src/
+│
+├── app/
+│   ├── core/
+│   │   ├── services/
+│   │   │   ├── movie.service.ts
+│   │   │   ├── watchlist.service.ts
+│   │   │   └── storage.service.ts
+│   │   │
+│   │   ├── interceptors/
+│   │   ├── guards/
+│   │   └── core.providers.ts
+│   │
+│   ├── features/
+│   │   ├── movies/
+│   │   │   ├── pages/
+│   │   │   │   ├── movie-search.page.ts
+│   │   │   │   └── movie-detail.page.ts
+│   │   │   ├── components/
+│   │   │   └── movies.routes.ts
+│   │   │
+│   │   ├── watchlist/
+│   │   │   ├── pages/
+│   │   │   ├── components/
+│   │   │   └── watchlist.routes.ts
+│   │   │
+│   │   └── dashboard/
+│   │       ├── pages/
+│   │       └── dashboard.routes.ts
+│   │
+│   ├── shared/
+│   │   ├── components/
+│   │   ├── pipes/
+│   │   └── directives/
+│   │
+│   ├── models/
+│   │   └── movie.model.ts
+│   │
+│   ├── app.routes.ts
+│   ├── app.component.ts
+│   └── app.config.ts
+│
+└── styles/
+    ├── abstracts/
+    ├── base/
+    ├── components/
+    └── layout/
+
+
+```

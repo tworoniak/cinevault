@@ -1,0 +1,21 @@
+@use '../abstracts/mixins' as *;
+
+.cv-main {
+  padding-top: var(--cv-nav-height);
+  min-height: 100dvh;
+}
+
+.cv-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--cv-space-4);
+
+  @include breakpoint-md {
+    padding: 0 var(--cv-space-5);
+  }
+}
+
+.cv-page {
+  padding: var(--cv-space-6) 0;
+}

@@ -1,0 +1,64 @@
+@use '../../../../styles/abstracts/mixins' as *;
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--cv-nav-height);
+  background-color: var(--cv-bg-surface);
+  border-bottom: 1px solid var(--cv-border);
+  z-index: var(--cv-z-nav);
+}
+
+.nav__inner {
+  height: 100%;
+  @include flex-between;
+}
+
+.nav__brand {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--cv-accent);
+  letter-spacing: -0.02em;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--cv-space-4);
+}
+
+.nav__link {
+  display: flex;
+  align-items: center;
+  gap: var(--cv-space-2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--cv-text-muted);
+  padding: var(--cv-space-1) var(--cv-space-2);
+  border-radius: var(--cv-radius-sm);
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--cv-text-primary);
+  }
+
+  &--active {
+    color: var(--cv-text-primary);
+  }
+}
+
+.nav__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--cv-space-1);
+  background-color: var(--cv-accent);
+  color: #0f0f11;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  border-radius: 9px;
+}
