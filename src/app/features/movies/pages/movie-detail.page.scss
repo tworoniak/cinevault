@@ -149,4 +149,15 @@
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--cv-success);
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 0.5em;
+    height: 0.85em;
+    border-right: 2px solid var(--cv-success);
+    border-bottom: 2px solid var(--cv-success);
+    transform: rotate(45deg) translateY(-0.15em);
+    margin-right: 0.5em;
+  }
 }

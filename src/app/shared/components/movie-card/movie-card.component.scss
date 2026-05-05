@@ -115,6 +115,17 @@
     cursor: default;
     opacity: 0.8;
     pointer-events: none;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 0.4em;
+      height: 0.7em;
+      border-right: 2px solid var(--cv-success);
+      border-bottom: 2px solid var(--cv-success);
+      transform: rotate(45deg) translateY(-0.1em);
+      margin-right: 0.4em;
+    }
   }
 
   &--remove {
