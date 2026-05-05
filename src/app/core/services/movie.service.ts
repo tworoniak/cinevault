@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Movie } from '../../models/movie.model';
-import { OmdbSearchResponse } from '../../models/omdb.model';
+import { Movie, MovieDetail } from '../../models/movie.model';
+import { OmdbSearchResponse, OmdbDetailResponse } from '../../models/omdb.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -13,6 +13,10 @@ export class MovieService {
   movies = signal<Movie[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+
+  movieDetail = signal<MovieDetail | null>(null);
+  detailLoading = signal(false);
+  detailError = signal<string | null>(null);
 
   searchMovies(query: string) {
     this.loading.set(true);
@@ -35,6 +39,38 @@ export class MovieService {
         this.error.set('Failed to fetch movies. Please try again.');
         console.error(err);
         this.loading.set(false);
+      },
+    });
+  }
+
+  fetchMovieDetail(imdbID: string) {
+    this.movieDetail.set(null);
+    this.detailLoading.set(true);
+    this.detailError.set(null);
+
+    this.http.get<OmdbDetailResponse>(`${this.apiUrl}?i=${imdbID}&apikey=${this.apiKey}`).subscribe({
+      next: (res) => {
+        this.movieDetail.set({
+          imdbID: res.imdbID,
+          title: res.Title,
+          year: res.Year,
+          poster: res.Poster,
+          type: res.Type,
+          plot: res.Plot,
+          director: res.Director,
+          actors: res.Actors,
+          genre: res.Genre,
+          runtime: res.Runtime,
+          rating: res.imdbRating,
+          rated: res.Rated,
+          released: res.Released,
+        });
+        this.detailLoading.set(false);
+      },
+      error: (err) => {
+        this.detailError.set('Failed to load movie details. Please try again.');
+        console.error(err);
+        this.detailLoading.set(false);
       },
     });
   }

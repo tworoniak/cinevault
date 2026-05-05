@@ -1,0 +1,91 @@
+<div class="detail-page cv-container cv-page">
+  <a class="detail-page__back" routerLink="/movies">← Back to Search</a>
+
+  @if (movieService.detailLoading()) {
+    <p class="detail-page__status">Loading...</p>
+  }
+
+  @if (movieService.detailError()) {
+    <p class="detail-page__status detail-page__status--error">{{ movieService.detailError() }}</p>
+  }
+
+  @if (detail) {
+    <div class="detail-page__hero">
+      <div class="detail-page__poster-wrap">
+        @if (hasPoster) {
+          <img class="detail-page__poster" [src]="detail.poster" [alt]="detail.title" />
+        } @else {
+          <div class="detail-page__poster-placeholder">No Image</div>
+        }
+      </div>
+
+      <div class="detail-page__info">
+        <h1 class="detail-page__title">{{ detail.title }}</h1>
+
+        <div class="detail-page__badges">
+          @if (detail.rated && detail.rated !== 'N/A') {
+            <span class="detail-page__badge">{{ detail.rated }}</span>
+          }
+          @if (detail.type) {
+            <span class="detail-page__badge">{{ detail.type }}</span>
+          }
+        </div>
+
+        <dl class="detail-page__meta">
+          @if (detail.year !== 'N/A') {
+            <div class="detail-page__meta-row">
+              <dt>Year</dt>
+              <dd>{{ detail.year }}</dd>
+            </div>
+          }
+          @if (detail.released !== 'N/A') {
+            <div class="detail-page__meta-row">
+              <dt>Released</dt>
+              <dd>{{ detail.released }}</dd>
+            </div>
+          }
+          @if (detail.runtime !== 'N/A') {
+            <div class="detail-page__meta-row">
+              <dt>Runtime</dt>
+              <dd>{{ detail.runtime }}</dd>
+            </div>
+          }
+          @if (detail.genre !== 'N/A') {
+            <div class="detail-page__meta-row">
+              <dt>Genre</dt>
+              <dd>{{ detail.genre }}</dd>
+            </div>
+          }
+          @if (detail.rating !== 'N/A') {
+            <div class="detail-page__meta-row">
+              <dt>IMDb Rating</dt>
+              <dd>{{ detail.rating }} / 10</dd>
+            </div>
+          }
+          @if (detail.director !== 'N/A') {
+            <div class="detail-page__meta-row">
+              <dt>Director</dt>
+              <dd>{{ detail.director }}</dd>
+            </div>
+          }
+          @if (detail.actors !== 'N/A') {
+            <div class="detail-page__meta-row">
+              <dt>Cast</dt>
+              <dd>{{ detail.actors }}</dd>
+            </div>
+          }
+        </dl>
+
+        @if (detail.plot !== 'N/A') {
+          <p class="detail-page__plot">{{ detail.plot }}</p>
+        }
+
+        @if (!isInWatchlist) {
+          <button class="detail-page__btn" (click)="addToWatchlist()">+ Add to Watchlist</button>
+        } @else {
+          <p class="detail-page__in-watchlist">✓ In your watchlist</p>
+        }
+      </div>
+    </div>
+  }
+</div>

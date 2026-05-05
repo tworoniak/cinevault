@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { Movie } from '../../models/movie.model';
 import { StorageService } from './storage.service';
 
@@ -9,6 +9,7 @@ export class WatchlistService {
   private storage = inject(StorageService);
 
   watchlist = signal<Movie[]>(this.storage.get<Movie[]>(WATCHLIST_KEY) ?? []);
+  watchlistIds = computed(() => new Set(this.watchlist().map((m) => m.imdbID)));
 
   add(movie: Movie) {
     this.watchlist.update((list) => [...list, movie]);
