@@ -1,0 +1,95 @@
+<div class="discover-detail">
+  @if (tmdbService.movieDetail(); as detail) {
+    @if (detail.backdrop) {
+      <div class="discover-detail__backdrop">
+        <img [src]="detail.backdrop" [alt]="detail.title + ' backdrop'" class="discover-detail__backdrop-img" />
+        <div class="discover-detail__backdrop-overlay"></div>
+      </div>
+    }
+  }
+
+  <div class="cv-page">
+    <div class="cv-container">
+      <a class="discover-detail__back" routerLink="/discover">← Back</a>
+
+      @if (tmdbService.detailLoading()) {
+        <div class="discover-detail__spinner" role="status" aria-label="Loading"></div>
+      }
+
+      @if (tmdbService.detailError()) {
+        <p class="discover-detail__error">{{ tmdbService.detailError() }}</p>
+      }
+
+      @if (tmdbService.movieDetail(); as detail) {
+        <div class="discover-detail__hero">
+          <div class="discover-detail__poster-wrap">
+            @if (detail.poster !== '') {
+              <img class="discover-detail__poster" [src]="detail.poster" [alt]="detail.title + ' poster'" />
+            } @else {
+              <div class="discover-detail__poster-placeholder">No Image</div>
+            }
+          </div>
+
+          <div class="discover-detail__info">
+            <h1 class="discover-detail__title">{{ detail.title }}</h1>
+
+            @if (detail.tagline) {
+              <p class="discover-detail__tagline">{{ detail.tagline }}</p>
+            }
+
+            <dl class="discover-detail__meta">
+              @if (detail.year) {
+                <div class="discover-detail__meta-row">
+                  <dt>Year</dt>
+                  <dd>{{ detail.year }}</dd>
+                </div>
+              }
+              @if (detail.genres) {
+                <div class="discover-detail__meta-row">
+                  <dt>Genre</dt>
+                  <dd>{{ detail.genres }}</dd>
+                </div>
+              }
+              @if (detail.runtime !== 'N/A') {
+                <div class="discover-detail__meta-row">
+                  <dt>Runtime</dt>
+                  <dd>{{ detail.runtime }}</dd>
+                </div>
+              }
+              <div class="discover-detail__meta-row">
+                <dt>TMDB Rating</dt>
+                <dd>{{ detail.rating }} / 10</dd>
+              </div>
+              @if (detail.language) {
+                <div class="discover-detail__meta-row">
+                  <dt>Language</dt>
+                  <dd>{{ detail.language }}</dd>
+                </div>
+              }
+              @if (detail.status) {
+                <div class="discover-detail__meta-row">
+                  <dt>Status</dt>
+                  <dd>{{ detail.status }}</dd>
+                </div>
+              }
+            </dl>
+
+            @if (detail.overview) {
+              <p class="discover-detail__overview">{{ detail.overview }}</p>
+            }
+
+            @if (canAddToWatchlist()) {
+              @if (!isInWatchlist()) {
+                <button class="discover-detail__btn" (click)="addToWatchlist()">+ Add to Watchlist</button>
+              } @else {
+                <p class="discover-detail__in-watchlist">In your watchlist</p>
+              }
+            } @else {
+              <p class="discover-detail__no-imdb">IMDb ID unavailable for this title</p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

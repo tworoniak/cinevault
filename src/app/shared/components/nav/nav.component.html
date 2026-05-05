@@ -9,6 +9,11 @@
         </a>
       </li>
       <li>
+        <a routerLink="/discover" routerLinkActive="nav__link--active" class="nav__link">
+          Discover
+        </a>
+      </li>
+      <li>
         <a routerLink="/watchlist" routerLinkActive="nav__link--active" class="nav__link">
           Watchlist
           @if (watchlistService.watchlist().length > 0) {
@@ -42,6 +47,9 @@
     <div class="nav__mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation menu">
       <a routerLink="/movies" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
         Search
+      </a>
+      <a routerLink="/discover" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
+        Discover
       </a>
       <a routerLink="/watchlist" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
         Watchlist

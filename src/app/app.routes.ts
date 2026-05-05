@@ -7,6 +7,11 @@ export const routes: Routes = [
     loadChildren: () => import('./features/movies/movies.routes').then((m) => m.MOVIES_ROUTES),
   },
   {
+    path: 'discover',
+    loadChildren: () =>
+      import('./features/discover/discover.routes').then((m) => m.DISCOVER_ROUTES),
+  },
+  {
     path: 'watchlist',
     loadChildren: () =>
       import('./features/watchlist/watchlist.routes').then((m) => m.WATCHLIST_ROUTES),

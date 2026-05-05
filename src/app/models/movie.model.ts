@@ -4,6 +4,7 @@ export interface Movie {
   year: string;
   poster: string;
   type?: string;
+  source?: 'omdb' | 'tmdb';
 }
 
 export interface MovieDetail {
@@ -20,4 +21,6 @@ export interface MovieDetail {
   rating: string;
   rated: string;
   released: string;
+  backdrop?: string;
+  tmdbId?: number;
 }

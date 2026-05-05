@@ -1,0 +1,40 @@
+@use '../../../../styles/abstracts/mixins' as *;
+
+.discover-page__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: var(--cv-space-7);
+}
+
+.discover-page__section {
+  margin-bottom: var(--cv-space-9);
+}
+
+.discover-page__section-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--cv-text-primary);
+  margin-bottom: var(--cv-space-5);
+  padding-bottom: var(--cv-space-3);
+  border-bottom: 1px solid var(--cv-border);
+}
+
+.discover-page__grid {
+  @include card-grid;
+}
+
+.discover-page__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--cv-border);
+  border-top-color: var(--cv-accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: var(--cv-space-7) auto;
+}
+
+.discover-page__error {
+  color: var(--cv-error);
+  font-size: 0.875rem;
+  padding: var(--cv-space-5) 0;
+}

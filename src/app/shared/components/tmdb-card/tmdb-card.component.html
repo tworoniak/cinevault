@@ -1,0 +1,31 @@
+<article
+  class="tmdb-card"
+  [attr.aria-label]="movie().title"
+  [routerLink]="['/discover/movie', movie().tmdbId]"
+>
+  <div class="tmdb-card__poster-wrap">
+    @if (movie().poster !== '') {
+      <img
+        class="tmdb-card__poster"
+        [src]="movie().poster"
+        [alt]="movie().title + ' poster'"
+        loading="lazy"
+      />
+    } @else {
+      <div class="tmdb-card__poster-fallback" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <path d="M8 21h8M12 17v4"/>
+        </svg>
+      </div>
+    }
+  </div>
+
+  <div class="tmdb-card__body">
+    <h3 class="tmdb-card__title">{{ movie().title }}</h3>
+    <div class="tmdb-card__meta">
+      <span class="tmdb-card__year">{{ movie().year }}</span>
+      <span class="tmdb-card__rating">{{ movie().rating }} ★</span>
+    </div>
+  </div>
+</article>

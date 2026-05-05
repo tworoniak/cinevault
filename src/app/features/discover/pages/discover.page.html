@@ -1,0 +1,37 @@
+<div class="cv-page">
+  <div class="cv-container">
+    <h1 class="discover-page__title">Discover</h1>
+
+    <section class="discover-page__section">
+      <h2 class="discover-page__section-title">Trending This Week</h2>
+
+      @if (tmdbService.trendingLoading()) {
+        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+      } @else if (tmdbService.trendingError()) {
+        <p class="discover-page__error">{{ tmdbService.trendingError() }}</p>
+      } @else {
+        <div class="discover-page__grid">
+          @for (movie of tmdbService.trending(); track movie.tmdbId) {
+            <app-tmdb-card [movie]="movie" />
+          }
+        </div>
+      }
+    </section>
+
+    <section class="discover-page__section">
+      <h2 class="discover-page__section-title">Popular Right Now</h2>
+
+      @if (tmdbService.popularLoading()) {
+        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+      } @else if (tmdbService.popularError()) {
+        <p class="discover-page__error">{{ tmdbService.popularError() }}</p>
+      } @else {
+        <div class="discover-page__grid">
+          @for (movie of tmdbService.popular(); track movie.tmdbId) {
+            <app-tmdb-card [movie]="movie" />
+          }
+        </div>
+      }
+    </section>
+  </div>
+</div>

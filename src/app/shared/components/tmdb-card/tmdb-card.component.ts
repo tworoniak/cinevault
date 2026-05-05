@@ -1,0 +1,14 @@
+import { Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TmdbMovie } from '../../../models/tmdb.model';
+
+@Component({
+  selector: 'app-tmdb-card',
+  standalone: true,
+  imports: [RouterLink],
+  templateUrl: './tmdb-card.component.html',
+  styleUrl: './tmdb-card.component.scss',
+})
+export class TmdbCardComponent {
+  movie = input.required<TmdbMovie>();
+}
