@@ -2,12 +2,13 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Movie } from '../../models/movie.model';
 import { OmdbSearchResponse } from '../../models/omdb.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class MovieService {
   private http = inject(HttpClient);
   private readonly apiUrl = 'https://www.omdbapi.com/';
-  private readonly apiKey = import.meta.env['NG_APP_OMDB_KEY'];
+  private readonly apiKey = environment.omdbApiKey;
 
   movies = signal<Movie[]>([]);
   loading = signal(false);

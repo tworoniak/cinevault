@@ -1,0 +1,40 @@
+@use '../../../../styles/abstracts/mixins' as *;
+
+.search-page__bar {
+  margin-bottom: var(--cv-space-6);
+}
+
+.search-page__input {
+  width: 100%;
+  padding: var(--cv-space-3) var(--cv-space-4);
+  background-color: var(--cv-bg-surface);
+  border: 1px solid var(--cv-border);
+  border-radius: var(--cv-radius-md);
+  color: var(--cv-text-primary);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: var(--cv-text-subtle);
+  }
+
+  &:focus {
+    border-color: var(--cv-accent);
+  }
+}
+
+.search-page__status {
+  color: var(--cv-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: var(--cv-space-7) 0;
+
+  &--error {
+    color: var(--cv-error);
+  }
+}
+
+.search-page__grid {
+  @include card-grid;
+}

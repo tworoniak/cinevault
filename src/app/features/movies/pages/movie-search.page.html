@@ -1,0 +1,34 @@
+<div class="search-page cv-container cv-page">
+  <div class="search-page__bar">
+    <input
+      class="search-page__input"
+      type="search"
+      placeholder="Search for movies and series..."
+      (input)="onSearch($event)"
+    />
+  </div>
+
+  @if (movieService.loading()) {
+    <p class="search-page__status">Searching...</p>
+  }
+
+  @if (movieService.error()) {
+    <p class="search-page__status search-page__status--error">{{ movieService.error() }}</p>
+  }
+
+  @if (!movieService.loading() && movieService.movies().length > 0) {
+    <div class="search-page__grid">
+      @for (movie of movieService.movies(); track movie.imdbID) {
+        <app-movie-card
+          [movie]="movie"
+          mode="search"
+          (addToWatchlist)="onAdd($event)"
+        />
+      }
+    </div>
+  }
+
+  @if (!movieService.loading() && !movieService.error() && movieService.movies().length === 0) {
+    <p class="search-page__status">Search for a movie or series to get started.</p>
+  }
+</div>
