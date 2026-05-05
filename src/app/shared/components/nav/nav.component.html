@@ -1,0 +1,26 @@
+<nav class="nav">
+  <div class="nav__inner cv-container">
+    <a class="nav__brand" routerLink="/">CineVault</a>
+
+    <ul class="nav__links">
+      <li>
+        <a routerLink="/" routerLinkActive="nav__link--active" [routerLinkActiveOptions]="{ exact: true }" class="nav__link">
+          Search
+        </a>
+      </li>
+      <li>
+        <a routerLink="/watchlist" routerLinkActive="nav__link--active" class="nav__link">
+          Watchlist
+          @if (watchlistService.watchlist().length > 0) {
+            <span class="nav__badge">{{ watchlistService.watchlist().length }}</span>
+          }
+        </a>
+      </li>
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="nav__link--active" class="nav__link">
+          Dashboard
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
