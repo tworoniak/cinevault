@@ -1,4 +1,4 @@
-import { Component, inject, effect, computed } from '@angular/core';
+import { Component, inject, effect, computed, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TmdbService } from '../../../core/services/tmdb.service';
@@ -17,6 +17,7 @@ export class DiscoverDetailPage {
   watchlistService = inject(WatchlistService);
 
   private params = toSignal(this.route.paramMap);
+  posterError = signal(false);
 
   canAddToWatchlist = computed(() => {
     const detail = this.tmdbService.movieDetail();
@@ -33,6 +34,7 @@ export class DiscoverDetailPage {
     effect(() => {
       const id = this.params()?.get('tmdbId');
       if (id) {
+        this.posterError.set(false);
         this.tmdbService.fetchMovieDetail(Number(id));
       }
     });

@@ -101,7 +101,12 @@
   border-radius: var(--cv-radius-md);
   @include flex-center;
   color: var(--cv-text-subtle);
-  font-size: 0.875rem;
+
+  svg {
+    width: 3rem;
+    height: 3rem;
+    opacity: 0.4;
+  }
 }
 
 .discover-detail__info {

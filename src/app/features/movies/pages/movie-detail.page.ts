@@ -1,4 +1,4 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MovieService } from '../../../core/services/movie.service';
@@ -17,11 +17,13 @@ export class MovieDetailPage {
   watchlistService = inject(WatchlistService);
 
   private params = toSignal(this.route.paramMap);
+  posterError = signal(false);
 
   constructor() {
     effect(() => {
       const id = this.params()?.get('id');
       if (id) {
+        this.posterError.set(false);
         this.movieService.fetchMovieDetail(id);
       }
     });
@@ -38,7 +40,7 @@ export class MovieDetailPage {
 
   get hasPoster(): boolean {
     const poster = this.detail?.poster;
-    return !!poster && poster !== 'N/A';
+    return !!poster && poster !== 'N/A' && !this.posterError();
   }
 
   addToWatchlist() {

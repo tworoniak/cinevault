@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TmdbMovie } from '../../../models/tmdb.model';
 
@@ -11,4 +11,5 @@ import { TmdbMovie } from '../../../models/tmdb.model';
 })
 export class TmdbCardComponent {
   movie = input.required<TmdbMovie>();
+  posterError = signal(false);
 }

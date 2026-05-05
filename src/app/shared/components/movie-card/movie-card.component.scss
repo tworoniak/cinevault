@@ -42,7 +42,12 @@
   height: 100%;
   @include flex-center;
   color: var(--cv-text-subtle);
-  font-size: 0.75rem;
+
+  svg {
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.4;
+  }
 }
 
 .movie-card__body {

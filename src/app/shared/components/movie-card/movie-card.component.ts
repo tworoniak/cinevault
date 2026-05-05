@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Movie } from '../../../models/movie.model';
 
@@ -17,9 +17,11 @@ export class MovieCardComponent {
   addToWatchlist = output<Movie>();
   removeFromWatchlist = output<Movie>();
 
+  posterError = signal(false);
+
   get hasPoster(): boolean {
     const poster = this.movie().poster;
-    return poster !== 'N/A' && poster !== '';
+    return (poster !== 'N/A' && poster !== '') && !this.posterError();
   }
 
   onAdd() {
