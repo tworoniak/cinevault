@@ -6,6 +6,5 @@ import { NavComponent } from './shared/components/nav/nav.component';
   selector: 'app-root',
   imports: [RouterOutlet, NavComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss',
 })
 export class App {}
