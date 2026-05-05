@@ -1,0 +1,44 @@
+<div class="dashboard-page cv-container cv-page">
+  <h1 class="dashboard-page__title">Dashboard</h1>
+
+  <section class="dashboard-page__section">
+    <h2 class="dashboard-page__section-title">Watchlist Stats</h2>
+
+    @if (watchlistService.stats().total === 0) {
+      <p class="dashboard-page__empty">Add movies to your watchlist to see stats.</p>
+    } @else {
+      <div class="dashboard-page__stats">
+        <div class="dashboard-page__stat">
+          <span class="dashboard-page__stat-value">{{ watchlistService.stats().total }}</span>
+          <span class="dashboard-page__stat-label">Total</span>
+        </div>
+        <div class="dashboard-page__stat">
+          <span class="dashboard-page__stat-value">{{ watchlistService.stats().movies }}</span>
+          <span class="dashboard-page__stat-label">Movies</span>
+        </div>
+        <div class="dashboard-page__stat">
+          <span class="dashboard-page__stat-value">{{ watchlistService.stats().series }}</span>
+          <span class="dashboard-page__stat-label">Series</span>
+        </div>
+        <div class="dashboard-page__stat">
+          <span class="dashboard-page__stat-value">{{ watchlistService.stats().other }}</span>
+          <span class="dashboard-page__stat-label">Other</span>
+        </div>
+      </div>
+    }
+  </section>
+
+  <section class="dashboard-page__section">
+    <h2 class="dashboard-page__section-title">Recently Searched</h2>
+
+    @if (movieService.movies().length === 0) {
+      <p class="dashboard-page__empty">Search for movies to see them here.</p>
+    } @else {
+      <div class="dashboard-page__grid">
+        @for (movie of movieService.movies(); track movie.imdbID) {
+          <app-movie-card [movie]="movie" mode="preview" />
+        }
+      </div>
+    }
+  </section>
+</div>

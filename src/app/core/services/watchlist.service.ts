@@ -10,6 +10,15 @@ export class WatchlistService {
 
   watchlist = signal<Movie[]>(this.storage.get<Movie[]>(WATCHLIST_KEY) ?? []);
   watchlistIds = computed(() => new Set(this.watchlist().map((m) => m.imdbID)));
+  stats = computed(() => {
+    const list = this.watchlist();
+    return {
+      total: list.length,
+      movies: list.filter((m) => m.type === 'movie').length,
+      series: list.filter((m) => m.type === 'series').length,
+      other: list.filter((m) => m.type !== 'movie' && m.type !== 'series').length,
+    };
+  });
 
   add(movie: Movie) {
     if (this.watchlistIds().has(movie.imdbID)) return;

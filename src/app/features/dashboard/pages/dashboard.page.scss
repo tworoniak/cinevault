@@ -1,0 +1,62 @@
+@use '../../../../styles/abstracts/mixins' as *;
+
+.dashboard-page__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--cv-space-6);
+}
+
+.dashboard-page__section {
+  margin-bottom: var(--cv-space-8);
+}
+
+.dashboard-page__section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cv-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--cv-space-4);
+}
+
+.dashboard-page__empty {
+  color: var(--cv-text-muted);
+  font-size: 0.875rem;
+}
+
+.dashboard-page__stats {
+  display: flex;
+  gap: var(--cv-space-4);
+  flex-wrap: wrap;
+}
+
+.dashboard-page__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--cv-bg-surface);
+  border: 1px solid var(--cv-border);
+  border-radius: var(--cv-radius-md);
+  padding: var(--cv-space-5) var(--cv-space-6);
+  min-width: 100px;
+  gap: var(--cv-space-1);
+}
+
+.dashboard-page__stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--cv-accent);
+  line-height: 1;
+}
+
+.dashboard-page__stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cv-text-muted);
+}
+
+.dashboard-page__grid {
+  @include card-grid;
+}
