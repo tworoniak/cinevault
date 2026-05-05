@@ -1,0 +1,29 @@
+<article class="movie-card">
+  <a class="movie-card__poster-link" [routerLink]="['/movies', movie().imdbID]">
+    @if (hasPoster) {
+      <img class="movie-card__poster" [src]="movie().poster" [alt]="movie().title" loading="lazy" />
+    } @else {
+      <div class="movie-card__poster-placeholder">
+        <span>No Image</span>
+      </div>
+    }
+  </a>
+
+  <div class="movie-card__body">
+    <a class="movie-card__title" [routerLink]="['/movies', movie().imdbID]">{{ movie().title }}</a>
+
+    <div class="movie-card__meta">
+      <span class="movie-card__year">{{ movie().year }}</span>
+      @if (movie().type) {
+        <span class="movie-card__type">{{ movie().type }}</span>
+      }
+    </div>
+
+    @if (mode() === 'search') {
+      <button class="movie-card__btn movie-card__btn--add" (click)="onAdd()">+ Watchlist</button>
+    }
+    @if (mode() === 'watchlist') {
+      <button class="movie-card__btn movie-card__btn--remove" (click)="onRemove()">Remove</button>
+    }
+  </div>
+</article>

@@ -1,112 +1,78 @@
-# Cinevault
+# CineVault
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.9.
+A personal movie tracker built with Angular v21. Search for movies and series via the OMDB API, save them to a local watchlist, and view stats on your dashboard.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- **Movie Search** — search the OMDB database by title, see posters, year, and type
+- **Movie Detail** — view full details: plot, director, cast, genre, runtime, rating
+- **Watchlist** — add/remove titles, persisted to localStorage
+- **Dashboard** — watchlist stats and recently searched titles
+
+## Stack
+
+- Angular v21 (standalone components, signals, built-in control flow)
+- SCSS (dark-mode-first, CSS custom properties)
+- OMDB API
+
+## Setup
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure your API key
+
+Copy the environment template and add your key:
+
+```bash
+cp src/environments/environment.example.ts src/environments/environment.ts
+```
+
+Then edit `src/environments/environment.ts`:
+
+```typescript
+export const environment = {
+  omdbApiKey: 'your_api_key_here',
+};
+```
+
+Get a free API key at [omdbapi.com](http://www.omdbapi.com/apikey.aspx). `environment.ts` is gitignored and will never be committed.
+
+### 3. Run the dev server
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open [http://localhost:4200](http://localhost:4200).
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Build
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Output is written to `dist/cinevault/`.
 
-## Running unit tests
+## Project Structure
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
-```text
-
 src/
-│
 ├── app/
 │   ├── core/
-│   │   ├── services/
-│   │   │   ├── movie.service.ts
-│   │   │   ├── watchlist.service.ts
-│   │   │   └── storage.service.ts
-│   │   │
-│   │   ├── interceptors/
-│   │   ├── guards/
-│   │   └── core.providers.ts
-│   │
+│   │   └── services/          # MovieService, WatchlistService, StorageService
 │   ├── features/
-│   │   ├── movies/
-│   │   │   ├── pages/
-│   │   │   │   ├── movie-search.page.ts
-│   │   │   │   └── movie-detail.page.ts
-│   │   │   ├── components/
-│   │   │   └── movies.routes.ts
-│   │   │
-│   │   ├── watchlist/
-│   │   │   ├── pages/
-│   │   │   ├── components/
-│   │   │   └── watchlist.routes.ts
-│   │   │
-│   │   └── dashboard/
-│   │       ├── pages/
-│   │       └── dashboard.routes.ts
-│   │
+│   │   ├── movies/            # Search and detail pages
+│   │   ├── watchlist/         # Watchlist page
+│   │   └── dashboard/         # Stats dashboard
 │   ├── shared/
-│   │   ├── components/
-│   │   ├── pipes/
-│   │   └── directives/
-│   │
-│   ├── models/
-│   │   └── movie.model.ts
-│   │
-│   ├── app.routes.ts
-│   ├── app.component.ts
-│   └── app.config.ts
-│
+│   │   └── components/        # MovieCardComponent and other reusable UI
+│   └── models/                # Movie, MovieDetail, OmdbSearchResponse interfaces
 └── styles/
-    ├── abstracts/
-    ├── base/
-    ├── components/
-    └── layout/
-
-
+    ├── abstracts/             # Variables, mixins
+    ├── base/                  # Reset, typography
+    └── layout/                # Shell layout
 ```
