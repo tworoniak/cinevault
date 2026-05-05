@@ -1,0 +1,18 @@
+@use '../../../../styles/abstracts/mixins' as *;
+
+.watchlist-page__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--cv-space-6);
+}
+
+.watchlist-page__empty {
+  color: var(--cv-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: var(--cv-space-7) 0;
+}
+
+.watchlist-page__grid {
+  @include card-grid;
+}

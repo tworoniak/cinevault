@@ -12,6 +12,7 @@ export class WatchlistService {
   watchlistIds = computed(() => new Set(this.watchlist().map((m) => m.imdbID)));
 
   add(movie: Movie) {
+    if (this.watchlistIds().has(movie.imdbID)) return;
     this.watchlist.update((list) => [...list, movie]);
     this.storage.set(WATCHLIST_KEY, this.watchlist());
   }

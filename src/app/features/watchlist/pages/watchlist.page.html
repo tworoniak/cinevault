@@ -1,0 +1,17 @@
+<div class="watchlist-page cv-container cv-page">
+  <h1 class="watchlist-page__title">My Watchlist</h1>
+
+  @if (watchlistService.watchlist().length === 0) {
+    <p class="watchlist-page__empty">Your watchlist is empty. Search for movies to add them.</p>
+  } @else {
+    <div class="watchlist-page__grid">
+      @for (movie of watchlistService.watchlist(); track movie.imdbID) {
+        <app-movie-card
+          [movie]="movie"
+          mode="watchlist"
+          (removeFromWatchlist)="remove($event)"
+        />
+      }
+    </div>
+  }
+</div>

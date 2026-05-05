@@ -12,7 +12,7 @@ import { Movie } from '../../../models/movie.model';
 })
 export class MovieSearchPage {
   movieService = inject(MovieService);
-  private watchlistService = inject(WatchlistService);
+  watchlistService = inject(WatchlistService);
 
   onSearch(event: Event) {
     const value = (event.target as HTMLInputElement).value;

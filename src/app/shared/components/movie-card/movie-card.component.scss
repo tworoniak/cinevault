@@ -105,6 +105,14 @@
     }
   }
 
+  &--added {
+    background-color: var(--cv-bg-elevated);
+    color: var(--cv-success);
+    border: 1px solid var(--cv-success);
+    cursor: default;
+    opacity: 0.8;
+  }
+
   &--remove {
     background-color: var(--cv-bg-elevated);
     color: var(--cv-text-muted);

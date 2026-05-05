@@ -12,6 +12,7 @@ import { Movie } from '../../../models/movie.model';
 export class MovieCardComponent {
   movie = input.required<Movie>();
   mode = input<'search' | 'watchlist' | 'preview'>('search');
+  inWatchlist = input<boolean>(false);
 
   addToWatchlist = output<Movie>();
   removeFromWatchlist = output<Movie>();

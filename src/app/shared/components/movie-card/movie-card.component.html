@@ -20,7 +20,11 @@
     </div>
 
     @if (mode() === 'search') {
-      <button class="movie-card__btn movie-card__btn--add" (click)="onAdd()">+ Watchlist</button>
+      @if (inWatchlist()) {
+        <button class="movie-card__btn movie-card__btn--added" disabled>✓ In Watchlist</button>
+      } @else {
+        <button class="movie-card__btn movie-card__btn--add" (click)="onAdd()">+ Watchlist</button>
+      }
     }
     @if (mode() === 'watchlist') {
       <button class="movie-card__btn movie-card__btn--remove" (click)="onRemove()">Remove</button>
