@@ -13,6 +13,21 @@
   padding: var(--cv-space-7) 0;
 }
 
+.watchlist-page__section {
+  & + & {
+    margin-top: var(--cv-space-8);
+  }
+}
+
+.watchlist-page__section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--cv-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--cv-space-4);
+}
+
 .watchlist-page__grid {
   @include card-grid;
 }

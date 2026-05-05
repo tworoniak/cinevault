@@ -4,14 +4,49 @@
   @if (watchlistService.watchlist().length === 0) {
     <p class="watchlist-page__empty">Your watchlist is empty. Search for movies to add them.</p>
   } @else {
-    <div class="watchlist-page__grid">
-      @for (movie of watchlistService.watchlist(); track movie.imdbID) {
-        <app-movie-card
-          [movie]="movie"
-          mode="watchlist"
-          (removeFromWatchlist)="remove($event)"
-        />
-      }
-    </div>
+    @if (movies().length > 0) {
+      <section class="watchlist-page__section">
+        <h2 class="watchlist-page__section-title">Movies</h2>
+        <div class="watchlist-page__grid">
+          @for (movie of movies(); track movie.imdbID) {
+            <app-movie-card
+              [movie]="movie"
+              mode="watchlist"
+              (removeFromWatchlist)="remove($event)"
+            />
+          }
+        </div>
+      </section>
+    }
+
+    @if (series().length > 0) {
+      <section class="watchlist-page__section">
+        <h2 class="watchlist-page__section-title">Series</h2>
+        <div class="watchlist-page__grid">
+          @for (movie of series(); track movie.imdbID) {
+            <app-movie-card
+              [movie]="movie"
+              mode="watchlist"
+              (removeFromWatchlist)="remove($event)"
+            />
+          }
+        </div>
+      </section>
+    }
+
+    @if (other().length > 0) {
+      <section class="watchlist-page__section">
+        <h2 class="watchlist-page__section-title">Other</h2>
+        <div class="watchlist-page__grid">
+          @for (movie of other(); track movie.imdbID) {
+            <app-movie-card
+              [movie]="movie"
+              mode="watchlist"
+              (removeFromWatchlist)="remove($event)"
+            />
+          }
+        </div>
+      </section>
+    }
   }
 </div>
