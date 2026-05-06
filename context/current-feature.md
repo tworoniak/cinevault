@@ -10,34 +10,6 @@ Not Started
 
 ## History
 
-### Feature 17 — Discovery Filters (Genre + Sort)
-
-- `discoverResults`, `discoverLoading`, `discoverError` signals + `fetchDiscover(params)` method added to `TmdbService` using TMDB `/discover/movie` endpoint; accepts `genreIds` and `sortBy` params
-- `DiscoverPage` gains `selectedGenres`, `sortBy`, `hasFilters` signals; `genreList` computed (alphabetically sorted from existing `genres` map); `toggleGenre()`, `clearFilters()` methods; filter effect auto-fires `fetchDiscover()` when any filter is non-default
-- Genre pill row + sort dropdown (Most Popular / Highest Rated / Newest First / Highest Grossing) rendered above Trending/Popular grids
-- "Browse Results" section appears above grids when any filter is active; hidden entirely when cleared
-- `--cv-accent-rgb: 230, 168, 23` CSS variable added to `_variables.scss` for the semi-transparent active pill background
-
-### Feature 16 — Cast & Crew on Detail Page
-
-- `TmdbCastMember`, `TmdbCrewMember`, `TmdbCredits`, `TmdbCastMemberMapped` interfaces added to `tmdb.model.ts`; `TmdbMovieDetail` extended with `credits?`; `TmdbMovieDetailMapped` extended with `cast`, `directors`, `writers`
-- `fetchMovieDetail()` updated to pass `append_to_response: 'credits'` — no new HTTP call or signal
-- `mapDetail()` now sorts cast by billing order, slices to 8, maps photos; extracts directors and deduplicated writers as joined strings
-- Cast grid added to `discover-detail.page.html` (above Where to Watch): profile photo or silhouette placeholder, actor name, character name
-- Director and Writer crew rows rendered as label + text below the cast grid
-- Cast section absent when `detail.cast.length === 0`
-- Component style budget in `angular.json` bumped from 6 kB → 10 kB warning (detail page SCSS now 6.56 kB)
-
-### Feature 15 — Where to Watch (Streaming Providers)
-
-- `TmdbWatchProvider`, `TmdbWatchProviderResult`, `TmdbWatchProviderResponse` interfaces added to `tmdb.model.ts`
-- `watchProviders` signal + `watchProvidersLoading` signal + `fetchWatchProviders(tmdbId)` method added to `TmdbService`; country hardcoded to `'CA'`
-- `fetchWatchProviders()` called alongside `fetchMovieDetail()` and `fetchVideos()` in `DiscoverDetailPage`'s route effect
-- `providers` computed signal on `DiscoverDetailPage` — returns `{ streaming, rent, link }` capped at 6/4 entries; `null` when no CA data
-- Provider logo section added to `discover-detail.page.html` below the hero: Stream row, Rent row, JustWatch attribution link
-- Section absent entirely when `providers()` is `null` (unreleased films, no CA data, API errors)
-- Provider logo styles added to `discover-detail.page.scss`: `max-width: 900px` aligned with hero, 40×40px rounded logos
-
 ### Feature 1 — App Shell & Global Styles
 
 - SCSS architecture with variables, mixins, reset, typography, layout partials
@@ -153,3 +125,31 @@ Not Started
 - `DiscoverDetailPage`: `addToWatchlist()` uses `tmdbId`; `canAddToWatchlist` no longer gated on `imdb_id` — all titles watchlist-able
 - Deleted: `omdb.model.ts`, `movie-detail.page.ts/html/scss`
 - `movies.routes.ts` detail route removed; `environment.ts` OMDB key removed
+
+### Feature 15 — Where to Watch (Streaming Providers)
+
+- `TmdbWatchProvider`, `TmdbWatchProviderResult`, `TmdbWatchProviderResponse` interfaces added to `tmdb.model.ts`
+- `watchProviders` signal + `watchProvidersLoading` signal + `fetchWatchProviders(tmdbId)` method added to `TmdbService`; country hardcoded to `'CA'`
+- `fetchWatchProviders()` called alongside `fetchMovieDetail()` and `fetchVideos()` in `DiscoverDetailPage`'s route effect
+- `providers` computed signal on `DiscoverDetailPage` — returns `{ streaming, rent, link }` capped at 6/4 entries; `null` when no CA data
+- Provider logo section added to `discover-detail.page.html` below the hero: Stream row, Rent row, JustWatch attribution link
+- Section absent entirely when `providers()` is `null` (unreleased films, no CA data, API errors)
+- Provider logo styles added to `discover-detail.page.scss`: `max-width: 900px` aligned with hero, 40×40px rounded logos
+
+### Feature 16 — Cast & Crew on Detail Page
+
+- `TmdbCastMember`, `TmdbCrewMember`, `TmdbCredits`, `TmdbCastMemberMapped` interfaces added to `tmdb.model.ts`; `TmdbMovieDetail` extended with `credits?`; `TmdbMovieDetailMapped` extended with `cast`, `directors`, `writers`
+- `fetchMovieDetail()` updated to pass `append_to_response: 'credits'` — no new HTTP call or signal
+- `mapDetail()` now sorts cast by billing order, slices to 8, maps photos; extracts directors and deduplicated writers as joined strings
+- Cast grid added to `discover-detail.page.html` (above Where to Watch): profile photo or silhouette placeholder, actor name, character name
+- Director and Writer crew rows rendered as label + text below the cast grid
+- Cast section absent when `detail.cast.length === 0`
+- Component style budget in `angular.json` bumped from 6 kB → 10 kB warning (detail page SCSS now 6.56 kB)
+
+### Feature 17 — Discovery Filters (Genre + Sort)
+
+- `discoverResults`, `discoverLoading`, `discoverError` signals + `fetchDiscover(params)` method added to `TmdbService` using TMDB `/discover/movie` endpoint; accepts `genreIds` and `sortBy` params
+- `DiscoverPage` gains `selectedGenres`, `sortBy`, `hasFilters` signals; `genreList` computed (alphabetically sorted from existing `genres` map); `toggleGenre()`, `clearFilters()` methods; filter effect auto-fires `fetchDiscover()` when any filter is non-default
+- Genre pill row + sort dropdown (Most Popular / Highest Rated / Newest First / Highest Grossing) rendered above Trending/Popular grids
+- "Browse Results" section appears above grids when any filter is active; hidden entirely when cleared
+- `--cv-accent-rgb: 230, 168, 23` CSS variable added to `_variables.scss` for the semi-transparent active pill background
