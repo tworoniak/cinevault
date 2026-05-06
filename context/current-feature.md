@@ -10,6 +10,14 @@ Not Started
 
 ## History
 
+### Feature 17 — Discovery Filters (Genre + Sort)
+
+- `discoverResults`, `discoverLoading`, `discoverError` signals + `fetchDiscover(params)` method added to `TmdbService` using TMDB `/discover/movie` endpoint; accepts `genreIds` and `sortBy` params
+- `DiscoverPage` gains `selectedGenres`, `sortBy`, `hasFilters` signals; `genreList` computed (alphabetically sorted from existing `genres` map); `toggleGenre()`, `clearFilters()` methods; filter effect auto-fires `fetchDiscover()` when any filter is non-default
+- Genre pill row + sort dropdown (Most Popular / Highest Rated / Newest First / Highest Grossing) rendered above Trending/Popular grids
+- "Browse Results" section appears above grids when any filter is active; hidden entirely when cleared
+- `--cv-accent-rgb: 230, 168, 23` CSS variable added to `_variables.scss` for the semi-transparent active pill background
+
 ### Feature 16 — Cast & Crew on Detail Page
 
 - `TmdbCastMember`, `TmdbCrewMember`, `TmdbCredits`, `TmdbCastMemberMapped` interfaces added to `tmdb.model.ts`; `TmdbMovieDetail` extended with `credits?`; `TmdbMovieDetailMapped` extended with `cast`, `directors`, `writers`
