@@ -10,6 +10,16 @@ Not Started
 
 ## History
 
+### Feature 15 — Where to Watch (Streaming Providers)
+
+- `TmdbWatchProvider`, `TmdbWatchProviderResult`, `TmdbWatchProviderResponse` interfaces added to `tmdb.model.ts`
+- `watchProviders` signal + `watchProvidersLoading` signal + `fetchWatchProviders(tmdbId)` method added to `TmdbService`; country hardcoded to `'CA'`
+- `fetchWatchProviders()` called alongside `fetchMovieDetail()` and `fetchVideos()` in `DiscoverDetailPage`'s route effect
+- `providers` computed signal on `DiscoverDetailPage` — returns `{ streaming, rent, link }` capped at 6/4 entries; `null` when no CA data
+- Provider logo section added to `discover-detail.page.html` below the hero: Stream row, Rent row, JustWatch attribution link
+- Section absent entirely when `providers()` is `null` (unreleased films, no CA data, API errors)
+- Provider logo styles added to `discover-detail.page.scss`: `max-width: 900px` aligned with hero, 40×40px rounded logos
+
 ### Feature 1 — App Shell & Global Styles
 
 - SCSS architecture with variables, mixins, reset, typography, layout partials
