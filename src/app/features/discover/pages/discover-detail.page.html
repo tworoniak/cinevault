@@ -84,18 +84,49 @@
               <p class="discover-detail__overview">{{ detail.overview }}</p>
             }
 
-            @if (canAddToWatchlist()) {
-              @if (!isInWatchlist()) {
-                <button class="discover-detail__btn" (click)="addToWatchlist()">+ Add to Watchlist</button>
-              } @else {
-                <p class="discover-detail__in-watchlist">In your watchlist</p>
+            <div class="discover-detail__actions">
+              @if (tmdbService.trailerKey()) {
+                <button class="discover-detail__btn discover-detail__btn--trailer" (click)="openTrailer()">
+                  ▶ Watch Trailer
+                </button>
               }
-            } @else {
-              <p class="discover-detail__no-imdb">IMDb ID unavailable for this title</p>
-            }
+              @if (canAddToWatchlist()) {
+                @if (!isInWatchlist()) {
+                  <button class="discover-detail__btn" (click)="addToWatchlist()">+ Add to Watchlist</button>
+                } @else {
+                  <p class="discover-detail__in-watchlist">In your watchlist</p>
+                }
+              } @else {
+                <p class="discover-detail__no-imdb">IMDb ID unavailable for this title</p>
+              }
+            </div>
           </div>
         </div>
       }
     </div>
   </div>
+
+  @if (showTrailer()) {
+    <div
+      #trailerBackdrop
+      class="trailer-modal__backdrop"
+      (click)="closeTrailer()"
+      (keydown.escape)="closeTrailer()"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Movie trailer"
+      tabindex="-1"
+    >
+      <div class="trailer-modal__box" (click)="$event.stopPropagation()">
+        <button class="trailer-modal__close" (click)="closeTrailer()" aria-label="Close trailer">✕</button>
+        <iframe
+          class="trailer-modal__iframe"
+          [src]="'https://www.youtube.com/embed/' + tmdbService.trailerKey() + '?autoplay=1' | safe:'resourceUrl'"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          title="Movie trailer"
+        ></iframe>
+      </div>
+    </div>
+  }
 </div>

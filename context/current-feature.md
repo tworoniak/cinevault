@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Movie Trailers on Detail Page
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!--  -->
+- "Watch Trailer" button on the Discover detail page when a trailer is available
+- Clicking the button opens a modal with an embedded YouTube player
+- Button is hidden when no trailer exists for the movie
+- Modal can be dismissed with a close button, backdrop click, or Escape key
 
 ## Notes
 
-<!--  -->
+- New `TmdbVideo` / `TmdbVideoListResponse` interfaces in `tmdb.model.ts`
+- `trailerKey` signal + `fetchVideos(tmdbId)` method in `TmdbService`; prefer official trailers, fall back to any YouTube trailer
+- `fetchVideos()` called inside the existing `effect()` in `DiscoverDetailPage` alongside `fetchMovieDetail()`
+- `showTrailer` signal gates the modal; `openTrailer()` / `closeTrailer()` methods on the page
+- `SafeUrlPipe` needed in `src/app/shared/pipes/` to bypass Angular's iframe src sanitization
+- `(keydown.escape)` on the backdrop requires `tabindex="-1"` + programmatic focus when modal opens
+- No scroll-lock — out of scope
+- Branch: `feature/movie-trailers`
 
 ## History
 
