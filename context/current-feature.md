@@ -1,26 +1,16 @@
-# Current Feature: Movie Trailers on Detail Page
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- "Watch Trailer" button on the Discover detail page when a trailer is available
-- Clicking the button opens a modal with an embedded YouTube player
-- Button is hidden when no trailer exists for the movie
-- Modal can be dismissed with a close button, backdrop click, or Escape key
+<!--  -->
 
 ## Notes
 
-- New `TmdbVideo` / `TmdbVideoListResponse` interfaces in `tmdb.model.ts`
-- `trailerKey` signal + `fetchVideos(tmdbId)` method in `TmdbService`; prefer official trailers, fall back to any YouTube trailer
-- `fetchVideos()` called inside the existing `effect()` in `DiscoverDetailPage` alongside `fetchMovieDetail()`
-- `showTrailer` signal gates the modal; `openTrailer()` / `closeTrailer()` methods on the page
-- `SafeUrlPipe` needed in `src/app/shared/pipes/` to bypass Angular's iframe src sanitization
-- `(keydown.escape)` on the backdrop requires `tabindex="-1"` + programmatic focus when modal opens
-- No scroll-lock — out of scope
-- Branch: `feature/movie-trailers`
+<!--  -->
 
 ## History
 
@@ -118,3 +108,13 @@ In Progress
 - `mapMovie()` in `TmdbService` now resolves `genre_ids` to names via the existing genres map, sliced to 2 max
 - `TmdbCardComponent` renders 1–2 uppercase pill tags beneath the year/rating row
 - Zero new API calls — uses genre data already fetched by `fetchGenres()` on Discover page init
+
+### Feature 13 — Movie Trailers on Detail Page
+
+- `TmdbVideo` and `TmdbVideoListResponse` interfaces added to `tmdb.model.ts`
+- `trailerKey` signal + `fetchVideos()` method added to `TmdbService`; prefers official YouTube trailers, falls back to any YouTube trailer
+- `fetchVideos()` called alongside `fetchMovieDetail()` in `DiscoverDetailPage`'s route effect; resets on navigation
+- `showTrailer` signal + `openTrailer()` / `closeTrailer()` methods on `DiscoverDetailPage`
+- `SafeUrlPipe` created at `src/app/shared/pipes/safe-url.pipe.ts` to bypass Angular's iframe src sanitization
+- "Watch Trailer" (outlined) and "Add to Watchlist" (filled) sit side-by-side in a flex actions row
+- Modal dismisses via close button, backdrop click, or Escape key (backdrop receives programmatic focus on open)
