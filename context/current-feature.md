@@ -1,22 +1,16 @@
-# Current Feature: Genre Tags on Discover Cards
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Each `TmdbCardComponent` displays 1–2 genre pill tags beneath the movie title
-- Makes the Discover grids scannable at a glance without clicking into detail
-- Uses data already fetched — no new API calls required
+<!--  -->
 
 ## Notes
 
-- Extend `TmdbMovie` with `genres?: string[]`; resolve IDs inside `mapMovie()` using the existing genre map
-- `fetchGenres()` must be called before trending/popular — already the case in `DiscoverPage`, do not reorder
-- Limit to 2 genres max on the card to avoid layout overflow on narrow cards
-- No change needed to the Detail page — it already resolves genres from the full detail response
-- Branch: `feature/genre-tags-on-cards`
+<!--  -->
 
 ## History
 
@@ -107,3 +101,10 @@ In Progress
 - `movie.model.ts` extended with optional `source?`, `backdrop?`, `tmdbId?` fields (additive only)
 - Nav updated: Search | Discover | Watchlist | Dashboard (desktop and mobile hamburger)
 - Movies with `imdb_id === null` hide the watchlist button and show "IMDb ID unavailable"
+
+### Feature 12 — Genre Tags on Discover Cards
+
+- `TmdbMovie` model extended with optional `genres?: string[]` field
+- `mapMovie()` in `TmdbService` now resolves `genre_ids` to names via the existing genres map, sliced to 2 max
+- `TmdbCardComponent` renders 1–2 uppercase pill tags beneath the year/rating row
+- Zero new API calls — uses genre data already fetched by `fetchGenres()` on Discover page init
