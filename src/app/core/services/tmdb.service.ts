@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import {
   TmdbMovie,
   TmdbMovieDetailMapped,
+  TmdbCastMemberMapped,
   TmdbMovieListResponse,
   TmdbMovieResult,
   TmdbMovieDetail,
@@ -105,7 +106,7 @@ export class TmdbService {
     this.movieDetail.set(null);
     this.http
       .get<TmdbMovieDetail>(`${this.base}/movie/${tmdbId}`, {
-        params: this.params(),
+        params: this.params({ append_to_response: 'credits' }),
       })
       .subscribe({
         next: (res) => {
@@ -182,6 +183,29 @@ export class TmdbService {
   }
 
   private mapDetail(r: TmdbMovieDetail): TmdbMovieDetailMapped {
+    const credits = r.credits;
+
+    const cast: TmdbCastMemberMapped[] = (credits?.cast ?? [])
+      .sort((a, b) => a.order - b.order)
+      .slice(0, 8)
+      .map((c) => ({
+        id: c.id,
+        name: c.name,
+        character: c.character,
+        photo: this.imageUrl(c.profile_path, 'w185'),
+      }));
+
+    const directors = (credits?.crew ?? [])
+      .filter((c) => c.job === 'Director')
+      .map((c) => c.name)
+      .join(', ');
+
+    const writers = (credits?.crew ?? [])
+      .filter((c) => c.job === 'Screenplay' || c.job === 'Writer' || c.job === 'Story')
+      .map((c) => c.name)
+      .filter((name, i, arr) => arr.indexOf(name) === i)
+      .join(', ');
+
     return {
       tmdbId: r.id,
       imdbId: r.imdb_id,
@@ -196,6 +220,9 @@ export class TmdbService {
       tagline: r.tagline,
       status: r.status,
       language: r.original_language.toUpperCase(),
+      cast,
+      directors,
+      writers,
     };
   }
 }

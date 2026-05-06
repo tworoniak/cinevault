@@ -101,6 +101,49 @@
           </div>
         </div>
 
+        @if (detail.cast.length) {
+          <section class="detail-page__cast" aria-label="Cast and crew">
+            <h2 class="detail-page__cast-heading">Cast</h2>
+
+            <ul class="detail-page__cast-grid">
+              @for (member of detail.cast; track member.id) {
+                <li class="detail-page__cast-card">
+                  @if (member.photo) {
+                    <img
+                      class="detail-page__cast-photo"
+                      [src]="member.photo"
+                      [alt]="member.name"
+                    />
+                  } @else {
+                    <div class="detail-page__cast-photo detail-page__cast-photo--placeholder" aria-hidden="true">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                      </svg>
+                    </div>
+                  }
+                  <p class="detail-page__cast-name">{{ member.name }}</p>
+                  <p class="detail-page__cast-character">{{ member.character }}</p>
+                </li>
+              }
+            </ul>
+
+            @if (detail.directors) {
+              <p class="detail-page__crew-row">
+                <span class="detail-page__crew-label">Director</span>
+                {{ detail.directors }}
+              </p>
+            }
+
+            @if (detail.writers) {
+              <p class="detail-page__crew-row">
+                <span class="detail-page__crew-label">Writer</span>
+                {{ detail.writers }}
+              </p>
+            }
+          </section>
+        }
+
         @if (providers()) {
           <section class="detail-page__providers" aria-label="Where to watch">
             <h2 class="detail-page__providers-heading">Where to Watch</h2>
