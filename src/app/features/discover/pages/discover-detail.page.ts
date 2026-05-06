@@ -25,6 +25,16 @@ export class DiscoverDetailPage {
 
   canAddToWatchlist = computed(() => !!this.tmdbService.movieDetail());
 
+  providers = computed(() => {
+    const wp = this.tmdbService.watchProviders();
+    if (!wp) return null;
+    return {
+      streaming: (wp.flatrate ?? []).slice(0, 6),
+      rent: (wp.rent ?? []).slice(0, 4),
+      link: wp.link,
+    };
+  });
+
   isInWatchlist = computed(() => {
     const detail = this.tmdbService.movieDetail();
     if (!detail) return false;
@@ -39,6 +49,7 @@ export class DiscoverDetailPage {
         this.showTrailer.set(false);
         this.tmdbService.fetchMovieDetail(Number(id));
         this.tmdbService.fetchVideos(Number(id));
+        this.tmdbService.fetchWatchProviders(Number(id));
       }
     });
   }

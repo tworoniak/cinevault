@@ -9,6 +9,8 @@ import {
   TmdbMovieDetail,
   TmdbGenreListResponse,
   TmdbVideoListResponse,
+  TmdbWatchProviderResponse,
+  TmdbWatchProviderResult,
 } from '../../models/tmdb.model';
 
 @Injectable({ providedIn: 'root' })
@@ -34,6 +36,10 @@ export class TmdbService {
 
   trailerKey = signal<string | null>(null);
   trailerLoading = signal(false);
+
+  readonly watchCountry = 'CA';
+  watchProviders = signal<TmdbWatchProviderResult | null>(null);
+  watchProvidersLoading = signal(false);
 
   imageUrl(path: string | null, size: string): string {
     if (!path) return '';
@@ -132,6 +138,25 @@ export class TmdbService {
         error: () => {
           this.trailerKey.set(null);
           this.trailerLoading.set(false);
+        },
+      });
+  }
+
+  fetchWatchProviders(tmdbId: number): void {
+    this.watchProviders.set(null);
+    this.watchProvidersLoading.set(true);
+    this.http
+      .get<TmdbWatchProviderResponse>(`${this.base}/movie/${tmdbId}/watch/providers`, {
+        params: this.params(),
+      })
+      .subscribe({
+        next: (res) => {
+          this.watchProviders.set(res.results[this.watchCountry] ?? null);
+          this.watchProvidersLoading.set(false);
+        },
+        error: () => {
+          this.watchProviders.set(null);
+          this.watchProvidersLoading.set(false);
         },
       });
   }
