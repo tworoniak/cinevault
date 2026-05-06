@@ -15,13 +15,13 @@ export class MovieCardComponent {
   inWatchlist = input<boolean>(false);
 
   addToWatchlist = output<Movie>();
-  removeFromWatchlist = output<Movie>();
+  removeFromWatchlist = output<number>();
 
   posterError = signal(false);
 
   get hasPoster(): boolean {
     const poster = this.movie().poster;
-    return (poster !== 'N/A' && poster !== '') && !this.posterError();
+    return poster !== '' && !this.posterError();
   }
 
   onAdd() {
@@ -29,6 +29,6 @@ export class MovieCardComponent {
   }
 
   onRemove() {
-    this.removeFromWatchlist.emit(this.movie());
+    this.removeFromWatchlist.emit(this.movie().tmdbId);
   }
 }

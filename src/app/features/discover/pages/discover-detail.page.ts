@@ -23,15 +23,12 @@ export class DiscoverDetailPage {
 
   @ViewChild('trailerBackdrop') private trailerBackdropEl?: ElementRef<HTMLDivElement>;
 
-  canAddToWatchlist = computed(() => {
-    const detail = this.tmdbService.movieDetail();
-    return !!detail?.imdbId;
-  });
+  canAddToWatchlist = computed(() => !!this.tmdbService.movieDetail());
 
   isInWatchlist = computed(() => {
     const detail = this.tmdbService.movieDetail();
-    if (!detail?.imdbId) return false;
-    return this.watchlistService.watchlistIds().has(detail.imdbId);
+    if (!detail) return false;
+    return this.watchlistService.watchlistIds().has(detail.tmdbId);
   });
 
   constructor() {
@@ -57,14 +54,13 @@ export class DiscoverDetailPage {
 
   addToWatchlist() {
     const detail = this.tmdbService.movieDetail();
-    if (!detail?.imdbId) return;
+    if (!detail) return;
     const movie: Movie = {
-      imdbID: detail.imdbId,
+      tmdbId: detail.tmdbId,
       title: detail.title,
       year: detail.year,
       poster: detail.poster,
       type: 'movie',
-      source: 'tmdb',
     };
     this.watchlistService.add(movie);
   }

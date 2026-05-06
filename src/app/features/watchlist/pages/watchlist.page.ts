@@ -1,7 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { WatchlistService } from '../../../core/services/watchlist.service';
 import { MovieCardComponent } from '../../../shared/components/movie-card/movie-card.component';
-import { Movie } from '../../../models/movie.model';
 
 @Component({
   standalone: true,
@@ -18,7 +17,7 @@ export class WatchlistPage {
     this.watchlistService.watchlist().filter((m) => m.type !== 'movie' && m.type !== 'series')
   );
 
-  remove(movie: Movie) {
-    this.watchlistService.remove(movie.imdbID);
+  remove(id: number) {
+    this.watchlistService.remove(id);
   }
 }
