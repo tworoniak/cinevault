@@ -1,16 +1,22 @@
-# Current Feature
+# Current Feature: Genre Tags on Discover Cards
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!--  -->
+- Each `TmdbCardComponent` displays 1–2 genre pill tags beneath the movie title
+- Makes the Discover grids scannable at a glance without clicking into detail
+- Uses data already fetched — no new API calls required
 
 ## Notes
 
-<!--  -->
+- Extend `TmdbMovie` with `genres?: string[]`; resolve IDs inside `mapMovie()` using the existing genre map
+- `fetchGenres()` must be called before trending/popular — already the case in `DiscoverPage`, do not reorder
+- Limit to 2 genres max on the card to avoid layout overflow on narrow cards
+- No change needed to the Detail page — it already resolves genres from the full detail response
+- Branch: `feature/genre-tags-on-cards`
 
 ## History
 

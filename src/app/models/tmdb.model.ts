@@ -51,6 +51,7 @@ export interface TmdbMovie {
   backdrop: string;
   rating: string;
   overview: string;
+  genres?: string[];
 }
 
 export interface TmdbMovieDetailMapped {
