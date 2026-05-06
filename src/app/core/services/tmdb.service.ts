@@ -38,6 +38,10 @@ export class TmdbService {
   trailerKey = signal<string | null>(null);
   trailerLoading = signal(false);
 
+  discoverResults = signal<TmdbMovie[]>([]);
+  discoverLoading = signal(false);
+  discoverError = signal<string | null>(null);
+
   readonly watchCountry = 'CA';
   watchProviders = signal<TmdbWatchProviderResult | null>(null);
   watchProvidersLoading = signal(false);
@@ -158,6 +162,34 @@ export class TmdbService {
         error: () => {
           this.watchProviders.set(null);
           this.watchProvidersLoading.set(false);
+        },
+      });
+  }
+
+  fetchDiscover(params: { genreIds?: number[]; sortBy?: string }): void {
+    this.discoverLoading.set(true);
+    this.discoverError.set(null);
+
+    const extra: Record<string, string> = {
+      sort_by: params.sortBy ?? 'popularity.desc',
+      page: '1',
+    };
+    if (params.genreIds?.length) {
+      extra['with_genres'] = params.genreIds.join(',');
+    }
+
+    this.http
+      .get<TmdbMovieListResponse>(`${this.base}/discover/movie`, {
+        params: this.params(extra),
+      })
+      .subscribe({
+        next: (res) => {
+          this.discoverResults.set(res.results.map((r) => this.mapMovie(r)));
+          this.discoverLoading.set(false);
+        },
+        error: () => {
+          this.discoverError.set('Failed to load results.');
+          this.discoverLoading.set(false);
         },
       });
   }
