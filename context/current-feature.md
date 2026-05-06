@@ -1,16 +1,28 @@
-# Current Feature
+# Current Feature: Migrate Search from OMDB to TMDB
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!--  -->
+- Replace the OMDB-powered `/movies` search with TMDB `/search/multi` — returns movies and TV shows in one call
+- Remove the OMDB movie detail page; search results navigate to the existing Discover detail page (`/discover/movie/:tmdbId`)
+- Switch the watchlist primary key from `imdbID: string` to `tmdbId: number` — localStorage wiped on upgrade (accepted)
+- Remove OMDB API key and all OMDB model/service code from the codebase
+- Search supports both movies and TV shows via TMDB `media_type`
 
 ## Notes
 
-<!--  -->
+- Add `TmdbMultiSearchResult` / `TmdbMultiSearchResponse` to `tmdb.model.ts`
+- `Movie` model: `imdbID` → `tmdbId: number`; remove `source`, `backdrop`; delete `MovieDetail` interface
+- `MovieService`: replace OMDB HTTP calls with TMDB `/search/multi`; remove `fetchMovieDetail()`
+- `WatchlistService`: key becomes `tmdbId: number`; `watchlistIds` → `Set<number>`; `remove()` takes `number`
+- `MovieCardComponent`: route to `/discover/movie/:tmdbId`; `removeFromWatchlist` output emits `number`
+- `DiscoverDetailPage`: `addToWatchlist()` uses `tmdbId`; drop `imdbId` requirement — all movies watchlist-able
+- Delete: `omdb.model.ts`, `movie-detail.page.*` (3 files)
+- localStorage guard: filter loaded watchlist items to only those where `typeof m.tmdbId === 'number'`
+- Branch: `feature/omdb-to-tmdb-migration`
 
 ## History
 

@@ -28,11 +28,11 @@
 
   @if (!movieService.loading() && movieService.movies().length > 0) {
     <div class="search-page__grid">
-      @for (movie of movieService.movies(); track movie.imdbID) {
+      @for (movie of movieService.movies(); track movie.tmdbId) {
         <app-movie-card
           [movie]="movie"
           mode="search"
-          [inWatchlist]="watchlistService.watchlistIds().has(movie.imdbID)"
+          [inWatchlist]="watchlistService.watchlistIds().has(movie.tmdbId)"
           (addToWatchlist)="onAdd($event)"
         />
       }

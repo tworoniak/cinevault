@@ -1,5 +1,5 @@
 <article class="movie-card" [attr.aria-label]="movie().title">
-  <a class="movie-card__poster-link" [routerLink]="['/movies', movie().imdbID]">
+  <a class="movie-card__poster-link" [routerLink]="['/discover/movie', movie().tmdbId]">
     @if (hasPoster) {
       <img class="movie-card__poster" [src]="movie().poster" [alt]="movie().title" loading="lazy" (error)="posterError.set(true)" />
     } @else {
@@ -14,7 +14,7 @@
   </a>
 
   <div class="movie-card__body">
-    <a class="movie-card__title" [routerLink]="['/movies', movie().imdbID]">{{ movie().title }}</a>
+    <a class="movie-card__title" [routerLink]="['/discover/movie', movie().tmdbId]">{{ movie().title }}</a>
 
     <div class="movie-card__meta">
       <span class="movie-card__year">{{ movie().year }}</span>

@@ -1,4 +1,23 @@
 // Raw API shapes from TMDB
+export interface TmdbMultiSearchResult {
+  id: number;
+  media_type: 'movie' | 'tv' | 'person';
+  title?: string;
+  name?: string;
+  release_date?: string;
+  first_air_date?: string;
+  poster_path: string | null;
+  vote_average: number;
+  overview: string;
+}
+
+export interface TmdbMultiSearchResponse {
+  page: number;
+  results: TmdbMultiSearchResult[];
+  total_pages: number;
+  total_results: number;
+}
+
 export interface TmdbGenre {
   id: number;
   name: string;

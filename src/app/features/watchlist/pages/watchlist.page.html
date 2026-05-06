@@ -8,7 +8,7 @@
       <section class="watchlist-page__section">
         <h2 class="watchlist-page__section-title">Movies</h2>
         <div class="watchlist-page__grid">
-          @for (movie of movies(); track movie.imdbID) {
+          @for (movie of movies(); track movie.tmdbId) {
             <app-movie-card
               [movie]="movie"
               mode="watchlist"
@@ -23,7 +23,7 @@
       <section class="watchlist-page__section">
         <h2 class="watchlist-page__section-title">Series</h2>
         <div class="watchlist-page__grid">
-          @for (movie of series(); track movie.imdbID) {
+          @for (movie of series(); track movie.tmdbId) {
             <app-movie-card
               [movie]="movie"
               mode="watchlist"
@@ -38,7 +38,7 @@
       <section class="watchlist-page__section">
         <h2 class="watchlist-page__section-title">Other</h2>
         <div class="watchlist-page__grid">
-          @for (movie of other(); track movie.imdbID) {
+          @for (movie of other(); track movie.tmdbId) {
             <app-movie-card
               [movie]="movie"
               mode="watchlist"

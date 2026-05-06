@@ -32,7 +32,7 @@
     <section class="dashboard-page__section">
       <h2 class="dashboard-page__section-title">Current Search Results</h2>
       <div class="dashboard-page__grid">
-        @for (movie of movieService.movies(); track movie.imdbID) {
+        @for (movie of movieService.movies(); track movie.tmdbId) {
           <app-movie-card [movie]="movie" mode="preview" />
         }
       </div>
