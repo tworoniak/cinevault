@@ -1,28 +1,12 @@
-# Current Feature: Migrate Search from OMDB to TMDB
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Replace the OMDB-powered `/movies` search with TMDB `/search/multi` — returns movies and TV shows in one call
-- Remove the OMDB movie detail page; search results navigate to the existing Discover detail page (`/discover/movie/:tmdbId`)
-- Switch the watchlist primary key from `imdbID: string` to `tmdbId: number` — localStorage wiped on upgrade (accepted)
-- Remove OMDB API key and all OMDB model/service code from the codebase
-- Search supports both movies and TV shows via TMDB `media_type`
-
 ## Notes
-
-- Add `TmdbMultiSearchResult` / `TmdbMultiSearchResponse` to `tmdb.model.ts`
-- `Movie` model: `imdbID` → `tmdbId: number`; remove `source`, `backdrop`; delete `MovieDetail` interface
-- `MovieService`: replace OMDB HTTP calls with TMDB `/search/multi`; remove `fetchMovieDetail()`
-- `WatchlistService`: key becomes `tmdbId: number`; `watchlistIds` → `Set<number>`; `remove()` takes `number`
-- `MovieCardComponent`: route to `/discover/movie/:tmdbId`; `removeFromWatchlist` output emits `number`
-- `DiscoverDetailPage`: `addToWatchlist()` uses `tmdbId`; drop `imdbId` requirement — all movies watchlist-able
-- Delete: `omdb.model.ts`, `movie-detail.page.*` (3 files)
-- localStorage guard: filter loaded watchlist items to only those where `typeof m.tmdbId === 'number'`
-- Branch: `feature/omdb-to-tmdb-migration`
 
 ## History
 
@@ -130,3 +114,14 @@ In Progress
 - `SafeUrlPipe` created at `src/app/shared/pipes/safe-url.pipe.ts` to bypass Angular's iframe src sanitization
 - "Watch Trailer" (outlined) and "Add to Watchlist" (filled) sit side-by-side in a flex actions row
 - Modal dismisses via close button, backdrop click, or Escape key (backdrop receives programmatic focus on open)
+
+### Feature 14 — Migrate Search from OMDB to TMDB
+
+- `TmdbMultiSearchResult` / `TmdbMultiSearchResponse` added to `tmdb.model.ts`
+- `Movie` model rewritten: `imdbID: string` → `tmdbId: number`; `source?` / `backdrop?` removed; `MovieDetail` interface deleted
+- `MovieService` rewritten: OMDB HTTP calls replaced with TMDB `/search/multi`; `fetchMovieDetail()` and all detail signals removed
+- `WatchlistService`: `watchlistIds` → `Set<number>`; `add()` deduplicates by `tmdbId`; `remove()` takes `number`; localStorage guard filters out pre-migration entries
+- `MovieCardComponent`: routes to `/discover/movie/:tmdbId`; `removeFromWatchlist` output emits `number`
+- `DiscoverDetailPage`: `addToWatchlist()` uses `tmdbId`; `canAddToWatchlist` no longer gated on `imdb_id` — all titles watchlist-able
+- Deleted: `omdb.model.ts`, `movie-detail.page.ts/html/scss`
+- `movies.routes.ts` detail route removed; `environment.ts` OMDB key removed
