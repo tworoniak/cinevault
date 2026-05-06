@@ -10,6 +10,16 @@ Not Started
 
 ## History
 
+### Feature 16 — Cast & Crew on Detail Page
+
+- `TmdbCastMember`, `TmdbCrewMember`, `TmdbCredits`, `TmdbCastMemberMapped` interfaces added to `tmdb.model.ts`; `TmdbMovieDetail` extended with `credits?`; `TmdbMovieDetailMapped` extended with `cast`, `directors`, `writers`
+- `fetchMovieDetail()` updated to pass `append_to_response: 'credits'` — no new HTTP call or signal
+- `mapDetail()` now sorts cast by billing order, slices to 8, maps photos; extracts directors and deduplicated writers as joined strings
+- Cast grid added to `discover-detail.page.html` (above Where to Watch): profile photo or silhouette placeholder, actor name, character name
+- Director and Writer crew rows rendered as label + text below the cast grid
+- Cast section absent when `detail.cast.length === 0`
+- Component style budget in `angular.json` bumped from 6 kB → 10 kB warning (detail page SCSS now 6.56 kB)
+
 ### Feature 15 — Where to Watch (Streaming Providers)
 
 - `TmdbWatchProvider`, `TmdbWatchProviderResult`, `TmdbWatchProviderResponse` interfaces added to `tmdb.model.ts`
