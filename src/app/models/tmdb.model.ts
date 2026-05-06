@@ -54,6 +54,20 @@ export interface TmdbMovie {
   genres?: string[];
 }
 
+export interface TmdbVideo {
+  id: string;
+  key: string;
+  name: string;
+  site: string;
+  type: string;
+  official: boolean;
+}
+
+export interface TmdbVideoListResponse {
+  id: number;
+  results: TmdbVideo[];
+}
+
 export interface TmdbMovieDetailMapped {
   tmdbId: number;
   imdbId: string | null;

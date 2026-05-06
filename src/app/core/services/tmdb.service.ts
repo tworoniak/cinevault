@@ -8,6 +8,7 @@ import {
   TmdbMovieResult,
   TmdbMovieDetail,
   TmdbGenreListResponse,
+  TmdbVideoListResponse,
 } from '../../models/tmdb.model';
 
 @Injectable({ providedIn: 'root' })
@@ -30,6 +31,9 @@ export class TmdbService {
   movieDetail = signal<TmdbMovieDetailMapped | null>(null);
   detailLoading = signal(false);
   detailError = signal<string | null>(null);
+
+  trailerKey = signal<string | null>(null);
+  trailerLoading = signal(false);
 
   imageUrl(path: string | null, size: string): string {
     if (!path) return '';
@@ -105,6 +109,29 @@ export class TmdbService {
         error: () => {
           this.detailError.set('Failed to load movie details.');
           this.detailLoading.set(false);
+        },
+      });
+  }
+
+  fetchVideos(tmdbId: number): void {
+    this.trailerKey.set(null);
+    this.trailerLoading.set(true);
+    this.http
+      .get<TmdbVideoListResponse>(`${this.base}/movie/${tmdbId}/videos`, {
+        params: this.params(),
+      })
+      .subscribe({
+        next: (res) => {
+          const trailer =
+            res.results.find((v) => v.site === 'YouTube' && v.type === 'Trailer' && v.official) ??
+            res.results.find((v) => v.site === 'YouTube' && v.type === 'Trailer') ??
+            null;
+          this.trailerKey.set(trailer?.key ?? null);
+          this.trailerLoading.set(false);
+        },
+        error: () => {
+          this.trailerKey.set(null);
+          this.trailerLoading.set(false);
         },
       });
   }
