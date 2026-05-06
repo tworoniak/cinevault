@@ -45,6 +45,27 @@ export interface TmdbGenreListResponse {
   genres: TmdbGenre[];
 }
 
+export interface TmdbCastMember {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+  order: number;
+}
+
+export interface TmdbCrewMember {
+  id: number;
+  name: string;
+  job: string;
+  department: string;
+  profile_path: string | null;
+}
+
+export interface TmdbCredits {
+  cast: TmdbCastMember[];
+  crew: TmdbCrewMember[];
+}
+
 export interface TmdbMovieDetail {
   id: number;
   imdb_id: string | null;
@@ -59,6 +80,7 @@ export interface TmdbMovieDetail {
   tagline: string;
   status: string;
   original_language: string;
+  credits?: TmdbCredits;
 }
 
 // App-level mapped types
@@ -106,6 +128,13 @@ export interface TmdbWatchProviderResponse {
   results: Record<string, TmdbWatchProviderResult>;
 }
 
+export interface TmdbCastMemberMapped {
+  id: number;
+  name: string;
+  character: string;
+  photo: string;
+}
+
 export interface TmdbMovieDetailMapped {
   tmdbId: number;
   imdbId: string | null;
@@ -120,4 +149,7 @@ export interface TmdbMovieDetailMapped {
   tagline: string;
   status: string;
   language: string;
+  cast: TmdbCastMemberMapped[];
+  directors: string;
+  writers: string;
 }
