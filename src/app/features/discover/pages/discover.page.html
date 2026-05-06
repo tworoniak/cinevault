@@ -2,6 +2,57 @@
   <div class="cv-container">
     <h1 class="discover-page__title">Discover</h1>
 
+    <div class="discover-filters">
+      <div class="discover-filters__genres">
+        @for (genre of genreList(); track genre.id) {
+          <button
+            class="discover-filters__genre-pill"
+            [class.discover-filters__genre-pill--active]="selectedGenres().includes(genre.id)"
+            (click)="toggleGenre(genre.id)"
+          >
+            {{ genre.name }}
+          </button>
+        }
+      </div>
+
+      <div class="discover-filters__controls">
+        <select
+          class="discover-filters__sort"
+          (change)="sortBy.set($any($event.target).value)"
+        >
+          @for (opt of sortOptions; track opt.value) {
+            <option [value]="opt.value" [selected]="sortBy() === opt.value">
+              {{ opt.label }}
+            </option>
+          }
+        </select>
+
+        @if (hasFilters()) {
+          <button class="discover-filters__clear" (click)="clearFilters()">Clear</button>
+        }
+      </div>
+    </div>
+
+    @if (hasFilters()) {
+      <section class="discover-page__section">
+        <h2 class="discover-page__section-title">Browse Results</h2>
+
+        @if (tmdbService.discoverLoading()) {
+          <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+        } @else if (tmdbService.discoverError()) {
+          <p class="discover-page__error">{{ tmdbService.discoverError() }}</p>
+        } @else if (tmdbService.discoverResults().length) {
+          <div class="discover-page__grid">
+            @for (movie of tmdbService.discoverResults(); track movie.tmdbId) {
+              <app-tmdb-card [movie]="movie" />
+            }
+          </div>
+        } @else {
+          <p class="discover-page__empty">No results found. Try a different genre or sort order.</p>
+        }
+      </section>
+    }
+
     <section class="discover-page__section">
       <h2 class="discover-page__section-title">Trending This Week</h2>
 
