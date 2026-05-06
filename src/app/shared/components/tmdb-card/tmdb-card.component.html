@@ -29,5 +29,12 @@
       <span class="tmdb-card__year">{{ movie().year }}</span>
       <span class="tmdb-card__rating">{{ movie().rating }} ★</span>
     </div>
+    @if (movie().genres?.length) {
+      <ul class="tmdb-card__genres" aria-label="Genres">
+        @for (genre of movie().genres; track genre) {
+          <li class="tmdb-card__genre">{{ genre }}</li>
+        }
+      </ul>
+    }
   </div>
 </article>

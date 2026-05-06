@@ -5,6 +5,7 @@ import {
   TmdbMovie,
   TmdbMovieDetailMapped,
   TmdbMovieListResponse,
+  TmdbMovieResult,
   TmdbMovieDetail,
   TmdbGenreListResponse,
 } from '../../models/tmdb.model';
@@ -112,7 +113,7 @@ export class TmdbService {
     return new HttpParams({ fromObject: { api_key: this.apiKey, ...extra } });
   }
 
-  private mapMovie(r: { id: number; title: string; release_date: string; poster_path: string | null; backdrop_path: string | null; vote_average: number; overview: string }): TmdbMovie {
+  private mapMovie(r: TmdbMovieResult): TmdbMovie {
     return {
       tmdbId: r.id,
       title: r.title,
@@ -121,6 +122,10 @@ export class TmdbService {
       backdrop: this.imageUrl(r.backdrop_path, 'w780'),
       rating: r.vote_average.toFixed(1),
       overview: r.overview,
+      genres: (r.genre_ids ?? [])
+        .map((id) => this.genres().get(id))
+        .filter((name): name is string => !!name)
+        .slice(0, 2),
     };
   }
 

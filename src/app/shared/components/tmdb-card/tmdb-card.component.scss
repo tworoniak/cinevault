@@ -86,3 +86,24 @@
   font-weight: 600;
   color: var(--cv-accent);
 }
+
+.tmdb-card__genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cv-space-1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tmdb-card__genre {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px var(--cv-space-2);
+  border-radius: 999px;
+  background: var(--cv-bg-elevated);
+  color: var(--cv-text-muted);
+  white-space: nowrap;
+}
