@@ -100,6 +100,53 @@
             </div>
           </div>
         </div>
+
+        @if (providers()) {
+          <section class="detail-page__providers" aria-label="Where to watch">
+            <h2 class="detail-page__providers-heading">Where to Watch</h2>
+
+            @if (providers()!.streaming.length) {
+              <div class="detail-page__providers-group">
+                <span class="detail-page__providers-label">Stream</span>
+                <ul class="detail-page__providers-list">
+                  @for (p of providers()!.streaming; track p.provider_id) {
+                    <li>
+                      <img
+                        class="detail-page__provider-logo"
+                        [src]="tmdbService.imageUrl(p.logo_path, 'w92')"
+                        [alt]="p.provider_name"
+                        [title]="p.provider_name"
+                      />
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+
+            @if (providers()!.rent.length) {
+              <div class="detail-page__providers-group">
+                <span class="detail-page__providers-label">Rent</span>
+                <ul class="detail-page__providers-list">
+                  @for (p of providers()!.rent; track p.provider_id) {
+                    <li>
+                      <img
+                        class="detail-page__provider-logo"
+                        [src]="tmdbService.imageUrl(p.logo_path, 'w92')"
+                        [alt]="p.provider_name"
+                        [title]="p.provider_name"
+                      />
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+
+            <p class="detail-page__providers-attribution">
+              Streaming data provided by
+              <a [href]="providers()!.link" target="_blank" rel="noopener noreferrer">JustWatch</a>
+            </p>
+          </section>
+        }
       }
     </div>
   </div>

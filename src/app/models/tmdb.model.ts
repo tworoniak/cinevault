@@ -87,6 +87,25 @@ export interface TmdbVideoListResponse {
   results: TmdbVideo[];
 }
 
+export interface TmdbWatchProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+  display_priority: number;
+}
+
+export interface TmdbWatchProviderResult {
+  link: string;
+  flatrate?: TmdbWatchProvider[];
+  rent?: TmdbWatchProvider[];
+  buy?: TmdbWatchProvider[];
+}
+
+export interface TmdbWatchProviderResponse {
+  id: number;
+  results: Record<string, TmdbWatchProviderResult>;
+}
+
 export interface TmdbMovieDetailMapped {
   tmdbId: number;
   imdbId: string | null;
