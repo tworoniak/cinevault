@@ -1,0 +1,75 @@
+<div class="cv-page">
+  <div class="cv-container">
+    <a class="person-detail__back" routerLink="/discover">← Back</a>
+
+    @if (tmdbService.personDetailLoading()) {
+      <div class="person-detail__spinner" role="status" aria-label="Loading"></div>
+    }
+
+    @if (tmdbService.personDetailError()) {
+      <p class="person-detail__error">{{ tmdbService.personDetailError() }}</p>
+    }
+
+    @if (tmdbService.personDetail(); as person) {
+      <div class="person-detail__hero">
+        <div class="person-detail__photo-wrap">
+          @if (person.profile_path) {
+            <img
+              class="person-detail__photo"
+              [src]="tmdbService.imageUrl(person.profile_path, 'w342')"
+              [alt]="person.name"
+            />
+          } @else {
+            <div class="person-detail__photo-placeholder" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </div>
+          }
+        </div>
+
+        <div class="person-detail__info">
+          <h1 class="person-detail__name">{{ person.name }}</h1>
+
+          @if (person.birthday || person.place_of_birth) {
+            <dl class="person-detail__meta">
+              @if (person.birthday) {
+                <div class="person-detail__meta-row">
+                  <dt>Born</dt>
+                  <dd>{{ person.birthday }}</dd>
+                </div>
+              }
+              @if (person.place_of_birth) {
+                <div class="person-detail__meta-row">
+                  <dt>From</dt>
+                  <dd>{{ person.place_of_birth }}</dd>
+                </div>
+              }
+            </dl>
+          }
+
+          @if (person.biography) {
+            <div class="person-detail__bio-wrap" [class.person-detail__bio-wrap--expanded]="bioExpanded()">
+              <p class="person-detail__bio">{{ person.biography }}</p>
+            </div>
+            <button class="person-detail__bio-toggle" (click)="toggleBio()">
+              {{ bioExpanded() ? 'Show less' : 'Show more' }}
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (tmdbService.personCredits().length) {
+        <section class="person-detail__credits" aria-label="Filmography">
+          <h2 class="person-detail__credits-heading">Known For</h2>
+          <div class="person-detail__credits-grid">
+            @for (movie of tmdbService.personCredits(); track movie.tmdbId) {
+              <app-tmdb-card [movie]="movie" />
+            }
+          </div>
+        </section>
+      }
+    }
+  </div>
+</div>

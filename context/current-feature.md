@@ -1,12 +1,25 @@
-# Current Feature
+# Current Feature — Feature 22: Actor Detail Page
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Clicking a cast member on the movie detail page navigates to `/discover/person/:personId`
+- Actor detail page shows profile photo, name, biography, birthday, and birthplace
+- "Known For" filmography grid of their movie credits (reuses `TmdbCardComponent`)
+- Each film card in the grid links to that movie's detail page
+- Section hidden when no movie credits are available
+
 ## Notes
+
+- `personId` comes directly from `TmdbCastMemberMapped.id` — no model changes needed
+- Biography text can be very long; collapsed/expanded toggle prevents it from dominating layout on first load
+- Credits filtered to titles with a poster to avoid blank cards, then sorted by `vote_average` descending
+- `personCredits` and `personDetail` signals must be reset at the start of each fetch so stale data doesn't flash on navigation
+- The `backdrop` field on mapped credits is set to `''` — `TmdbCardComponent` already handles a missing backdrop gracefully
+- Branch: `feature/actor-detail`
 
 ## History
 

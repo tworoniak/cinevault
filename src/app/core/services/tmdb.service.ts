@@ -16,6 +16,8 @@ import {
   TmdbTvListResponse,
   TmdbTvDetail,
   TmdbTvDetailMapped,
+  TmdbPerson,
+  TmdbPersonMovieCreditsResponse,
 } from '../../models/tmdb.model';
 
 @Injectable({ providedIn: 'root' })
@@ -95,6 +97,13 @@ export class TmdbService {
   nowPlayingError = signal<string | null>(null);
   nowPlayingPage = signal(1);
   nowPlayingTotalPages = signal(1);
+
+  personDetail = signal<TmdbPerson | null>(null);
+  personDetailLoading = signal(false);
+  personDetailError = signal<string | null>(null);
+
+  personCredits = signal<TmdbMovie[]>([]);
+  personCreditsLoading = signal(false);
 
   imageUrl(path: string | null, size: string): string {
     if (!path) return '';
@@ -475,6 +484,60 @@ export class TmdbService {
   loadMoreDiscover(): void {
     const next = this.discoverPage() + 1;
     if (next <= this.discoverTotalPages()) this.fetchDiscover(this.lastDiscoverParams, next);
+  }
+
+  fetchPersonDetail(personId: number): void {
+    this.personDetail.set(null);
+    this.personDetailLoading.set(true);
+    this.personDetailError.set(null);
+    this.http
+      .get<TmdbPerson>(`${this.base}/person/${personId}`, {
+        params: this.params(),
+      })
+      .subscribe({
+        next: (res) => {
+          this.personDetail.set(res);
+          this.personDetailLoading.set(false);
+        },
+        error: () => {
+          this.personDetailError.set('Failed to load person details.');
+          this.personDetailLoading.set(false);
+        },
+      });
+  }
+
+  fetchPersonCredits(personId: number): void {
+    this.personCredits.set([]);
+    this.personCreditsLoading.set(true);
+    this.http
+      .get<TmdbPersonMovieCreditsResponse>(
+        `${this.base}/person/${personId}/movie_credits`,
+        { params: this.params() }
+      )
+      .subscribe({
+        next: (res) => {
+          const credits = res.cast
+            .filter((c) => c.poster_path)
+            .sort((a, b) => (b.vote_average ?? 0) - (a.vote_average ?? 0))
+            .slice(0, 20)
+            .map((c) => ({
+              tmdbId: c.id,
+              title: c.title,
+              year: c.release_date ? c.release_date.substring(0, 4) : '',
+              poster: this.imageUrl(c.poster_path, 'w342'),
+              backdrop: '',
+              rating: c.vote_average.toFixed(1),
+              overview: '',
+              genres: [],
+            }));
+          this.personCredits.set(credits);
+          this.personCreditsLoading.set(false);
+        },
+        error: () => {
+          this.personCredits.set([]);
+          this.personCreditsLoading.set(false);
+        },
+      });
   }
 
   private params(extra: Record<string, string> = {}): HttpParams {

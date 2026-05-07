@@ -16,4 +16,9 @@ export const DISCOVER_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/discover-tv-detail.page').then((m) => m.DiscoverTvDetailPage),
   },
+  {
+    path: 'person/:personId',
+    loadComponent: () =>
+      import('./pages/discover-person-detail.page').then((m) => m.DiscoverPersonDetailPage),
+  },
 ];

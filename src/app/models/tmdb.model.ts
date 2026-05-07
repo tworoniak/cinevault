@@ -193,6 +193,31 @@ export interface TmdbCastMemberMapped {
   photo: string;
 }
 
+export interface TmdbPerson {
+  id: number;
+  name: string;
+  biography: string;
+  birthday: string | null;
+  place_of_birth: string | null;
+  profile_path: string | null;
+  known_for_department: string;
+}
+
+export interface TmdbPersonMovieCredit {
+  id: number;
+  title: string;
+  release_date: string;
+  poster_path: string | null;
+  vote_average: number;
+  character: string;
+  order: number;
+}
+
+export interface TmdbPersonMovieCreditsResponse {
+  id: number;
+  cast: TmdbPersonMovieCredit[];
+}
+
 export interface TmdbMovieDetailMapped {
   tmdbId: number;
   imdbId: string | null;

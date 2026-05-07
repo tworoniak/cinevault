@@ -327,6 +327,19 @@
   line-height: 1.3;
 }
 
+.detail-page__cast-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cv-space-1);
+  text-decoration: none;
+
+  @media (hover: hover) {
+    &:hover .detail-page__cast-name {
+      color: var(--cv-accent);
+    }
+  }
+}
+
 .detail-page__crew-row {
   font-size: 0.875rem;
   color: var(--cv-text-primary);
