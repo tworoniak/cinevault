@@ -1,8 +1,13 @@
 <nav class="nav">
   <div class="nav__inner cv-container">
-    <a class="nav__brand" routerLink="/movies">CineVault</a>
+    <a class="nav__brand" routerLink="/home">CineVault</a>
 
     <ul class="nav__links" role="list">
+      <li>
+        <a routerLink="/home" routerLinkActive="nav__link--active" class="nav__link">
+          Home
+        </a>
+      </li>
       <li>
         <a routerLink="/movies" routerLinkActive="nav__link--active" class="nav__link">
           Search
@@ -45,6 +50,9 @@
   @if (isMenuOpen()) {
     <div class="nav__backdrop" (click)="closeMenu()" aria-hidden="true"></div>
     <div class="nav__mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation menu">
+      <a routerLink="/home" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
+        Home
+      </a>
       <a routerLink="/movies" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
         Search
       </a>
