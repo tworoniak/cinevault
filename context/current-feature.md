@@ -10,6 +10,15 @@ Not Started
 
 ## History
 
+### Feature 23 — Homepage / Landing Page
+
+- `TmdbTrendingAllResult`, `TmdbTrendingAllResponse`, `TmdbPersonPopularKnownFor`, `TmdbPersonPopular`, `TmdbPersonPopularResponse` interfaces added to `tmdb.model.ts`
+- `trendingAll`, `trendingAllLoading`, `popularPeople`, `popularPeopleLoading` signals added to `TmdbService`
+- `fetchTrendingAll()` (GET `/trending/all/week`) and `fetchPopularPeople()` (GET `/person/popular`) methods added to `TmdbService`; `mapTrendingAllItem()` private helper maps mixed movie/TV results by `media_type`
+- New `HorizontalCarouselComponent` at `shared/components/horizontal-carousel/`: `title` + `seeAllRoute` inputs, `ng-content` card projection, named `[carousel-tabs]` slot, scroll-snap track, prev/next arrow buttons (desktop hover only), constrained to `.cv-container` width
+- New `home` feature at `/home`: `home.routes.ts`, `home.page.ts/html/scss` with hero banner (top 5 from `trendingAll`, manual prev/next + dot navigation, `heroIndex` signal, "View Details" + "+ Watchlist" CTAs) and 8 horizontal carousels in order — Trending This Week (All/Movies/TV tab filter), Popular Celebrities (circular avatar cards → `/discover/person/:id`), From Your Watchlist (hidden when empty), Popular Right Now, Popular TV Shows, Now Playing in Theaters, Coming Soon (with release date badge), Top Rated of All Time
+- Default route changed from `/movies` → `/home` in `app.routes.ts`; Home link added as first item in desktop nav links and mobile hamburger menu; brand logo now routes to `/home`
+
 ### Feature 22 — Actor Detail Page
 
 - `TmdbPerson`, `TmdbPersonMovieCredit`, `TmdbPersonMovieCreditsResponse` interfaces added to `tmdb.model.ts`
@@ -56,6 +65,14 @@ Not Started
 - Replaced Angular CLI default template with `<app-nav />` + `<router-outlet />`
 - Wired `styles.scss` to import all partials
 - Also scaffolded: all services (Movie, Watchlist, Storage), models (Movie, OmdbSearch), feature route stubs
+
+### Feature 2 — Movie Search (Enhanced)
+
+- `MovieCardComponent` with poster, title, year, type badge, full mode union (`search/watchlist/preview`), `addToWatchlist` / `removeFromWatchlist` outputs
+- `MovieSearchPage` refactored to card grid with separate html/scss files
+- "Add to Watchlist" wired from card output to `WatchlistService.add()`
+- Switched API key from `import.meta.env` to `environment.ts` (gitignored); added `environment.example.ts` template
+- Updated `README.md` with correct setup instructions and `coding-standards.md` to reflect environment file pattern
 
 ### Feature 2 — Movie Search (Enhanced)
 
