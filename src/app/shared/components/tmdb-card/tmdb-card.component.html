@@ -1,7 +1,7 @@
 <article
   class="tmdb-card"
   [attr.aria-label]="movie().title"
-  [routerLink]="['/discover/movie', movie().tmdbId]"
+  [routerLink]="detailRoute()"
 >
   <div class="tmdb-card__poster-wrap">
     @if (movie().poster !== '' && !posterError()) {

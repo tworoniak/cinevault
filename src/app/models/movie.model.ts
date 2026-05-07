@@ -4,4 +4,5 @@ export interface Movie {
   year: string;
   poster: string;
   type: 'movie' | 'series' | 'other';
+  mediaType?: 'movie' | 'tv';
 }

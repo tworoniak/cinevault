@@ -1,4 +1,5 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TmdbService } from '../../../core/services/tmdb.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
 
@@ -11,6 +12,10 @@ import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-car
 })
 export class DiscoverPage {
   tmdbService = inject(TmdbService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
+  activeTab = signal<'movie' | 'tv'>('movie');
 
   selectedGenres = signal<number[]>([]);
   sortBy = signal('popularity.desc');
@@ -33,6 +38,16 @@ export class DiscoverPage {
   ];
 
   constructor() {
+    this.route.queryParams.subscribe((p) => {
+      const tab = p['type'] === 'tv' ? 'tv' : 'movie';
+      this.activeTab.set(tab);
+      if (tab === 'tv' && this.tmdbService.trendingTv().length === 0) {
+        this.tmdbService.fetchTvGenres();
+        this.tmdbService.fetchTrendingTv();
+        this.tmdbService.fetchPopularTv();
+      }
+    });
+
     this.tmdbService.fetchGenres();
     this.tmdbService.fetchTrending();
     this.tmdbService.fetchPopular();
@@ -47,6 +62,10 @@ export class DiscoverPage {
         this.tmdbService.fetchDiscover({ genreIds: genres, sortBy: sort });
       }
     });
+  }
+
+  setTab(tab: 'movie' | 'tv'): void {
+    this.router.navigate([], { queryParams: { type: tab }, queryParamsHandling: 'merge' });
   }
 
   toggleGenre(id: number): void {
@@ -67,4 +86,6 @@ export class DiscoverPage {
   loadMoreNowPlaying = () => this.tmdbService.loadMoreNowPlaying();
   loadMoreUpcoming = () => this.tmdbService.loadMoreUpcoming();
   loadMoreDiscover = () => this.tmdbService.loadMoreDiscover();
+  loadMoreTrendingTv = () => this.tmdbService.loadMoreTrendingTv();
+  loadMorePopularTv = () => this.tmdbService.loadMorePopularTv();
 }

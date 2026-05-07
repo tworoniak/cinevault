@@ -1,12 +1,26 @@
-# Current Feature
+# Current Feature: TV Show Support on Discover
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- "TV Shows" tab on the Discover page alongside "Movies"
+- Trending and Popular TV show grids on the TV tab
+- TV detail page at `/discover/tv/:tmdbId` with the same backdrop/metadata layout as the movie detail page
+- Season count and episode count shown on the TV detail page
+- TV shows can be added to the watchlist
+- Tab navigation is reflected in the URL (`/discover?type=tv` vs `/discover?type=movie`) so it survives refresh
+
 ## Notes
+
+- TV shows use `name` not `title`, and `first_air_date` not `release_date` — most common source of bugs when reusing movie code
+- `/genre/tv/list` is a separate endpoint from `/genre/movie/list` — load TV genres separately when the TV tab is first activated; store in a `tvGenres` signal
+- `WatchlistService` already stores by `tmdbId: number`, so TV shows can be added without changes to watchlist service — stored item needs a `mediaType: 'tv'` field so the watchlist page can route to the right detail page
+- Implement in phases: (1) TV tab with grids, (2) TV detail page, (3) watchlist integration
+- `TmdbCardComponent` needs to route to either `/discover/movie/:id` or `/discover/tv/:id` based on `movie.mediaType`
+- No trailer or Where to Watch section on TV detail page (can add later)
 
 ## History
 

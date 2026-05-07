@@ -2,6 +2,29 @@
   <div class="cv-container">
     <h1 class="discover-page__title">Discover</h1>
 
+    <div class="discover-tabs" role="tablist">
+      <button
+        role="tab"
+        class="discover-tab"
+        [class.discover-tab--active]="activeTab() === 'movie'"
+        (click)="setTab('movie')"
+        [attr.aria-selected]="activeTab() === 'movie'"
+      >
+        Movies
+      </button>
+      <button
+        role="tab"
+        class="discover-tab"
+        [class.discover-tab--active]="activeTab() === 'tv'"
+        (click)="setTab('tv')"
+        [attr.aria-selected]="activeTab() === 'tv'"
+      >
+        TV Shows
+      </button>
+    </div>
+
+    @if (activeTab() === 'movie') {
+
     <div class="discover-filters">
       <div class="discover-filters__genres">
         @for (genre of genreList(); track genre.id) {
@@ -198,5 +221,64 @@
         }
       }
     </section>
+
+    } @else {
+
+    <section class="discover-page__section">
+      <h2 class="discover-page__section-title">Trending TV This Week</h2>
+
+      @if (tmdbService.trendingTvLoading() && tmdbService.trendingTv().length === 0) {
+        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+      } @else if (tmdbService.trendingTvError()) {
+        <p class="discover-page__error">{{ tmdbService.trendingTvError() }}</p>
+      } @else {
+        <div class="discover-page__grid">
+          @for (show of tmdbService.trendingTv(); track show.tmdbId) {
+            <app-tmdb-card [movie]="show" />
+          }
+        </div>
+        @if (
+          !tmdbService.trendingTvLoading() &&
+          tmdbService.trendingTvPage() < tmdbService.trendingTvTotalPages()
+        ) {
+          <div class="discover-section__load-more">
+            <button class="discover__load-more-btn" (click)="loadMoreTrendingTv()">Load More</button>
+          </div>
+        }
+        @if (tmdbService.trendingTvLoading() && tmdbService.trendingTv().length > 0) {
+          <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
+        }
+      }
+    </section>
+
+    <section class="discover-page__section">
+      <h2 class="discover-page__section-title">Popular TV Shows</h2>
+
+      @if (tmdbService.popularTvLoading() && tmdbService.popularTv().length === 0) {
+        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+      } @else if (tmdbService.popularTvError()) {
+        <p class="discover-page__error">{{ tmdbService.popularTvError() }}</p>
+      } @else {
+        <div class="discover-page__grid">
+          @for (show of tmdbService.popularTv(); track show.tmdbId) {
+            <app-tmdb-card [movie]="show" />
+          }
+        </div>
+        @if (
+          !tmdbService.popularTvLoading() &&
+          tmdbService.popularTvPage() < tmdbService.popularTvTotalPages()
+        ) {
+          <div class="discover-section__load-more">
+            <button class="discover__load-more-btn" (click)="loadMorePopularTv()">Load More</button>
+          </div>
+        }
+        @if (tmdbService.popularTvLoading() && tmdbService.popularTv().length > 0) {
+          <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
+        }
+      }
+    </section>
+
+    }
+
   </div>
 </div>

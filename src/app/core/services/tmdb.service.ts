@@ -12,6 +12,10 @@ import {
   TmdbVideoListResponse,
   TmdbWatchProviderResponse,
   TmdbWatchProviderResult,
+  TmdbTvResult,
+  TmdbTvListResponse,
+  TmdbTvDetail,
+  TmdbTvDetailMapped,
 } from '../../models/tmdb.model';
 
 @Injectable({ providedIn: 'root' })
@@ -55,6 +59,24 @@ export class TmdbService {
 
   similar = signal<TmdbMovie[]>([]);
   similarLoading = signal(false);
+
+  trendingTv = signal<TmdbMovie[]>([]);
+  trendingTvLoading = signal(false);
+  trendingTvError = signal<string | null>(null);
+  trendingTvPage = signal(1);
+  trendingTvTotalPages = signal(1);
+
+  popularTv = signal<TmdbMovie[]>([]);
+  popularTvLoading = signal(false);
+  popularTvError = signal<string | null>(null);
+  popularTvPage = signal(1);
+  popularTvTotalPages = signal(1);
+
+  tvGenres = signal<Map<number, string>>(new Map());
+
+  tvDetail = signal<TmdbTvDetailMapped | null>(null);
+  tvDetailLoading = signal(false);
+  tvDetailError = signal<string | null>(null);
 
   topRated = signal<TmdbMovie[]>([]);
   topRatedLoading = signal(false);
@@ -310,6 +332,114 @@ export class TmdbService {
     if (next <= this.nowPlayingTotalPages()) this.fetchNowPlaying(next);
   }
 
+  fetchTvGenres(): void {
+    this.http
+      .get<TmdbGenreListResponse>(`${this.base}/genre/tv/list`, {
+        params: this.params(),
+      })
+      .subscribe({
+        next: (res) => {
+          const map = new Map<number, string>();
+          res.genres.forEach((g) => map.set(g.id, g.name));
+          this.tvGenres.set(map);
+        },
+        error: () => {},
+      });
+  }
+
+  fetchTrendingTv(page = 1): void {
+    this.trendingTvLoading.set(true);
+    this.trendingTvError.set(null);
+    this.http
+      .get<TmdbTvListResponse>(`${this.base}/trending/tv/week`, {
+        params: this.params({ page: String(page) }),
+      })
+      .subscribe({
+        next: (res) => {
+          const mapped = res.results.map((r) => this.mapTv(r));
+          this.trendingTv.update((prev) => (page === 1 ? mapped : [...prev, ...mapped]));
+          this.trendingTvPage.set(page);
+          this.trendingTvTotalPages.set(res.total_pages);
+          this.trendingTvLoading.set(false);
+        },
+        error: () => {
+          this.trendingTvError.set('Failed to load trending shows.');
+          this.trendingTvLoading.set(false);
+        },
+      });
+  }
+
+  loadMoreTrendingTv(): void {
+    const next = this.trendingTvPage() + 1;
+    if (next <= this.trendingTvTotalPages()) this.fetchTrendingTv(next);
+  }
+
+  fetchPopularTv(page = 1): void {
+    this.popularTvLoading.set(true);
+    this.popularTvError.set(null);
+    this.http
+      .get<TmdbTvListResponse>(`${this.base}/tv/popular`, {
+        params: this.params({ page: String(page) }),
+      })
+      .subscribe({
+        next: (res) => {
+          const mapped = res.results.map((r) => this.mapTv(r));
+          this.popularTv.update((prev) => (page === 1 ? mapped : [...prev, ...mapped]));
+          this.popularTvPage.set(page);
+          this.popularTvTotalPages.set(res.total_pages);
+          this.popularTvLoading.set(false);
+        },
+        error: () => {
+          this.popularTvError.set('Failed to load popular shows.');
+          this.popularTvLoading.set(false);
+        },
+      });
+  }
+
+  loadMorePopularTv(): void {
+    const next = this.popularTvPage() + 1;
+    if (next <= this.popularTvTotalPages()) this.fetchPopularTv(next);
+  }
+
+  fetchTvWatchProviders(tmdbId: number): void {
+    this.watchProviders.set(null);
+    this.watchProvidersLoading.set(true);
+    this.http
+      .get<TmdbWatchProviderResponse>(`${this.base}/tv/${tmdbId}/watch/providers`, {
+        params: this.params(),
+      })
+      .subscribe({
+        next: (res) => {
+          this.watchProviders.set(res.results[this.watchCountry] ?? null);
+          this.watchProvidersLoading.set(false);
+        },
+        error: () => {
+          this.watchProviders.set(null);
+          this.watchProvidersLoading.set(false);
+        },
+      });
+  }
+
+  fetchTvDetail(tmdbId: number): void {
+    this.tvDetailLoading.set(true);
+    this.tvDetailError.set(null);
+    this.tvDetail.set(null);
+    this.http
+      .get<TmdbTvDetail>(`${this.base}/tv/${tmdbId}`, {
+        params: this.params({ append_to_response: 'credits' }),
+      })
+      .subscribe({
+        next: (res) => {
+          this.tvDetail.set(this.mapTvDetail(res));
+          this.tvDetailLoading.set(false);
+        },
+        error: () => {
+          this.tvDetailError.set('Failed to load show details.');
+          this.tvDetailLoading.set(false);
+        },
+      });
+  }
+
   fetchDiscover(params: { genreIds?: number[]; sortBy?: string }, page = 1): void {
     this.discoverLoading.set(true);
     this.discoverError.set(null);
@@ -365,6 +495,69 @@ export class TmdbService {
         .map((id) => this.genres().get(id))
         .filter((name): name is string => !!name)
         .slice(0, 2),
+      mediaType: 'movie',
+    };
+  }
+
+  private mapTv(r: TmdbTvResult): TmdbMovie {
+    return {
+      tmdbId: r.id,
+      title: r.name,
+      year: r.first_air_date ? r.first_air_date.substring(0, 4) : '',
+      poster: this.imageUrl(r.poster_path, 'w342'),
+      backdrop: this.imageUrl(r.backdrop_path, 'w780'),
+      rating: r.vote_average.toFixed(1),
+      overview: r.overview,
+      genres: (r.genre_ids ?? [])
+        .map((id) => this.tvGenres().get(id))
+        .filter((name): name is string => !!name)
+        .slice(0, 2),
+      mediaType: 'tv',
+    };
+  }
+
+  private mapTvDetail(r: TmdbTvDetail): TmdbTvDetailMapped {
+    const credits = r.credits;
+
+    const cast: TmdbCastMemberMapped[] = (credits?.cast ?? [])
+      .sort((a, b) => a.order - b.order)
+      .slice(0, 8)
+      .map((c) => ({
+        id: c.id,
+        name: c.name,
+        character: c.character,
+        photo: this.imageUrl(c.profile_path, 'w185'),
+      }));
+
+    const directors = (credits?.crew ?? [])
+      .filter((c) => c.job === 'Director')
+      .map((c) => c.name)
+      .join(', ');
+
+    const writers = (credits?.crew ?? [])
+      .filter((c) => c.job === 'Screenplay' || c.job === 'Writer' || c.job === 'Story')
+      .map((c) => c.name)
+      .filter((name, i, arr) => arr.indexOf(name) === i)
+      .join(', ');
+
+    return {
+      tmdbId: r.id,
+      title: r.name,
+      year: r.first_air_date ? r.first_air_date.substring(0, 4) : '',
+      poster: this.imageUrl(r.poster_path, 'w342'),
+      backdrop: this.imageUrl(r.backdrop_path, 'w1280'),
+      rating: r.vote_average.toFixed(1),
+      overview: r.overview,
+      genres: r.genres.map((g) => g.name).join(', '),
+      tagline: r.tagline,
+      status: r.status,
+      language: r.original_language.toUpperCase(),
+      seasons: r.number_of_seasons,
+      episodes: r.number_of_episodes,
+      runtime: r.episode_run_time.length ? `${r.episode_run_time[0]} min / ep` : 'N/A',
+      cast,
+      directors,
+      writers,
     };
   }
 
