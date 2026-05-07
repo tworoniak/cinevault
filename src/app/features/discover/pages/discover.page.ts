@@ -60,4 +60,11 @@ export class DiscoverPage {
     this.sortBy.set('popularity.desc');
     this.tmdbService.discoverResults.set([]);
   }
+
+  loadMoreTrending = () => this.tmdbService.loadMoreTrending();
+  loadMorePopular = () => this.tmdbService.loadMorePopular();
+  loadMoreTopRated = () => this.tmdbService.loadMoreTopRated();
+  loadMoreNowPlaying = () => this.tmdbService.loadMoreNowPlaying();
+  loadMoreUpcoming = () => this.tmdbService.loadMoreUpcoming();
+  loadMoreDiscover = () => this.tmdbService.loadMoreDiscover();
 }

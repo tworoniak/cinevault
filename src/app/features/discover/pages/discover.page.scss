@@ -105,6 +105,31 @@
   }
 }
 
+.discover-section__load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--cv-space-5);
+}
+
+.discover__load-more-btn {
+  padding: var(--cv-space-3) var(--cv-space-7);
+  background: transparent;
+  border: 1px solid var(--cv-border);
+  color: var(--cv-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--cv-radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--cv-accent);
+      color: var(--cv-accent);
+    }
+  }
+}
+
 .discover-filters__clear {
   font-size: 0.8125rem;
   color: var(--cv-text-muted);

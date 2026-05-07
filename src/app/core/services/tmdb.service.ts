@@ -24,10 +24,14 @@ export class TmdbService {
   trending = signal<TmdbMovie[]>([]);
   trendingLoading = signal(false);
   trendingError = signal<string | null>(null);
+  trendingPage = signal(1);
+  trendingTotalPages = signal(1);
 
   popular = signal<TmdbMovie[]>([]);
   popularLoading = signal(false);
   popularError = signal<string | null>(null);
+  popularPage = signal(1);
+  popularTotalPages = signal(1);
 
   genres = signal<Map<number, string>>(new Map());
 
@@ -41,6 +45,9 @@ export class TmdbService {
   discoverResults = signal<TmdbMovie[]>([]);
   discoverLoading = signal(false);
   discoverError = signal<string | null>(null);
+  discoverPage = signal(1);
+  discoverTotalPages = signal(1);
+  private lastDiscoverParams: { genreIds?: number[]; sortBy?: string } = {};
 
   readonly watchCountry = 'CA';
   watchProviders = signal<TmdbWatchProviderResult | null>(null);
@@ -52,14 +59,20 @@ export class TmdbService {
   topRated = signal<TmdbMovie[]>([]);
   topRatedLoading = signal(false);
   topRatedError = signal<string | null>(null);
+  topRatedPage = signal(1);
+  topRatedTotalPages = signal(1);
 
   upcoming = signal<TmdbMovie[]>([]);
   upcomingLoading = signal(false);
   upcomingError = signal<string | null>(null);
+  upcomingPage = signal(1);
+  upcomingTotalPages = signal(1);
 
   nowPlaying = signal<TmdbMovie[]>([]);
   nowPlayingLoading = signal(false);
   nowPlayingError = signal<string | null>(null);
+  nowPlayingPage = signal(1);
+  nowPlayingTotalPages = signal(1);
 
   imageUrl(path: string | null, size: string): string {
     if (!path) return '';
@@ -81,16 +94,19 @@ export class TmdbService {
       });
   }
 
-  fetchTrending(): void {
+  fetchTrending(page = 1): void {
     this.trendingLoading.set(true);
     this.trendingError.set(null);
     this.http
       .get<TmdbMovieListResponse>(`${this.base}/trending/movie/week`, {
-        params: this.params(),
+        params: this.params({ page: String(page) }),
       })
       .subscribe({
         next: (res) => {
-          this.trending.set(res.results.map((r) => this.mapMovie(r)));
+          const mapped = res.results.map((r) => this.mapMovie(r));
+          this.trending.update((prev) => (page === 1 ? mapped : [...prev, ...mapped]));
+          this.trendingPage.set(page);
+          this.trendingTotalPages.set(res.total_pages);
           this.trendingLoading.set(false);
         },
         error: () => {
@@ -100,16 +116,24 @@ export class TmdbService {
       });
   }
 
-  fetchPopular(): void {
+  loadMoreTrending(): void {
+    const next = this.trendingPage() + 1;
+    if (next <= this.trendingTotalPages()) this.fetchTrending(next);
+  }
+
+  fetchPopular(page = 1): void {
     this.popularLoading.set(true);
     this.popularError.set(null);
     this.http
       .get<TmdbMovieListResponse>(`${this.base}/movie/popular`, {
-        params: this.params({ page: '1' }),
+        params: this.params({ page: String(page) }),
       })
       .subscribe({
         next: (res) => {
-          this.popular.set(res.results.map((r) => this.mapMovie(r)));
+          const mapped = res.results.map((r) => this.mapMovie(r));
+          this.popular.update((prev) => (page === 1 ? mapped : [...prev, ...mapped]));
+          this.popularPage.set(page);
+          this.popularTotalPages.set(res.total_pages);
           this.popularLoading.set(false);
         },
         error: () => {
@@ -117,6 +141,11 @@ export class TmdbService {
           this.popularLoading.set(false);
         },
       });
+  }
+
+  loadMorePopular(): void {
+    const next = this.popularPage() + 1;
+    if (next <= this.popularTotalPages()) this.fetchPopular(next);
   }
 
   fetchMovieDetail(tmdbId: number): void {
@@ -200,16 +229,19 @@ export class TmdbService {
       });
   }
 
-  fetchTopRated(): void {
+  fetchTopRated(page = 1): void {
     this.topRatedLoading.set(true);
     this.topRatedError.set(null);
     this.http
       .get<TmdbMovieListResponse>(`${this.base}/movie/top_rated`, {
-        params: this.params({ page: '1' }),
+        params: this.params({ page: String(page) }),
       })
       .subscribe({
         next: (res) => {
-          this.topRated.set(res.results.map((r) => this.mapMovie(r)));
+          const mapped = res.results.map((r) => this.mapMovie(r));
+          this.topRated.update((prev) => (page === 1 ? mapped : [...prev, ...mapped]));
+          this.topRatedPage.set(page);
+          this.topRatedTotalPages.set(res.total_pages);
           this.topRatedLoading.set(false);
         },
         error: () => {
@@ -219,16 +251,24 @@ export class TmdbService {
       });
   }
 
-  fetchUpcoming(): void {
+  loadMoreTopRated(): void {
+    const next = this.topRatedPage() + 1;
+    if (next <= this.topRatedTotalPages()) this.fetchTopRated(next);
+  }
+
+  fetchUpcoming(page = 1): void {
     this.upcomingLoading.set(true);
     this.upcomingError.set(null);
     this.http
       .get<TmdbMovieListResponse>(`${this.base}/movie/upcoming`, {
-        params: this.params({ page: '1' }),
+        params: this.params({ page: String(page) }),
       })
       .subscribe({
         next: (res) => {
-          this.upcoming.set(res.results.map((r) => this.mapMovie(r)));
+          const mapped = res.results.map((r) => this.mapMovie(r));
+          this.upcoming.update((prev) => (page === 1 ? mapped : [...prev, ...mapped]));
+          this.upcomingPage.set(page);
+          this.upcomingTotalPages.set(res.total_pages);
           this.upcomingLoading.set(false);
         },
         error: () => {
@@ -238,16 +278,24 @@ export class TmdbService {
       });
   }
 
-  fetchNowPlaying(): void {
+  loadMoreUpcoming(): void {
+    const next = this.upcomingPage() + 1;
+    if (next <= this.upcomingTotalPages()) this.fetchUpcoming(next);
+  }
+
+  fetchNowPlaying(page = 1): void {
     this.nowPlayingLoading.set(true);
     this.nowPlayingError.set(null);
     this.http
       .get<TmdbMovieListResponse>(`${this.base}/movie/now_playing`, {
-        params: this.params({ page: '1' }),
+        params: this.params({ page: String(page) }),
       })
       .subscribe({
         next: (res) => {
-          this.nowPlaying.set(res.results.map((r) => this.mapMovie(r)));
+          const mapped = res.results.map((r) => this.mapMovie(r));
+          this.nowPlaying.update((prev) => (page === 1 ? mapped : [...prev, ...mapped]));
+          this.nowPlayingPage.set(page);
+          this.nowPlayingTotalPages.set(res.total_pages);
           this.nowPlayingLoading.set(false);
         },
         error: () => {
@@ -257,13 +305,19 @@ export class TmdbService {
       });
   }
 
-  fetchDiscover(params: { genreIds?: number[]; sortBy?: string }): void {
+  loadMoreNowPlaying(): void {
+    const next = this.nowPlayingPage() + 1;
+    if (next <= this.nowPlayingTotalPages()) this.fetchNowPlaying(next);
+  }
+
+  fetchDiscover(params: { genreIds?: number[]; sortBy?: string }, page = 1): void {
     this.discoverLoading.set(true);
     this.discoverError.set(null);
+    if (page === 1) this.lastDiscoverParams = params;
 
     const extra: Record<string, string> = {
       sort_by: params.sortBy ?? 'popularity.desc',
-      page: '1',
+      page: String(page),
     };
     if (params.genreIds?.length) {
       extra['with_genres'] = params.genreIds.join(',');
@@ -275,7 +329,10 @@ export class TmdbService {
       })
       .subscribe({
         next: (res) => {
-          this.discoverResults.set(res.results.map((r) => this.mapMovie(r)));
+          const mapped = res.results.map((r) => this.mapMovie(r));
+          this.discoverResults.update((prev) => (page === 1 ? mapped : [...prev, ...mapped]));
+          this.discoverPage.set(page);
+          this.discoverTotalPages.set(res.total_pages);
           this.discoverLoading.set(false);
         },
         error: () => {
@@ -283,6 +340,11 @@ export class TmdbService {
           this.discoverLoading.set(false);
         },
       });
+  }
+
+  loadMoreDiscover(): void {
+    const next = this.discoverPage() + 1;
+    if (next <= this.discoverTotalPages()) this.fetchDiscover(this.lastDiscoverParams, next);
   }
 
   private params(extra: Record<string, string> = {}): HttpParams {
