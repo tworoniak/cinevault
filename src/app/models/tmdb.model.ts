@@ -83,6 +83,62 @@ export interface TmdbMovieDetail {
   credits?: TmdbCredits;
 }
 
+export interface TmdbTvResult {
+  id: number;
+  name: string;
+  first_air_date: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  overview: string;
+  genre_ids: number[];
+}
+
+export interface TmdbTvListResponse {
+  page: number;
+  results: TmdbTvResult[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface TmdbTvDetail {
+  id: number;
+  name: string;
+  first_air_date: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  overview: string;
+  tagline: string;
+  status: string;
+  original_language: string;
+  number_of_seasons: number;
+  number_of_episodes: number;
+  genres: { id: number; name: string }[];
+  episode_run_time: number[];
+  credits?: TmdbCredits;
+}
+
+export interface TmdbTvDetailMapped {
+  tmdbId: number;
+  title: string;
+  year: string;
+  poster: string;
+  backdrop: string;
+  rating: string;
+  overview: string;
+  genres: string;
+  tagline: string;
+  status: string;
+  language: string;
+  seasons: number;
+  episodes: number;
+  runtime: string;
+  cast: TmdbCastMemberMapped[];
+  directors: string;
+  writers: string;
+}
+
 // App-level mapped types
 export interface TmdbMovie {
   tmdbId: number;
@@ -94,6 +150,7 @@ export interface TmdbMovie {
   rating: string;
   overview: string;
   genres?: string[];
+  mediaType?: 'movie' | 'tv';
 }
 
 export interface TmdbVideo {

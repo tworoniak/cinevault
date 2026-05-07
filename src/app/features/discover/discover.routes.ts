@@ -11,4 +11,9 @@ export const DISCOVER_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/discover-detail.page').then((m) => m.DiscoverDetailPage),
   },
+  {
+    path: 'tv/:tmdbId',
+    loadComponent: () =>
+      import('./pages/discover-tv-detail.page').then((m) => m.DiscoverTvDetailPage),
+  },
 ];

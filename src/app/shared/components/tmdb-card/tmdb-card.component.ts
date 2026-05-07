@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TmdbMovie } from '../../../models/tmdb.model';
 
@@ -12,4 +12,11 @@ import { TmdbMovie } from '../../../models/tmdb.model';
 export class TmdbCardComponent {
   movie = input.required<TmdbMovie>();
   posterError = signal(false);
+
+  detailRoute = computed(() => {
+    const m = this.movie();
+    return m.mediaType === 'tv'
+      ? ['/discover', 'tv', String(m.tmdbId)]
+      : ['/discover', 'movie', String(m.tmdbId)];
+  });
 }
