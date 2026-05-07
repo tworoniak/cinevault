@@ -1,6 +1,6 @@
 <div class="cv-page">
   <div class="cv-container">
-    <a class="person-detail__back" routerLink="/discover">← Back</a>
+    <button class="person-detail__back" (click)="location.back()">← Back</button>
 
     @if (tmdbService.personDetailLoading()) {
       <div class="person-detail__spinner" role="status" aria-label="Loading"></div>

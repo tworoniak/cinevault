@@ -2,11 +2,31 @@
 
 ## Status
 
-Not Started
+In Progress
 
-## Goals
+## Feature 24 — UI & Accessibility Fixes (High/Medium)
 
-## Notes
+### Goals
+
+1. **Fix double horizontal padding** on `/movies`, `/watchlist`, `/dashboard` — `.cv-container` + `.cv-page` on the same root element produces 48 px inset per side instead of 24 px; remove horizontal padding from `.cv-page` or stop co-locating the two classes
+2. **Hero arrow tap targets** — increase `.hero__nav-arrow` to `min-width: 44px; min-height: 44px` on mobile (currently ~24×28 px)
+3. **Carousel buttons keyboard-inaccessible** — `.carousel__btn` is `display: none` outside hover+desktop but stays in the DOM tab order; add `aria-hidden="true"` and `tabindex="-1"` to both buttons
+4. **Missing `:focus-visible` styles site-wide** — add `outline: 2px solid var(--cv-accent); outline-offset: 2px` on `:focus-visible` to every interactive element that currently has none: `TmdbCardComponent`, `MovieCardComponent`, hero CTAs + arrow + dot buttons, carousel buttons, Load More buttons, genre pills, Clear Filters button, Back links, bio toggle, cast links
+5. **Mobile nav focus management** — on hamburger open, move focus to first link inside `#mobile-menu`; on close, return focus to the hamburger button
+6. **Hero "In Watchlist" `<span>`** — replace with `<button disabled aria-label="Already in watchlist">` so the state is keyboard-reachable and semantically correct
+7. **Sort `<select>` missing label** — add `<label for="discover-sort" class="sr-only">Sort by</label>` and `id="discover-sort"` on the select element in `discover.page.html`
+8. **Back link tap targets on detail pages** — increase padding on `.discover-detail__back` and `.person-detail__back` to at least `padding: var(--cv-space-3) var(--cv-space-2)` (~36 px height)
+9. **Person detail "Back" returns to wrong tab** — replace hardcoded `routerLink="/discover"` with `Location.back()` so TV-tab arrivals return to the TV tab
+10. **Font sizes below readable threshold** — raise `.detail-page__cast-character` from `0.7rem` → `0.75rem`; raise `.tmdb-card__genre` pills from `0.625rem` → `0.6875rem`
+11. **Search input `outline: none` fallback** — remove `outline: none` from the base `.search-page__input` rule; use a `:focus` border-color change as fallback so older browsers without `:focus-visible` still show a visible state
+
+### Notes
+
+- All issues sourced from `context/ui/` review files (2026-05-07 static analysis)
+- Issue severity reference: `context/ui/ui-review-overview.md`
+- Start with Issue 1 (double padding) — it's a one-line SCSS fix with the widest visual impact
+- Issue 4 (focus-visible) touches the most files; do it last in the batch so earlier changes don't need re-touching
+- No new signals, services, or routes needed — this is purely HTML/SCSS/minor TS changes
 
 ## History
 

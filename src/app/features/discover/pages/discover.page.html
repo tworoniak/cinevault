@@ -39,7 +39,9 @@
       </div>
 
       <div class="discover-filters__controls">
+        <label for="discover-sort" class="sr-only">Sort by</label>
         <select
+          id="discover-sort"
           class="discover-filters__sort"
           (change)="sortBy.set($any($event.target).value)"
         >

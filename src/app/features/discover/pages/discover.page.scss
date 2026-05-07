@@ -34,6 +34,11 @@
     color: var(--cv-accent);
     border-bottom-color: var(--cv-accent);
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+  }
 }
 
 .discover-page__section {
@@ -111,6 +116,11 @@
       color: var(--cv-text-primary);
     }
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+  }
 }
 
 .discover-filters__controls {
@@ -158,6 +168,11 @@
       color: var(--cv-accent);
     }
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+  }
 }
 
 .discover-filters__clear {
@@ -172,5 +187,11 @@
     &:hover {
       color: var(--cv-text-primary);
     }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+    border-radius: var(--cv-radius-sm);
   }
 }

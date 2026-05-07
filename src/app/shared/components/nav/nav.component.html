@@ -38,7 +38,7 @@
       [class.nav__hamburger--open]="isMenuOpen()"
       (click)="toggleMenu()"
       [attr.aria-expanded]="isMenuOpen()"
-      aria-label="Open navigation menu"
+      [attr.aria-label]="isMenuOpen() ? 'Close navigation menu' : 'Open navigation menu'"
       aria-controls="mobile-menu"
     >
       <span class="nav__hamburger-line"></span>
@@ -62,7 +62,7 @@
       <a routerLink="/watchlist" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
         Watchlist
         @if (watchlistService.watchlist().length > 0) {
-          <span class="nav__badge">{{ watchlistService.watchlist().length }}</span>
+          <span class="nav__badge" [attr.aria-label]="watchlistService.watchlist().length + ' items in watchlist'">{{ watchlistService.watchlist().length }}</span>
         }
       </a>
       <a routerLink="/dashboard" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">

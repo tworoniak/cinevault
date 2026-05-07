@@ -1,5 +1,6 @@
 import { Component, inject, effect, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { TmdbService } from '../../../core/services/tmdb.service';
@@ -8,12 +9,13 @@ import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-car
 @Component({
   selector: 'app-discover-person-detail-page',
   standalone: true,
-  imports: [RouterLink, TmdbCardComponent],
+  imports: [TmdbCardComponent],
   templateUrl: './discover-person-detail.page.html',
   styleUrl: './discover-person-detail.page.scss',
 })
 export class DiscoverPersonDetailPage {
   tmdbService = inject(TmdbService);
+  location = inject(Location);
   private route = inject(ActivatedRoute);
 
   personId = toSignal(

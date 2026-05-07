@@ -32,12 +32,18 @@
   display: inline-block;
   font-size: 0.875rem;
   color: var(--cv-text-muted);
-  padding: var(--cv-space-2) 0;
+  padding: var(--cv-space-3) var(--cv-space-2);
   margin-bottom: var(--cv-space-5);
   transition: color 0.15s ease;
 
   &:hover {
     color: var(--cv-accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+    border-radius: var(--cv-radius-sm);
   }
 }
 
@@ -192,6 +198,11 @@
       background-color: transparent;
     }
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+  }
 }
 
 .trailer-modal__backdrop {
@@ -226,8 +237,8 @@
   color: #fff;
   border: none;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   font-size: 1rem;
   cursor: pointer;
   display: flex;
@@ -236,6 +247,11 @@
 
   &:hover {
     background: rgba(0, 0, 0, 0.85);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
   }
 }
 
@@ -322,7 +338,7 @@
 }
 
 .detail-page__cast-character {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--cv-text-muted);
   line-height: 1.3;
 }
@@ -337,6 +353,12 @@
     &:hover .detail-page__cast-name {
       color: var(--cv-accent);
     }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+    border-radius: var(--cv-radius-sm);
   }
 }
 

@@ -4,11 +4,17 @@
   display: inline-block;
   font-size: 0.875rem;
   color: var(--cv-text-muted);
-  padding: var(--cv-space-2) 0;
+  padding: var(--cv-space-3) var(--cv-space-2);
   margin-bottom: var(--cv-space-5);
   transition: color 0.15s ease;
 
   &:hover { color: var(--cv-accent); }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+    border-radius: var(--cv-radius-sm);
+  }
 }
 
 .person-detail__spinner {
@@ -146,6 +152,12 @@
 
   @media (hover: hover) {
     &:hover { color: var(--cv-accent-hover); }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cv-accent);
+    outline-offset: 2px;
+    border-radius: var(--cv-radius-sm);
   }
 }
 

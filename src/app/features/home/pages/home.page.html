@@ -37,9 +37,9 @@
               View Details
             </a>
             @if (isHeroInWatchlist()) {
-              <span class="hero__btn hero__btn--outline hero__btn--in-list">
+              <button class="hero__btn hero__btn--outline hero__btn--in-list" disabled aria-label="Already in watchlist">
                 In Watchlist
-              </span>
+              </button>
             } @else {
               <button class="hero__btn hero__btn--outline" (click)="addHeroToWatchlist()">
                 + Watchlist
