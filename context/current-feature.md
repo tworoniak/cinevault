@@ -153,3 +153,11 @@ Not Started
 - Genre pill row + sort dropdown (Most Popular / Highest Rated / Newest First / Highest Grossing) rendered above Trending/Popular grids
 - "Browse Results" section appears above grids when any filter is active; hidden entirely when cleared
 - `--cv-accent-rgb: 230, 168, 23` CSS variable added to `_variables.scss` for the semi-transparent active pill background
+
+### Feature 18 — Similar Movies on Detail Page
+
+- `similar` signal + `similarLoading` signal + `fetchSimilar(tmdbId)` method added to `TmdbService` using TMDB `/movie/:id/recommendations` endpoint; slices to 8 results
+- `fetchSimilar()` called alongside other fetches in `DiscoverDetailPage`'s route effect; `similar` reset to `[]` on each call to prevent stale flash
+- `TmdbCardComponent` added to `DiscoverDetailPage` imports — no card changes needed
+- "More Like This" section added to `discover-detail.page.html` below Where to Watch, guarded by `@if (tmdbService.similar().length)`
+- Grid layout on desktop (auto-fill `minmax(140px, 1fr)`); horizontal scroll on mobile (<480px) with hidden scrollbar
