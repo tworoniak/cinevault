@@ -1,12 +1,27 @@
-# Current Feature
+# Current Feature — Feature 19: Additional Discover Sections
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Add three new movie grid sections to the Discover page: **Top Rated**, **Upcoming**, and **Now Playing**
+- All three use the same `TmdbMovieListResponse` shape as the existing trending/popular grids — zero new model work
+- Top Rated and Now Playing sections display immediately on page load alongside existing grids
+- Upcoming section shows each film's release date on the card
+
 ## Notes
+
+- No new model interfaces needed — all three endpoints return `TmdbMovieListResponse`
+- The `upcoming` endpoint returns films with a future `release_date`; consider adding `releaseDate?: string` to `TmdbMovie` mapped from `release_date` in `mapMovie()`
+- "Coming Soon" is used as the section heading instead of "Upcoming"
+- Implement Top Rated first (least ambiguous data), then Now Playing, then Upcoming
+- These sections add five new HTTP requests on Discover page load — monitor for performance impact
+
+## Branch
+
+`feature/additional-discover-sections`
 
 ## History
 

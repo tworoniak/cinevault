@@ -36,6 +36,9 @@ export class DiscoverPage {
     this.tmdbService.fetchGenres();
     this.tmdbService.fetchTrending();
     this.tmdbService.fetchPopular();
+    this.tmdbService.fetchTopRated();
+    this.tmdbService.fetchNowPlaying();
+    this.tmdbService.fetchUpcoming();
 
     effect(() => {
       const genres = this.selectedGenres();

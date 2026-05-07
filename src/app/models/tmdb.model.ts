@@ -88,6 +88,7 @@ export interface TmdbMovie {
   tmdbId: number;
   title: string;
   year: string;
+  releaseDate?: string;
   poster: string;
   backdrop: string;
   rating: string;

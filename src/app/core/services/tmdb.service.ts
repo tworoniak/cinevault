@@ -49,6 +49,18 @@ export class TmdbService {
   similar = signal<TmdbMovie[]>([]);
   similarLoading = signal(false);
 
+  topRated = signal<TmdbMovie[]>([]);
+  topRatedLoading = signal(false);
+  topRatedError = signal<string | null>(null);
+
+  upcoming = signal<TmdbMovie[]>([]);
+  upcomingLoading = signal(false);
+  upcomingError = signal<string | null>(null);
+
+  nowPlaying = signal<TmdbMovie[]>([]);
+  nowPlayingLoading = signal(false);
+  nowPlayingError = signal<string | null>(null);
+
   imageUrl(path: string | null, size: string): string {
     if (!path) return '';
     return `${this.imageBase}/${size}${path}`;
@@ -188,6 +200,63 @@ export class TmdbService {
       });
   }
 
+  fetchTopRated(): void {
+    this.topRatedLoading.set(true);
+    this.topRatedError.set(null);
+    this.http
+      .get<TmdbMovieListResponse>(`${this.base}/movie/top_rated`, {
+        params: this.params({ page: '1' }),
+      })
+      .subscribe({
+        next: (res) => {
+          this.topRated.set(res.results.map((r) => this.mapMovie(r)));
+          this.topRatedLoading.set(false);
+        },
+        error: () => {
+          this.topRatedError.set('Failed to load top rated movies.');
+          this.topRatedLoading.set(false);
+        },
+      });
+  }
+
+  fetchUpcoming(): void {
+    this.upcomingLoading.set(true);
+    this.upcomingError.set(null);
+    this.http
+      .get<TmdbMovieListResponse>(`${this.base}/movie/upcoming`, {
+        params: this.params({ page: '1' }),
+      })
+      .subscribe({
+        next: (res) => {
+          this.upcoming.set(res.results.map((r) => this.mapMovie(r)));
+          this.upcomingLoading.set(false);
+        },
+        error: () => {
+          this.upcomingError.set('Failed to load upcoming movies.');
+          this.upcomingLoading.set(false);
+        },
+      });
+  }
+
+  fetchNowPlaying(): void {
+    this.nowPlayingLoading.set(true);
+    this.nowPlayingError.set(null);
+    this.http
+      .get<TmdbMovieListResponse>(`${this.base}/movie/now_playing`, {
+        params: this.params({ page: '1' }),
+      })
+      .subscribe({
+        next: (res) => {
+          this.nowPlaying.set(res.results.map((r) => this.mapMovie(r)));
+          this.nowPlayingLoading.set(false);
+        },
+        error: () => {
+          this.nowPlayingError.set('Failed to load now playing movies.');
+          this.nowPlayingLoading.set(false);
+        },
+      });
+  }
+
   fetchDiscover(params: { genreIds?: number[]; sortBy?: string }): void {
     this.discoverLoading.set(true);
     this.discoverError.set(null);
@@ -225,6 +294,7 @@ export class TmdbService {
       tmdbId: r.id,
       title: r.title,
       year: r.release_date ? r.release_date.substring(0, 4) : '',
+      releaseDate: r.release_date || undefined,
       poster: this.imageUrl(r.poster_path, 'w342'),
       backdrop: this.imageUrl(r.backdrop_path, 'w780'),
       rating: r.vote_average.toFixed(1),

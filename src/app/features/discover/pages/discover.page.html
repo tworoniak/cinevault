@@ -84,5 +84,53 @@
         </div>
       }
     </section>
+
+    <section class="discover-page__section">
+      <h2 class="discover-page__section-title">Top Rated</h2>
+
+      @if (tmdbService.topRatedLoading()) {
+        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+      } @else if (tmdbService.topRatedError()) {
+        <p class="discover-page__error">{{ tmdbService.topRatedError() }}</p>
+      } @else {
+        <div class="discover-page__grid">
+          @for (movie of tmdbService.topRated(); track movie.tmdbId) {
+            <app-tmdb-card [movie]="movie" />
+          }
+        </div>
+      }
+    </section>
+
+    <section class="discover-page__section">
+      <h2 class="discover-page__section-title">Now Playing</h2>
+
+      @if (tmdbService.nowPlayingLoading()) {
+        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+      } @else if (tmdbService.nowPlayingError()) {
+        <p class="discover-page__error">{{ tmdbService.nowPlayingError() }}</p>
+      } @else {
+        <div class="discover-page__grid">
+          @for (movie of tmdbService.nowPlaying(); track movie.tmdbId) {
+            <app-tmdb-card [movie]="movie" />
+          }
+        </div>
+      }
+    </section>
+
+    <section class="discover-page__section">
+      <h2 class="discover-page__section-title">Coming Soon</h2>
+
+      @if (tmdbService.upcomingLoading()) {
+        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+      } @else if (tmdbService.upcomingError()) {
+        <p class="discover-page__error">{{ tmdbService.upcomingError() }}</p>
+      } @else {
+        <div class="discover-page__grid">
+          @for (movie of tmdbService.upcoming(); track movie.tmdbId) {
+            <app-tmdb-card [movie]="movie" />
+          }
+        </div>
+      }
+    </section>
   </div>
 </div>
