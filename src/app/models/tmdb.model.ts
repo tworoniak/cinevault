@@ -218,6 +218,46 @@ export interface TmdbPersonMovieCreditsResponse {
   cast: TmdbPersonMovieCredit[];
 }
 
+export interface TmdbTrendingAllResult {
+  id: number;
+  media_type: 'movie' | 'tv' | 'person';
+  title?: string;
+  name?: string;
+  release_date?: string;
+  first_air_date?: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  overview: string;
+  genre_ids: number[];
+}
+
+export interface TmdbTrendingAllResponse {
+  page: number;
+  results: TmdbTrendingAllResult[];
+  total_pages: number;
+}
+
+export interface TmdbPersonPopularKnownFor {
+  id: number;
+  title?: string;
+  name?: string;
+  media_type: 'movie' | 'tv' | 'person';
+}
+
+export interface TmdbPersonPopular {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  known_for_department: string;
+  known_for: TmdbPersonPopularKnownFor[];
+}
+
+export interface TmdbPersonPopularResponse {
+  results: TmdbPersonPopular[];
+  total_pages: number;
+}
+
 export interface TmdbMovieDetailMapped {
   tmdbId: number;
   imdbId: string | null;

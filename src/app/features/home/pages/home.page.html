@@ -1,0 +1,190 @@
+<!-- Hero Banner -->
+@if (tmdbService.trendingAllLoading() && !currentHero()) {
+  <div class="hero hero--loading">
+    <div class="hero__spinner"></div>
+  </div>
+}
+
+@if (currentHero(); as hero) {
+  <section
+    class="hero"
+    [style.backgroundImage]="'url(' + hero.backdrop + ')'"
+    aria-label="Featured: {{ hero.title }}"
+  >
+    <div class="hero__overlay">
+      <div class="cv-container">
+        <div class="hero__content">
+          <div class="hero__meta">
+            <span class="hero__badge">{{ hero.mediaType === 'tv' ? 'TV' : 'Movie' }}</span>
+            <span class="hero__year">{{ hero.year }}</span>
+            <span class="hero__rating">★ {{ hero.rating }}</span>
+          </div>
+
+          <h1 class="hero__title">{{ hero.title }}</h1>
+
+          @if (hero.genres?.length) {
+            <ul class="hero__genres" aria-label="Genres">
+              @for (genre of hero.genres; track genre) {
+                <li class="hero__genre">{{ genre }}</li>
+              }
+            </ul>
+          }
+
+          <p class="hero__overview">{{ hero.overview }}</p>
+
+          <div class="hero__actions">
+            <a class="hero__btn hero__btn--primary" [routerLink]="heroDetailRoute()">
+              View Details
+            </a>
+            @if (isHeroInWatchlist()) {
+              <span class="hero__btn hero__btn--outline hero__btn--in-list">
+                In Watchlist
+              </span>
+            } @else {
+              <button class="hero__btn hero__btn--outline" (click)="addHeroToWatchlist()">
+                + Watchlist
+              </button>
+            }
+          </div>
+
+          <div class="hero__nav" aria-label="Hero navigation">
+            <button class="hero__nav-arrow" (click)="prevHero()" aria-label="Previous">‹</button>
+            @for (h of heroes(); track h.tmdbId; let i = $index) {
+              <button
+                class="hero__dot"
+                [class.hero__dot--active]="i === heroIndex()"
+                (click)="setHeroIndex(i)"
+                [attr.aria-label]="'Show ' + h.title"
+                [attr.aria-current]="i === heroIndex() ? 'true' : null"
+              ></button>
+            }
+            <button class="hero__nav-arrow" (click)="nextHero()" aria-label="Next">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+}
+
+<!-- Sections -->
+<div class="home__sections">
+
+  <!-- Trending This Week -->
+  <app-horizontal-carousel title="Trending This Week" [seeAllRoute]="['/discover']">
+    <div carousel-tabs class="home__tabs">
+      <button
+        class="home__tab"
+        [class.home__tab--active]="trendingTab() === 'all'"
+        (click)="trendingTab.set('all')"
+      >All</button>
+      <button
+        class="home__tab"
+        [class.home__tab--active]="trendingTab() === 'movie'"
+        (click)="trendingTab.set('movie')"
+      >Movies</button>
+      <button
+        class="home__tab"
+        [class.home__tab--active]="trendingTab() === 'tv'"
+        (click)="trendingTab.set('tv')"
+      >TV</button>
+    </div>
+    @for (movie of filteredTrending(); track movie.tmdbId) {
+      <div class="home__card-wrap">
+        <app-tmdb-card [movie]="movie" />
+      </div>
+    }
+  </app-horizontal-carousel>
+
+  <!-- Popular Celebrities -->
+  <app-horizontal-carousel title="Popular Celebrities">
+    @for (person of tmdbService.popularPeople(); track person.id) {
+      <a
+        class="home__person-card"
+        [routerLink]="['/discover', 'person', person.id]"
+        [attr.aria-label]="person.name"
+      >
+        <div class="home__person-photo-wrap">
+          @if (personPhotoUrl(person.profile_path)) {
+            <img
+              class="home__person-photo"
+              [src]="personPhotoUrl(person.profile_path)"
+              [alt]="person.name"
+              loading="lazy"
+            />
+          } @else {
+            <div class="home__person-silhouette" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </div>
+          }
+        </div>
+        <p class="home__person-name">{{ person.name }}</p>
+        @if (personKnownFor(person)) {
+          <p class="home__person-known-for">{{ personKnownFor(person) }}</p>
+        }
+      </a>
+    }
+  </app-horizontal-carousel>
+
+  <!-- From Your Watchlist -->
+  @if (watchlistService.watchlist().length > 0) {
+    <app-horizontal-carousel title="From Your Watchlist" [seeAllRoute]="['/watchlist']">
+      @for (item of watchlistService.watchlist(); track item.tmdbId) {
+        <div class="home__card-wrap">
+          <app-tmdb-card [movie]="{ tmdbId: item.tmdbId, title: item.title, year: item.year, poster: item.poster, backdrop: '', rating: '', overview: '', mediaType: item.mediaType }" />
+        </div>
+      }
+    </app-horizontal-carousel>
+  }
+
+  <!-- Popular Movies -->
+  <app-horizontal-carousel title="Popular Right Now" [seeAllRoute]="['/discover']">
+    @for (movie of tmdbService.popular(); track movie.tmdbId) {
+      <div class="home__card-wrap">
+        <app-tmdb-card [movie]="movie" />
+      </div>
+    }
+  </app-horizontal-carousel>
+
+  <!-- Popular TV -->
+  <app-horizontal-carousel title="Popular TV Shows" [seeAllRoute]="['/discover']">
+    @for (movie of tmdbService.popularTv(); track movie.tmdbId) {
+      <div class="home__card-wrap">
+        <app-tmdb-card [movie]="movie" />
+      </div>
+    }
+  </app-horizontal-carousel>
+
+  <!-- Now Playing -->
+  <app-horizontal-carousel title="Now Playing in Theaters">
+    @for (movie of tmdbService.nowPlaying(); track movie.tmdbId) {
+      <div class="home__card-wrap">
+        <app-tmdb-card [movie]="movie" />
+      </div>
+    }
+  </app-horizontal-carousel>
+
+  <!-- Coming Soon -->
+  <app-horizontal-carousel title="Coming Soon">
+    @for (movie of tmdbService.upcoming(); track movie.tmdbId) {
+      <div class="home__card-wrap home__card-wrap--with-date">
+        <app-tmdb-card [movie]="movie" />
+        @if (movie.releaseDate) {
+          <span class="home__release-date">{{ movie.releaseDate | date: 'MMM d' }}</span>
+        }
+      </div>
+    }
+  </app-horizontal-carousel>
+
+  <!-- Top Rated -->
+  <app-horizontal-carousel title="Top Rated of All Time">
+    @for (movie of tmdbService.topRated(); track movie.tmdbId) {
+      <div class="home__card-wrap">
+        <app-tmdb-card [movie]="movie" />
+      </div>
+    }
+  </app-horizontal-carousel>
+
+</div>

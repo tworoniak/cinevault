@@ -1,0 +1,105 @@
+@use '../../../../styles/abstracts/mixins' as *;
+
+:host {
+  display: block;
+  padding: var(--cv-space-6) 0;
+}
+
+.carousel__header {
+  @include flex-between;
+  margin-bottom: var(--cv-space-4);
+}
+
+.carousel__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--cv-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--cv-space-3);
+
+  &::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 1.1em;
+    background: var(--cv-accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  @include breakpoint-md {
+    font-size: 1.25rem;
+  }
+}
+
+.carousel__see-all {
+  font-size: 0.875rem;
+  color: var(--cv-accent);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.carousel__wrapper {
+  position: relative;
+}
+
+.carousel__track {
+  display: flex;
+  gap: var(--cv-space-3);
+  overflow-x: auto;
+  padding: var(--cv-space-2) 0;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.carousel__btn {
+  display: none;
+
+  @include breakpoint-md {
+    @media (hover: hover) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--cv-bg-elevated);
+      border: 1px solid var(--cv-border);
+      color: var(--cv-text-primary);
+      cursor: pointer;
+      z-index: 2;
+      transition: background 0.15s, border-color 0.15s;
+
+      &:hover {
+        background: var(--cv-bg-surface);
+        border-color: var(--cv-accent);
+      }
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+.carousel__btn--prev {
+  left: 0;
+}
+
+.carousel__btn--next {
+  right: 0;
+}

@@ -18,6 +18,10 @@ import {
   TmdbTvDetailMapped,
   TmdbPerson,
   TmdbPersonMovieCreditsResponse,
+  TmdbTrendingAllResult,
+  TmdbTrendingAllResponse,
+  TmdbPersonPopular,
+  TmdbPersonPopularResponse,
 } from '../../models/tmdb.model';
 
 @Injectable({ providedIn: 'root' })
@@ -104,6 +108,12 @@ export class TmdbService {
 
   personCredits = signal<TmdbMovie[]>([]);
   personCreditsLoading = signal(false);
+
+  trendingAll = signal<TmdbMovie[]>([]);
+  trendingAllLoading = signal(false);
+
+  popularPeople = signal<TmdbPersonPopular[]>([]);
+  popularPeopleLoading = signal(false);
 
   imageUrl(path: string | null, size: string): string {
     if (!path) return '';
@@ -540,8 +550,78 @@ export class TmdbService {
       });
   }
 
+  fetchTrendingAll(): void {
+    this.trendingAllLoading.set(true);
+    this.http
+      .get<TmdbTrendingAllResponse>(`${this.base}/trending/all/week`, {
+        params: this.params(),
+      })
+      .subscribe({
+        next: (res) => {
+          const mapped = res.results
+            .filter((r) => r.media_type === 'movie' || r.media_type === 'tv')
+            .map((r) => this.mapTrendingAllItem(r));
+          this.trendingAll.set(mapped);
+          this.trendingAllLoading.set(false);
+        },
+        error: () => {
+          this.trendingAllLoading.set(false);
+        },
+      });
+  }
+
+  fetchPopularPeople(): void {
+    this.popularPeopleLoading.set(true);
+    this.http
+      .get<TmdbPersonPopularResponse>(`${this.base}/person/popular`, {
+        params: this.params(),
+      })
+      .subscribe({
+        next: (res) => {
+          this.popularPeople.set(res.results);
+          this.popularPeopleLoading.set(false);
+        },
+        error: () => {
+          this.popularPeopleLoading.set(false);
+        },
+      });
+  }
+
   private params(extra: Record<string, string> = {}): HttpParams {
     return new HttpParams({ fromObject: { api_key: this.apiKey, ...extra } });
+  }
+
+  private mapTrendingAllItem(r: TmdbTrendingAllResult): TmdbMovie {
+    if (r.media_type === 'tv') {
+      return {
+        tmdbId: r.id,
+        title: r.name ?? '',
+        year: r.first_air_date ? r.first_air_date.substring(0, 4) : '',
+        poster: this.imageUrl(r.poster_path, 'w342'),
+        backdrop: this.imageUrl(r.backdrop_path, 'w1280'),
+        rating: r.vote_average.toFixed(1),
+        overview: r.overview,
+        genres: (r.genre_ids ?? [])
+          .map((id) => this.tvGenres().get(id) ?? this.genres().get(id))
+          .filter((name): name is string => !!name)
+          .slice(0, 2),
+        mediaType: 'tv',
+      };
+    }
+    return {
+      tmdbId: r.id,
+      title: r.title ?? '',
+      year: r.release_date ? r.release_date.substring(0, 4) : '',
+      poster: this.imageUrl(r.poster_path, 'w342'),
+      backdrop: this.imageUrl(r.backdrop_path, 'w1280'),
+      rating: r.vote_average.toFixed(1),
+      overview: r.overview,
+      genres: (r.genre_ids ?? [])
+        .map((id) => this.genres().get(id))
+        .filter((name): name is string => !!name)
+        .slice(0, 2),
+      mediaType: 'movie',
+    };
   }
 
   private mapMovie(r: TmdbMovieResult): TmdbMovie {
