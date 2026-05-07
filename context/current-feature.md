@@ -1,25 +1,23 @@
-# Current Feature — Feature 20: Pagination / Load More
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- "Load More" button below each movie grid on the Discover page
-- Clicking it appends the next page of results to the existing list (no full-page reload or scroll jump)
-- Button hidden when already on the last page
-- Button hidden while a fetch is in progress
-- Applies to: Trending, Popular, Top Rated, Now Playing, Upcoming, and Browse (discover filter) results
-
 ## Notes
 
-- Do NOT implement infinite scroll — explicit button is better for focus and accessibility
-- Page state resets to `1` on each initial `fetchX(1)` call (replace vs. append is handled by the `page` param)
-- The initial Discover page load always calls `fetchX(1)` so state is clean on each visit
-- `total_pages` from TMDB can be 500+; cap display if needed but don't need to for this feature
-
 ## History
+
+### Feature 20 — Pagination / Load More
+
+- `trendingPage`, `trendingTotalPages`, `popularPage`, `popularTotalPages`, `topRatedPage`, `topRatedTotalPages`, `upcomingPage`, `upcomingTotalPages`, `nowPlayingPage`, `nowPlayingTotalPages`, `discoverPage`, `discoverTotalPages` signals added to `TmdbService`
+- All 6 `fetch*()` methods updated to accept a `page` param — replaces list on `page === 1`, appends on `page > 1`
+- `loadMoreTrending()`, `loadMorePopular()`, `loadMoreTopRated()`, `loadMoreUpcoming()`, `loadMoreNowPlaying()`, `loadMoreDiscover()` methods added to `TmdbService`; `lastDiscoverParams` stored so `loadMoreDiscover()` re-uses the active filter state
+- 6 `loadMore*` delegate methods added to `DiscoverPage`
+- "Load More" button added after each grid in `discover.page.html`; hidden while loading or on last page; secondary spinner shown while appending
+- Button styles added to `discover.page.scss`: `.discover-section__load-more` (centered flex) + `.discover__load-more-btn` (outlined, accent on hover)
 
 ### Feature 19 — Additional Discover Sections
 
