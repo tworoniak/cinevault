@@ -144,6 +144,20 @@
           </section>
         }
 
+        @if (tmdbService.similar().length) {
+          <section class="detail-page__similar" aria-label="More like this">
+            <h2 class="detail-page__similar-heading">More Like This</h2>
+
+            <ul class="detail-page__similar-list">
+              @for (movie of tmdbService.similar(); track movie.tmdbId) {
+                <li class="detail-page__similar-item">
+                  <app-tmdb-card [movie]="movie" />
+                </li>
+              }
+            </ul>
+          </section>
+        }
+
         @if (providers()) {
           <section class="detail-page__providers" aria-label="Where to watch">
             <h2 class="detail-page__providers-heading">Where to Watch</h2>

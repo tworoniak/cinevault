@@ -46,6 +46,9 @@ export class TmdbService {
   watchProviders = signal<TmdbWatchProviderResult | null>(null);
   watchProvidersLoading = signal(false);
 
+  similar = signal<TmdbMovie[]>([]);
+  similarLoading = signal(false);
+
   imageUrl(path: string | null, size: string): string {
     if (!path) return '';
     return `${this.imageBase}/${size}${path}`;
@@ -162,6 +165,25 @@ export class TmdbService {
         error: () => {
           this.watchProviders.set(null);
           this.watchProvidersLoading.set(false);
+        },
+      });
+  }
+
+  fetchSimilar(tmdbId: number): void {
+    this.similar.set([]);
+    this.similarLoading.set(true);
+    this.http
+      .get<TmdbMovieListResponse>(`${this.base}/movie/${tmdbId}/recommendations`, {
+        params: this.params({ page: '1' }),
+      })
+      .subscribe({
+        next: (res) => {
+          this.similar.set(res.results.slice(0, 8).map((r) => this.mapMovie(r)));
+          this.similarLoading.set(false);
+        },
+        error: () => {
+          this.similar.set([]);
+          this.similarLoading.set(false);
         },
       });
   }

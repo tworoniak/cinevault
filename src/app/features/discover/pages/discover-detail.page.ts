@@ -5,10 +5,11 @@ import { TmdbService } from '../../../core/services/tmdb.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
 import { Movie } from '../../../models/movie.model';
 import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
+import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
 
 @Component({
   standalone: true,
-  imports: [RouterLink, SafeUrlPipe],
+  imports: [RouterLink, SafeUrlPipe, TmdbCardComponent],
   templateUrl: './discover-detail.page.html',
   styleUrl: './discover-detail.page.scss',
 })
@@ -50,6 +51,7 @@ export class DiscoverDetailPage {
         this.tmdbService.fetchMovieDetail(Number(id));
         this.tmdbService.fetchVideos(Number(id));
         this.tmdbService.fetchWatchProviders(Number(id));
+        this.tmdbService.fetchSimilar(Number(id));
       }
     });
   }

@@ -5,17 +5,20 @@ A personal movie tracker built with Angular v21. Search and discover movies via 
 ## Features
 
 ### Search
+
 - Search movies and TV titles via TMDB's multi-search endpoint
 - Results show poster, title, year, and type badge
 - Each result links directly to its full detail page
 
 ### Discover
+
 - **Trending This Week** and **Popular Right Now** grids on the Discover page
 - **Genre filter** — multi-select pill tags (alphabetically sorted)
 - **Sort** — Most Popular, Highest Rated, Newest First, Highest Grossing
 - Browse Results section appears when any filter is active; grids remain visible below
 
 ### Movie Detail
+
 - Full-width backdrop banner with poster, metadata (genres, runtime, language, status, tagline, TMDB rating)
 - **Watch Trailer** — YouTube embed in a modal (dismissed via button, backdrop click, or Escape)
 - **Cast & Crew** — top 8 cast members with profile photos; Director and Writer credits
@@ -23,10 +26,12 @@ A personal movie tracker built with Angular v21. Search and discover movies via 
 - **Add to Watchlist** — available on all titles
 
 ### Watchlist
+
 - Add and remove titles; persisted to `localStorage`
 - Duplicate-prevention at both UI and service levels
 
 ### Dashboard
+
 - Watchlist stats: total, movies, series
 - Current search results preview
 
