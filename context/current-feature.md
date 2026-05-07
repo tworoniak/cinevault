@@ -1,27 +1,23 @@
-# Current Feature — Feature 22: Actor Detail Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Clicking a cast member on the movie detail page navigates to `/discover/person/:personId`
-- Actor detail page shows profile photo, name, biography, birthday, and birthplace
-- "Known For" filmography grid of their movie credits (reuses `TmdbCardComponent`)
-- Each film card in the grid links to that movie's detail page
-- Section hidden when no movie credits are available
-
 ## Notes
 
-- `personId` comes directly from `TmdbCastMemberMapped.id` — no model changes needed
-- Biography text can be very long; collapsed/expanded toggle prevents it from dominating layout on first load
-- Credits filtered to titles with a poster to avoid blank cards, then sorted by `vote_average` descending
-- `personCredits` and `personDetail` signals must be reset at the start of each fetch so stale data doesn't flash on navigation
-- The `backdrop` field on mapped credits is set to `''` — `TmdbCardComponent` already handles a missing backdrop gracefully
-- Branch: `feature/actor-detail`
-
 ## History
+
+### Feature 22 — Actor Detail Page
+
+- `TmdbPerson`, `TmdbPersonMovieCredit`, `TmdbPersonMovieCreditsResponse` interfaces added to `tmdb.model.ts`
+- `personDetail`, `personDetailLoading`, `personDetailError`, `personCredits`, `personCreditsLoading` signals added to `TmdbService`
+- `fetchPersonDetail()` and `fetchPersonCredits()` methods added to `TmdbService`; credits filtered to poster-having titles, sorted by `vote_average` descending, sliced to 20
+- New `discover-person-detail.page.ts/html/scss` at `/discover/person/:personId`: profile photo (or placeholder), name, born date, birthplace, collapsible biography (Show more / Show less), "Known For" filmography grid
+- Cast cards on both movie and TV detail pages wrapped in `[routerLink]="['/discover', 'person', member.id]"` anchor with `.detail-page__cast-link` style (hover accent on name)
+- Route `person/:personId` added to `discover.routes.ts`
 
 ### Feature 21 — TV Show Support on Discover
 
