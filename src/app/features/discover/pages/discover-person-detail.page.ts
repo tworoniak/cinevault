@@ -19,7 +19,12 @@ export class DiscoverPersonDetailPage {
   private route = inject(ActivatedRoute);
 
   personId = toSignal(
-    this.route.paramMap.pipe(map((p) => Number(p.get('personId'))))
+    this.route.paramMap.pipe(
+      map((p) => {
+        const numId = Number(p.get('personId'));
+        return Number.isFinite(numId) && numId > 0 ? numId : null;
+      })
+    )
   );
 
   bioExpanded = signal(false);
@@ -27,10 +32,9 @@ export class DiscoverPersonDetailPage {
   constructor() {
     effect(() => {
       const id = this.personId();
-      if (id) {
-        this.tmdbService.fetchPersonDetail(id);
-        this.tmdbService.fetchPersonCredits(id);
-      }
+      if (!id) return;
+      this.tmdbService.fetchPersonDetail(id);
+      this.tmdbService.fetchPersonCredits(id);
     });
   }
 

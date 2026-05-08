@@ -29,7 +29,6 @@ export class TmdbService {
   private http = inject(HttpClient);
   private base = environment.tmdbBaseUrl;
   private imageBase = environment.tmdbImageBase;
-  private apiKey = environment.tmdbApiKey;
 
   trending = signal<TmdbMovie[]>([]);
   trendingLoading = signal(false);
@@ -218,11 +217,13 @@ export class TmdbService {
       })
       .subscribe({
         next: (res) => {
+          const YOUTUBE_KEY_RE = /^[A-Za-z0-9_-]{6,20}$/;
           const trailer =
             res.results.find((v) => v.site === 'YouTube' && v.type === 'Trailer' && v.official) ??
             res.results.find((v) => v.site === 'YouTube' && v.type === 'Trailer') ??
             null;
-          this.trailerKey.set(trailer?.key ?? null);
+          const key = trailer?.key ?? null;
+          this.trailerKey.set(key && YOUTUBE_KEY_RE.test(key) ? key : null);
           this.trailerLoading.set(false);
         },
         error: () => {
@@ -588,7 +589,7 @@ export class TmdbService {
   }
 
   private params(extra: Record<string, string> = {}): HttpParams {
-    return new HttpParams({ fromObject: { api_key: this.apiKey, ...extra } });
+    return new HttpParams({ fromObject: { ...extra } });
   }
 
   private mapTrendingAllItem(r: TmdbTrendingAllResult): TmdbMovie {

@@ -37,12 +37,11 @@ export class DiscoverTvDetailPage {
 
   constructor() {
     effect(() => {
-      const id = this.params()?.get('tmdbId');
-      if (id) {
-        this.posterError.set(false);
-        this.tmdbService.fetchTvDetail(Number(id));
-        this.tmdbService.fetchTvWatchProviders(Number(id));
-      }
+      const numId = Number(this.params()?.get('tmdbId'));
+      if (!numId || !Number.isFinite(numId)) return;
+      this.posterError.set(false);
+      this.tmdbService.fetchTvDetail(numId);
+      this.tmdbService.fetchTvWatchProviders(numId);
     });
   }
 

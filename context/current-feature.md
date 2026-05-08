@@ -1,79 +1,23 @@
-# Current Feature
+# Current Feature — Security Fixes (C1–C4)
 
 ## Status
 
-Not Started
+Complete
 
 ## Goals
 
+- C1+C2: Move TMDB API key from query string to `Authorization: Bearer` header via HTTP interceptor
+- C3: Guard unvalidated route params before passing to TMDB fetch calls
+- C4: Validate YouTube trailer key with regex before setting `trailerKey` signal
+- W7: Remove `console.error` that leaks the API key URL in logs
+
 ## Notes
 
-## History
-
-### Feature 24 — UI & Accessibility Fixes (High/Medium)
-
-- `.cv-page` horizontal padding removed (`padding: var(--cv-space-6) 0`) in `_layout.scss` — fixes 48 px double inset on `/movies`, `/watchlist`, `/dashboard` where `.cv-container` + `.cv-page` were co-located on the same element
-- `.hero__nav-arrow` gains `min-width: 44px; min-height: 44px; display: inline-flex` for WCAG tap target compliance on mobile
-- `.hero__dot` refactored: button is now 24×24 px transparent hit area; visual dot rendered via `::after` pseudo-element (8 px inactive, 20 px active pill); `:focus-visible` outline added
-- Carousel `prev`/`next` buttons gain `aria-hidden="true" tabindex="-1"` — removes hidden buttons from keyboard tab order
-- `:focus-visible` outline (`2px solid var(--cv-accent); outline-offset: 2px`) added to: `TmdbCardComponent`, `MovieCardComponent` (poster link, title link, action button), hero CTAs/arrows/dots/tabs/person cards, carousel see-all link, discover tabs/genre pills/load-more button/clear button, detail page back links/action buttons/cast links/trailer close button, person detail bio toggle
-- `NavComponent` updated: `toggleMenu()` focuses first `<a>` inside `#mobile-menu` on open; `closeMenu()` returns focus to `.nav__hamburger`; hamburger `aria-label` now updates dynamically ("Open" / "Close"); mobile watchlist badge gains matching `aria-label`
-- Hero "In Watchlist" `<span>` replaced with `<button disabled aria-label="Already in watchlist">` in `home.page.html`
-- `<label for="discover-sort" class="sr-only">Sort by</label>` added to `discover.page.html`; select gains `id="discover-sort"`
-- `.discover-detail__back` and `.person-detail__back` padding raised to `var(--cv-space-3) var(--cv-space-2)` for larger mobile tap target
-- Person detail back link changed from `routerLink="/discover"` to `(click)="location.back()"` via injected `Location`; `RouterLink` import removed from component
-- `.detail-page__cast-character` raised from `0.7rem` → `0.75rem`; `.tmdb-card__genre` raised from `0.625rem` → `0.6875rem`
-- `outline: none` removed from base `.search-page__input` rule; existing `:focus { border-color }` serves as the fallback for older browsers
+- C1 note: key will still be in the JS bundle for a client-side SPA — the interceptor stops it appearing in URLs, network logs, and referrer headers, which is the achievable fix without a proxy backend
+- Interceptor: functional, registered via `withInterceptors([])` in `app.config.ts`
+- Only intercepts requests to `api.themoviedb.org`
 
 ## History
-
-### Feature 23 — Homepage / Landing Page
-
-- `TmdbTrendingAllResult`, `TmdbTrendingAllResponse`, `TmdbPersonPopularKnownFor`, `TmdbPersonPopular`, `TmdbPersonPopularResponse` interfaces added to `tmdb.model.ts`
-- `trendingAll`, `trendingAllLoading`, `popularPeople`, `popularPeopleLoading` signals added to `TmdbService`
-- `fetchTrendingAll()` (GET `/trending/all/week`) and `fetchPopularPeople()` (GET `/person/popular`) methods added to `TmdbService`; `mapTrendingAllItem()` private helper maps mixed movie/TV results by `media_type`
-- New `HorizontalCarouselComponent` at `shared/components/horizontal-carousel/`: `title` + `seeAllRoute` inputs, `ng-content` card projection, named `[carousel-tabs]` slot, scroll-snap track, prev/next arrow buttons (desktop hover only), constrained to `.cv-container` width
-- New `home` feature at `/home`: `home.routes.ts`, `home.page.ts/html/scss` with hero banner (top 5 from `trendingAll`, manual prev/next + dot navigation, `heroIndex` signal, "View Details" + "+ Watchlist" CTAs) and 8 horizontal carousels in order — Trending This Week (All/Movies/TV tab filter), Popular Celebrities (circular avatar cards → `/discover/person/:id`), From Your Watchlist (hidden when empty), Popular Right Now, Popular TV Shows, Now Playing in Theaters, Coming Soon (with release date badge), Top Rated of All Time
-- Default route changed from `/movies` → `/home` in `app.routes.ts`; Home link added as first item in desktop nav links and mobile hamburger menu; brand logo now routes to `/home`
-
-### Feature 22 — Actor Detail Page
-
-- `TmdbPerson`, `TmdbPersonMovieCredit`, `TmdbPersonMovieCreditsResponse` interfaces added to `tmdb.model.ts`
-- `personDetail`, `personDetailLoading`, `personDetailError`, `personCredits`, `personCreditsLoading` signals added to `TmdbService`
-- `fetchPersonDetail()` and `fetchPersonCredits()` methods added to `TmdbService`; credits filtered to poster-having titles, sorted by `vote_average` descending, sliced to 20
-- New `discover-person-detail.page.ts/html/scss` at `/discover/person/:personId`: profile photo (or placeholder), name, born date, birthplace, collapsible biography (Show more / Show less), "Known For" filmography grid
-- Cast cards on both movie and TV detail pages wrapped in `[routerLink]="['/discover', 'person', member.id]"` anchor with `.detail-page__cast-link` style (hover accent on name)
-- Route `person/:personId` added to `discover.routes.ts`
-
-### Feature 21 — TV Show Support on Discover
-
-- `TmdbTvResult`, `TmdbTvListResponse`, `TmdbTvDetail`, `TmdbTvDetailMapped` interfaces added to `tmdb.model.ts`; `TmdbTvDetail` extended with `credits?`; `TmdbTvDetailMapped` extended with `cast`, `directors`, `writers`
-- `mediaType?: 'movie' | 'tv'` added to `TmdbMovie` and `Movie` models
-- `trendingTv`, `popularTv`, `tvGenres`, `tvDetail` signals (+ loading/error variants) added to `TmdbService`
-- `fetchTvGenres()`, `fetchTrendingTv()`, `fetchPopularTv()`, `fetchTvDetail()`, `fetchTvWatchProviders()`, `loadMoreTrendingTv()`, `loadMorePopularTv()` methods added to `TmdbService`; `mapTv()` and `mapTvDetail()` private methods extract credits (cast, directors, writers)
-- Movies/TV tab switcher added to `DiscoverPage`; `activeTab` signal synced from/to URL (`?type=tv` / `?type=movie`); TV genres and grids fetched lazily on first tab activation
-- Tab styles added to `discover.page.scss`: `.discover-tabs`, `.discover-tab`, `.discover-tab--active`
-- `TmdbCardComponent` and `MovieCardComponent` updated with `detailRoute` computed signal — routes to `/discover/tv/:id` when `mediaType === 'tv'`, otherwise `/discover/movie/:id`
-- New `discover-tv-detail.page.ts/html/scss` at `/discover/tv/:tmdbId`: backdrop, metadata (seasons, episodes, runtime), cast grid, Where to Watch, Add to Watchlist
-- TV shows stored in watchlist with `type: 'series'` and `mediaType: 'tv'`; watchlist card routing works without watchlist service changes
-- Route `tv/:tmdbId` added to `discover.routes.ts`
-
-### Feature 20 — Pagination / Load More
-
-- `trendingPage`, `trendingTotalPages`, `popularPage`, `popularTotalPages`, `topRatedPage`, `topRatedTotalPages`, `upcomingPage`, `upcomingTotalPages`, `nowPlayingPage`, `nowPlayingTotalPages`, `discoverPage`, `discoverTotalPages` signals added to `TmdbService`
-- All 6 `fetch*()` methods updated to accept a `page` param — replaces list on `page === 1`, appends on `page > 1`
-- `loadMoreTrending()`, `loadMorePopular()`, `loadMoreTopRated()`, `loadMoreUpcoming()`, `loadMoreNowPlaying()`, `loadMoreDiscover()` methods added to `TmdbService`; `lastDiscoverParams` stored so `loadMoreDiscover()` re-uses the active filter state
-- 6 `loadMore*` delegate methods added to `DiscoverPage`
-- "Load More" button added after each grid in `discover.page.html`; hidden while loading or on last page; secondary spinner shown while appending
-- Button styles added to `discover.page.scss`: `.discover-section__load-more` (centered flex) + `.discover__load-more-btn` (outlined, accent on hover)
-
-### Feature 19 — Additional Discover Sections
-
-- `releaseDate?: string` added to `TmdbMovie` model, mapped from `release_date` in `mapMovie()`
-- `topRated`, `upcoming`, `nowPlaying` signals (+ loading/error variants) added to `TmdbService`
-- `fetchTopRated()`, `fetchUpcoming()`, `fetchNowPlaying()` methods added to `TmdbService` — all follow the same pattern as `fetchPopular()`
-- `DiscoverPage` constructor calls all three new fetch methods on init
-- Three new sections added to `discover.page.html` after "Popular Right Now": **Top Rated**, **Now Playing**, **Coming Soon**
 
 ### Feature 1 — App Shell & Global Styles
 
@@ -82,14 +26,6 @@ Not Started
 - Replaced Angular CLI default template with `<app-nav />` + `<router-outlet />`
 - Wired `styles.scss` to import all partials
 - Also scaffolded: all services (Movie, Watchlist, Storage), models (Movie, OmdbSearch), feature route stubs
-
-### Feature 2 — Movie Search (Enhanced)
-
-- `MovieCardComponent` with poster, title, year, type badge, full mode union (`search/watchlist/preview`), `addToWatchlist` / `removeFromWatchlist` outputs
-- `MovieSearchPage` refactored to card grid with separate html/scss files
-- "Add to Watchlist" wired from card output to `WatchlistService.add()`
-- Switched API key from `import.meta.env` to `environment.ts` (gitignored); added `environment.example.ts` template
-- Updated `README.md` with correct setup instructions and `coding-standards.md` to reflect environment file pattern
 
 ### Feature 2 — Movie Search (Enhanced)
 
@@ -234,3 +170,80 @@ Not Started
 - `TmdbCardComponent` added to `DiscoverDetailPage` imports — no card changes needed
 - "More Like This" section added to `discover-detail.page.html` below Where to Watch, guarded by `@if (tmdbService.similar().length)`
 - Grid layout on desktop (auto-fill `minmax(140px, 1fr)`); horizontal scroll on mobile (<480px) with hidden scrollbar
+
+### Feature 19 — Additional Discover Sections
+
+- `releaseDate?: string` added to `TmdbMovie` model, mapped from `release_date` in `mapMovie()`
+- `topRated`, `upcoming`, `nowPlaying` signals (+ loading/error variants) added to `TmdbService`
+- `fetchTopRated()`, `fetchUpcoming()`, `fetchNowPlaying()` methods added to `TmdbService` — all follow the same pattern as `fetchPopular()`
+- `DiscoverPage` constructor calls all three new fetch methods on init
+- Three new sections added to `discover.page.html` after "Popular Right Now": **Top Rated**, **Now Playing**, **Coming Soon**
+
+### Feature 20 — Pagination / Load More
+
+- `trendingPage`, `trendingTotalPages`, `popularPage`, `popularTotalPages`, `topRatedPage`, `topRatedTotalPages`, `upcomingPage`, `upcomingTotalPages`, `nowPlayingPage`, `nowPlayingTotalPages`, `discoverPage`, `discoverTotalPages` signals added to `TmdbService`
+- All 6 `fetch*()` methods updated to accept a `page` param — replaces list on `page === 1`, appends on `page > 1`
+- `loadMoreTrending()`, `loadMorePopular()`, `loadMoreTopRated()`, `loadMoreUpcoming()`, `loadMoreNowPlaying()`, `loadMoreDiscover()` methods added to `TmdbService`; `lastDiscoverParams` stored so `loadMoreDiscover()` re-uses the active filter state
+- 6 `loadMore*` delegate methods added to `DiscoverPage`
+- "Load More" button added after each grid in `discover.page.html`; hidden while loading or on last page; secondary spinner shown while appending
+- Button styles added to `discover.page.scss`: `.discover-section__load-more` (centered flex) + `.discover__load-more-btn` (outlined, accent on hover)
+
+### Feature 21 — TV Show Support on Discover
+
+- `TmdbTvResult`, `TmdbTvListResponse`, `TmdbTvDetail`, `TmdbTvDetailMapped` interfaces added to `tmdb.model.ts`; `TmdbTvDetail` extended with `credits?`; `TmdbTvDetailMapped` extended with `cast`, `directors`, `writers`
+- `mediaType?: 'movie' | 'tv'` added to `TmdbMovie` and `Movie` models
+- `trendingTv`, `popularTv`, `tvGenres`, `tvDetail` signals (+ loading/error variants) added to `TmdbService`
+- `fetchTvGenres()`, `fetchTrendingTv()`, `fetchPopularTv()`, `fetchTvDetail()`, `fetchTvWatchProviders()`, `loadMoreTrendingTv()`, `loadMorePopularTv()` methods added to `TmdbService`; `mapTv()` and `mapTvDetail()` private methods extract credits (cast, directors, writers)
+- Movies/TV tab switcher added to `DiscoverPage`; `activeTab` signal synced from/to URL (`?type=tv` / `?type=movie`); TV genres and grids fetched lazily on first tab activation
+- Tab styles added to `discover.page.scss`: `.discover-tabs`, `.discover-tab`, `.discover-tab--active`
+- `TmdbCardComponent` and `MovieCardComponent` updated with `detailRoute` computed signal — routes to `/discover/tv/:id` when `mediaType === 'tv'`, otherwise `/discover/movie/:id`
+- New `discover-tv-detail.page.ts/html/scss` at `/discover/tv/:tmdbId`: backdrop, metadata (seasons, episodes, runtime), cast grid, Where to Watch, Add to Watchlist
+- TV shows stored in watchlist with `type: 'series'` and `mediaType: 'tv'`; watchlist card routing works without watchlist service changes
+- Route `tv/:tmdbId` added to `discover.routes.ts`
+
+### Feature 22 — Actor Detail Page
+
+- `TmdbPerson`, `TmdbPersonMovieCredit`, `TmdbPersonMovieCreditsResponse` interfaces added to `tmdb.model.ts`
+- `personDetail`, `personDetailLoading`, `personDetailError`, `personCredits`, `personCreditsLoading` signals added to `TmdbService`
+- `fetchPersonDetail()` and `fetchPersonCredits()` methods added to `TmdbService`; credits filtered to poster-having titles, sorted by `vote_average` descending, sliced to 20
+- New `discover-person-detail.page.ts/html/scss` at `/discover/person/:personId`: profile photo (or placeholder), name, born date, birthplace, collapsible biography (Show more / Show less), "Known For" filmography grid
+- Cast cards on both movie and TV detail pages wrapped in `[routerLink]="['/discover', 'person', member.id]"` anchor with `.detail-page__cast-link` style (hover accent on name)
+- Route `person/:personId` added to `discover.routes.ts`
+
+### Feature 23 — Homepage / Landing Page
+
+- `TmdbTrendingAllResult`, `TmdbTrendingAllResponse`, `TmdbPersonPopularKnownFor`, `TmdbPersonPopular`, `TmdbPersonPopularResponse` interfaces added to `tmdb.model.ts`
+- `trendingAll`, `trendingAllLoading`, `popularPeople`, `popularPeopleLoading` signals added to `TmdbService`
+- `fetchTrendingAll()` (GET `/trending/all/week`) and `fetchPopularPeople()` (GET `/person/popular`) methods added to `TmdbService`; `mapTrendingAllItem()` private helper maps mixed movie/TV results by `media_type`
+- New `HorizontalCarouselComponent` at `shared/components/horizontal-carousel/`: `title` + `seeAllRoute` inputs, `ng-content` card projection, named `[carousel-tabs]` slot, scroll-snap track, prev/next arrow buttons (desktop hover only), constrained to `.cv-container` width
+- New `home` feature at `/home`: `home.routes.ts`, `home.page.ts/html/scss` with hero banner (top 5 from `trendingAll`, manual prev/next + dot navigation, `heroIndex` signal, "View Details" + "+ Watchlist" CTAs) and 8 horizontal carousels in order — Trending This Week (All/Movies/TV tab filter), Popular Celebrities (circular avatar cards → `/discover/person/:id`), From Your Watchlist (hidden when empty), Popular Right Now, Popular TV Shows, Now Playing in Theaters, Coming Soon (with release date badge), Top Rated of All Time
+- Default route changed from `/movies` → `/home` in `app.routes.ts`; Home link added as first item in desktop nav links and mobile hamburger menu; brand logo now routes to `/home`
+
+### Feature 24 — UI & Accessibility Fixes (High/Medium)
+
+- `.cv-page` horizontal padding removed (`padding: var(--cv-space-6) 0`) in `_layout.scss` — fixes 48 px double inset on `/movies`, `/watchlist`, `/dashboard` where `.cv-container` + `.cv-page` were co-located on the same element
+- `.hero__nav-arrow` gains `min-width: 44px; min-height: 44px; display: inline-flex` for WCAG tap target compliance on mobile
+- `.hero__dot` refactored: button is now 24×24 px transparent hit area; visual dot rendered via `::after` pseudo-element (8 px inactive, 20 px active pill); `:focus-visible` outline added
+- Carousel `prev`/`next` buttons gain `aria-hidden="true" tabindex="-1"` — removes hidden buttons from keyboard tab order
+- `:focus-visible` outline (`2px solid var(--cv-accent); outline-offset: 2px`) added to: `TmdbCardComponent`, `MovieCardComponent` (poster link, title link, action button), hero CTAs/arrows/dots/tabs/person cards, carousel see-all link, discover tabs/genre pills/load-more button/clear button, detail page back links/action buttons/cast links/trailer close button, person detail bio toggle
+- `NavComponent` updated: `toggleMenu()` focuses first `<a>` inside `#mobile-menu` on open; `closeMenu()` returns focus to `.nav__hamburger`; hamburger `aria-label` now updates dynamically ("Open" / "Close"); mobile watchlist badge gains matching `aria-label`
+- Hero "In Watchlist" `<span>` replaced with `<button disabled aria-label="Already in watchlist">` in `home.page.html`
+- `<label for="discover-sort" class="sr-only">Sort by</label>` added to `discover.page.html`; select gains `id="discover-sort"`
+- `.discover-detail__back` and `.person-detail__back` padding raised to `var(--cv-space-3) var(--cv-space-2)` for larger mobile tap target
+- Person detail back link changed from `routerLink="/discover"` to `(click)="location.back()"` via injected `Location`; `RouterLink` import removed from component
+- `.detail-page__cast-character` raised from `0.7rem` → `0.75rem`; `.tmdb-card__genre` raised from `0.625rem` → `0.6875rem`
+- `outline: none` removed from base `.search-page__input` rule; existing `:focus { border-color }` serves as the fallback for older browsers
+
+### Feature 25 — UI Polish (Low)
+
+- Discover Movies/TV tabs gain `aria-controls="panel-movie"` / `aria-controls="panel-tv"`; content blocks wrapped in `<div role="tabpanel" id="panel-...">` for complete tab relationship
+- `.discover-filters` gains `role="group" aria-label="Filter movies"` so genre pills have group context for screen readers
+- TV tab shows `"Genre filters are available for Movies only."` notice (`.discover-tv__filter-notice`); `.discover-tv__filter-notice` style added to `discover.page.scss`
+- Hero mobile `min-height` raised `300px` → `380px` to prevent content overflow on small screens
+- `HorizontalCarouselComponent` `:host` padding reduced to `var(--cv-space-4) 0` on mobile (was `var(--cv-space-6) 0` always) — tightens 64 px inter-carousel gap; `var(--cv-space-6)` restored at `breakpoint-md`
+- `scroll-padding-inline: 44px` added to `.carousel__track` at `breakpoint-md + hover` to prevent arrow buttons clipping first/last card
+- `[attr.aria-label]="person.name"` removed from person card `<a>` on home page — visible text (name + known-for) now serves as accessible name
+- `★` star glyph wrapped in `<span aria-hidden="true">` in hero (`home.page.html`) and `TmdbCardComponent` — screen readers no longer announce "black star"
+- `<ul class="tmdb-card__genres">` `aria-label="Genres"` replaced with `aria-hidden="true"` — prevents list-landmark being announced 20+ times across a card grid
+- `MovieCardComponent` title `<a>` converted to `<span>`; poster link is now the single focusable navigation target per card; stale `:hover` and `:focus-visible` rules removed from `.movie-card__title`
+- Issue 23 (hero spinner centering) confirmed already handled by `@include flex-center` in `.hero--loading` — no code change required

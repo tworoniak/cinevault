@@ -9,7 +9,6 @@ export class MovieService {
   private http = inject(HttpClient);
   private readonly base = environment.tmdbBaseUrl;
   private readonly imageBase = environment.tmdbImageBase;
-  private readonly apiKey = environment.tmdbApiKey;
 
   movies = signal<Movie[]>([]);
   loading = signal(false);
@@ -21,17 +20,16 @@ export class MovieService {
     this.error.set(null);
     this.totalResults.set(0);
 
-    const url = `${this.base}/search/multi?query=${encodeURIComponent(query)}&api_key=${this.apiKey}`;
-    this.http.get<TmdbMultiSearchResponse>(url).subscribe({
+    const url = `${this.base}/search/multi`;
+    this.http.get<TmdbMultiSearchResponse>(url, { params: { query } }).subscribe({
       next: (res) => {
         const results = res.results.filter((r) => r.media_type === 'movie' || r.media_type === 'tv');
         this.movies.set(results.map((r) => this.mapResult(r)));
         this.totalResults.set(res.total_results);
         this.loading.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.error.set('Failed to fetch results. Please try again.');
-        console.error(err);
         this.loading.set(false);
       },
     });

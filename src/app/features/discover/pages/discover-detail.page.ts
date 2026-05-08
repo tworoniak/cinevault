@@ -44,15 +44,14 @@ export class DiscoverDetailPage {
 
   constructor() {
     effect(() => {
-      const id = this.params()?.get('tmdbId');
-      if (id) {
-        this.posterError.set(false);
-        this.showTrailer.set(false);
-        this.tmdbService.fetchMovieDetail(Number(id));
-        this.tmdbService.fetchVideos(Number(id));
-        this.tmdbService.fetchWatchProviders(Number(id));
-        this.tmdbService.fetchSimilar(Number(id));
-      }
+      const numId = Number(this.params()?.get('tmdbId'));
+      if (!numId || !Number.isFinite(numId)) return;
+      this.posterError.set(false);
+      this.showTrailer.set(false);
+      this.tmdbService.fetchMovieDetail(numId);
+      this.tmdbService.fetchVideos(numId);
+      this.tmdbService.fetchWatchProviders(numId);
+      this.tmdbService.fetchSimilar(numId);
     });
   }
 
