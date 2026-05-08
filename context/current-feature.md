@@ -6,7 +6,11 @@ Not Started
 
 ## Goals
 
+<!-- goals go here -->
+
 ## Notes
+
+<!-- notes go here -->
 
 ## History
 
@@ -271,3 +275,13 @@ Not Started
 - S7: `trendingTv().length === 0` guard in `DiscoverPage` replaced with `private tvDataFetched = false` boolean flag — prevents re-fetch loop on failed TV tab loads
 - S8: `role="dialog"` on mobile nav `div#mobile-menu` changed to `role="navigation"` — removes false focus-trap implication without requiring CDK dependency
 - S1 (TmdbService split into 4 focused services) deferred as a separate feature
+
+### Feature 29 — TmdbService Split (S1)
+
+- `TmdbService` 764-line monolith deleted; replaced with 4 focused services composed via Angular DI
+- `TmdbCoreService` created with shared utilities: `http`, `base`, `imageUrl()`, `params()`, `mapCredits()`, `genres`/`tvGenres` signals, `fetchGenres()`/`fetchTvGenres()` — genre signals placed here to avoid circular dependency across domain services
+- `TmdbMovieService` created; owns all movie/discover/trending-all signals, fetch/loadMore methods, and private mappers; delegates HTTP to `TmdbCoreService`
+- `TmdbTvService` created; owns all TV signals, fetch/loadMore methods, and private mappers; `watchProviders`/`watchProvidersLoading` renamed to `tvWatchProviders`/`tvWatchProvidersLoading` — properly resolves the W3 race condition at the source rather than via constructor resets
+- `TmdbPeopleService` created; owns person detail, credits (parallel `forkJoin` fetch), and popular people signals/methods
+- 5 consumer TS files updated: `DiscoverDetailPage` → `movieService`, `DiscoverTvDetailPage` → `tvService` (removed now-unnecessary `watchProviders.set(null)` and `similar.set([])` resets), `DiscoverPersonDetailPage` → `peopleService`, `DiscoverPage` → `movieService` + `tvService`, `HomePage` → `movieService` + `tvService` + `peopleService`
+- 5 consumer HTML templates updated: all `tmdbService.` bindings replaced with correct domain service prefix
