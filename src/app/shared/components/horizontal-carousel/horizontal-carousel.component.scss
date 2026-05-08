@@ -2,7 +2,11 @@
 
 :host {
   display: block;
-  padding: var(--cv-space-6) 0;
+  padding: var(--cv-space-4) 0;
+
+  @include breakpoint-md {
+    padding: var(--cv-space-6) 0;
+  }
 }
 
 .carousel__header {
@@ -65,6 +69,12 @@
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  @include breakpoint-md {
+    @media (hover: hover) {
+      scroll-padding-inline: 44px;
+    }
   }
 }
 

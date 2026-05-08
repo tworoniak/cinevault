@@ -9,6 +9,7 @@
         [class.discover-tab--active]="activeTab() === 'movie'"
         (click)="setTab('movie')"
         [attr.aria-selected]="activeTab() === 'movie'"
+        aria-controls="panel-movie"
       >
         Movies
       </button>
@@ -18,14 +19,16 @@
         [class.discover-tab--active]="activeTab() === 'tv'"
         (click)="setTab('tv')"
         [attr.aria-selected]="activeTab() === 'tv'"
+        aria-controls="panel-tv"
       >
         TV Shows
       </button>
     </div>
 
     @if (activeTab() === 'movie') {
+    <div role="tabpanel" id="panel-movie">
 
-    <div class="discover-filters">
+    <div class="discover-filters" role="group" aria-label="Filter movies">
       <div class="discover-filters__genres">
         @for (genre of genreList(); track genre.id) {
           <button
@@ -224,7 +227,11 @@
       }
     </section>
 
+    </div><!-- /panel-movie -->
     } @else {
+    <div role="tabpanel" id="panel-tv">
+
+    <p class="discover-tv__filter-notice">Genre filters are available for Movies only.</p>
 
     <section class="discover-page__section">
       <h2 class="discover-page__section-title">Trending TV This Week</h2>
@@ -280,6 +287,7 @@
       }
     </section>
 
+    </div><!-- /panel-tv -->
     }
 
   </div>

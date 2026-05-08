@@ -17,13 +17,13 @@
           <div class="hero__meta">
             <span class="hero__badge">{{ hero.mediaType === 'tv' ? 'TV' : 'Movie' }}</span>
             <span class="hero__year">{{ hero.year }}</span>
-            <span class="hero__rating">★ {{ hero.rating }}</span>
+            <span class="hero__rating"><span aria-hidden="true">★</span> {{ hero.rating }}</span>
           </div>
 
           <h1 class="hero__title">{{ hero.title }}</h1>
 
           @if (hero.genres?.length) {
-            <ul class="hero__genres" aria-label="Genres">
+            <ul class="hero__genres">
               @for (genre of hero.genres; track genre) {
                 <li class="hero__genre">{{ genre }}</li>
               }
@@ -101,7 +101,6 @@
       <a
         class="home__person-card"
         [routerLink]="['/discover', 'person', person.id]"
-        [attr.aria-label]="person.name"
       >
         <div class="home__person-photo-wrap">
           @if (personPhotoUrl(person.profile_path)) {

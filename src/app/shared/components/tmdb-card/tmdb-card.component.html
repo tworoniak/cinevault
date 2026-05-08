@@ -27,10 +27,10 @@
     <h3 class="tmdb-card__title">{{ movie().title }}</h3>
     <div class="tmdb-card__meta">
       <span class="tmdb-card__year">{{ movie().year }}</span>
-      <span class="tmdb-card__rating">{{ movie().rating }} ★</span>
+      <span class="tmdb-card__rating">{{ movie().rating }} <span aria-hidden="true">★</span></span>
     </div>
     @if (movie().genres?.length) {
-      <ul class="tmdb-card__genres" aria-label="Genres">
+      <ul class="tmdb-card__genres" aria-hidden="true">
         @for (genre of movie().genres; track genre) {
           <li class="tmdb-card__genre">{{ genre }}</li>
         }
