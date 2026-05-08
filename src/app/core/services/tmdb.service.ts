@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   TmdbMovie,
@@ -14,10 +15,12 @@ import {
   TmdbWatchProviderResult,
   TmdbTvResult,
   TmdbTvListResponse,
+  TmdbCredits,
   TmdbTvDetail,
   TmdbTvDetailMapped,
   TmdbPerson,
   TmdbPersonMovieCreditsResponse,
+  TmdbPersonTvCreditsResponse,
   TmdbTrendingAllResult,
   TmdbTrendingAllResponse,
   TmdbPersonPopular,
@@ -525,35 +528,57 @@ export class TmdbService {
   fetchPersonCredits(personId: number): void {
     this.personCredits.set([]);
     this.personCreditsLoading.set(true);
-    this.http
-      .get<TmdbPersonMovieCreditsResponse>(
+    forkJoin({
+      movies: this.http.get<TmdbPersonMovieCreditsResponse>(
         `${this.base}/person/${personId}/movie_credits`,
         { params: this.params() }
-      )
-      .subscribe({
-        next: (res) => {
-          const credits = res.cast
-            .filter((c) => c.poster_path)
-            .sort((a, b) => (b.vote_average ?? 0) - (a.vote_average ?? 0))
-            .slice(0, 20)
-            .map((c) => ({
-              tmdbId: c.id,
-              title: c.title,
-              year: c.release_date ? c.release_date.substring(0, 4) : '',
-              poster: this.imageUrl(c.poster_path, 'w342'),
-              backdrop: '',
-              rating: c.vote_average.toFixed(1),
-              overview: '',
-              genres: [],
-            }));
-          this.personCredits.set(credits);
-          this.personCreditsLoading.set(false);
-        },
-        error: () => {
-          this.personCredits.set([]);
-          this.personCreditsLoading.set(false);
-        },
-      });
+      ),
+      tv: this.http.get<TmdbPersonTvCreditsResponse>(
+        `${this.base}/person/${personId}/tv_credits`,
+        { params: this.params() }
+      ),
+    }).subscribe({
+      next: ({ movies, tv }) => {
+        const movieItems = movies.cast.map((c) => ({
+          tmdbId: c.id,
+          title: c.title,
+          year: c.release_date ? c.release_date.substring(0, 4) : '',
+          poster: c.poster_path,
+          vote_average: c.vote_average,
+          mediaType: 'movie' as const,
+        }));
+        const tvItems = tv.cast.map((c) => ({
+          tmdbId: c.id,
+          title: c.name,
+          year: c.first_air_date ? c.first_air_date.substring(0, 4) : '',
+          poster: c.poster_path,
+          vote_average: c.vote_average,
+          mediaType: 'tv' as const,
+        }));
+        const seen = new Set<number>();
+        const credits = [...movieItems, ...tvItems]
+          .filter((c) => c.poster && !seen.has(c.tmdbId) && seen.add(c.tmdbId))
+          .sort((a, b) => (b.vote_average ?? 0) - (a.vote_average ?? 0))
+          .slice(0, 20)
+          .map((c) => ({
+            tmdbId: c.tmdbId,
+            title: c.title,
+            year: c.year,
+            poster: this.imageUrl(c.poster, 'w342'),
+            backdrop: '',
+            rating: c.vote_average.toFixed(1),
+            overview: '',
+            genres: [],
+            mediaType: c.mediaType,
+          }));
+        this.personCredits.set(credits);
+        this.personCreditsLoading.set(false);
+      },
+      error: () => {
+        this.personCredits.set([]);
+        this.personCreditsLoading.set(false);
+      },
+    });
   }
 
   fetchTrendingAll(): void {
@@ -665,9 +690,7 @@ export class TmdbService {
     };
   }
 
-  private mapTvDetail(r: TmdbTvDetail): TmdbTvDetailMapped {
-    const credits = r.credits;
-
+  private mapCredits(credits: TmdbCredits | undefined): { cast: TmdbCastMemberMapped[]; directors: string; writers: string } {
     const cast: TmdbCastMemberMapped[] = (credits?.cast ?? [])
       .sort((a, b) => a.order - b.order)
       .slice(0, 8)
@@ -688,6 +711,12 @@ export class TmdbService {
       .map((c) => c.name)
       .filter((name, i, arr) => arr.indexOf(name) === i)
       .join(', ');
+
+    return { cast, directors, writers };
+  }
+
+  private mapTvDetail(r: TmdbTvDetail): TmdbTvDetailMapped {
+    const { cast, directors, writers } = this.mapCredits(r.credits);
 
     return {
       tmdbId: r.id,
@@ -711,28 +740,7 @@ export class TmdbService {
   }
 
   private mapDetail(r: TmdbMovieDetail): TmdbMovieDetailMapped {
-    const credits = r.credits;
-
-    const cast: TmdbCastMemberMapped[] = (credits?.cast ?? [])
-      .sort((a, b) => a.order - b.order)
-      .slice(0, 8)
-      .map((c) => ({
-        id: c.id,
-        name: c.name,
-        character: c.character,
-        photo: this.imageUrl(c.profile_path, 'w185'),
-      }));
-
-    const directors = (credits?.crew ?? [])
-      .filter((c) => c.job === 'Director')
-      .map((c) => c.name)
-      .join(', ');
-
-    const writers = (credits?.crew ?? [])
-      .filter((c) => c.job === 'Screenplay' || c.job === 'Writer' || c.job === 'Story')
-      .map((c) => c.name)
-      .filter((name, i, arr) => arr.indexOf(name) === i)
-      .join(', ');
+    const { cast, directors, writers } = this.mapCredits(r.credits);
 
     return {
       tmdbId: r.id,

@@ -218,6 +218,20 @@ export interface TmdbPersonMovieCreditsResponse {
   cast: TmdbPersonMovieCredit[];
 }
 
+export interface TmdbPersonTvCredit {
+  id: number;
+  name: string;
+  first_air_date: string;
+  poster_path: string | null;
+  vote_average: number;
+  character: string;
+}
+
+export interface TmdbPersonTvCreditsResponse {
+  id: number;
+  cast: TmdbPersonTvCredit[];
+}
+
 export interface TmdbTrendingAllResult {
   id: number;
   media_type: 'movie' | 'tv' | 'person';

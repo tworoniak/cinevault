@@ -1,12 +1,27 @@
-# Current Feature
+# Current Feature: Code Quality Fixes (S1–S8)
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- S1: Split `TmdbService` (~750 lines, 40+ public signals) into `TmdbMovieService`, `TmdbTvService`, `TmdbPeopleService`, and a shared `TmdbCoreService` for `params()` / `imageUrl()` helpers
+- S2: Extract a private `mapCredits(credits)` helper shared by `mapDetail()` and `mapTvDetail()` — both have identical cast/crew mapping logic
+- S3: Add `role="tablist"` / `role="tab"` / `[attr.aria-selected]` to the All/Movies/TV trending tab buttons on the home page (inconsistent with the correctly structured Discover tabs)
+- S4: Replace magic number `600` in `HorizontalCarouselComponent.scroll()` with a named constant `SCROLL_STEP_PX` or a value derived from `offsetWidth`
+- S5: Convert `hasPoster` plain getter in `MovieCardComponent` to a `computed` signal to avoid re-reading two signals every change detection cycle
+- S6: Fetch `/person/:id/tv_credits` alongside `/person/:id/movie_credits` in `fetchPersonCredits()` and merge/deduplicate results — TV actors currently show sparse/empty filmographies
+- S7: Fix TV tab re-fetch loop in `DiscoverPage` — replace `trendingTv().length === 0` guard with a `tvDataFetched` boolean flag so a failed load doesn't trigger infinite re-fetches on every tab switch
+- S8: Resolve `role="dialog"` on mobile nav in `NavComponent` — either implement CDK `FocusTrap` to match dialog semantics, or change to `role="navigation"` which does not require focus trapping
+
 ## Notes
+
+- Source: `context/code/scan-2026-05-07.md`, Suggestions section (S1–S8)
+- S1 is the largest change — impacts every component that injects `TmdbService`; do last or as a separate feature
+- S2 is a prerequisite cleanup for S1 (or can be done as part of it)
+- S3, S4, S5, S7, S8 are small targeted fixes
+- S6 requires a second HTTP call per person page load (TV credits endpoint)
 
 ## History
 

@@ -26,10 +26,7 @@ export class MovieCardComponent {
       : ['/discover', 'movie', String(m.tmdbId)];
   });
 
-  get hasPoster(): boolean {
-    const poster = this.movie().poster;
-    return poster !== '' && !this.posterError();
-  }
+  hasPoster = computed(() => this.movie().poster !== '' && !this.posterError());
 
   onAdd() {
     this.addToWatchlist.emit(this.movie());

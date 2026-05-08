@@ -77,20 +77,26 @@
 
   <!-- Trending This Week -->
   <app-horizontal-carousel title="Trending This Week" [seeAllRoute]="['/discover']">
-    <div carousel-tabs class="home__tabs">
+    <div carousel-tabs class="home__tabs" role="tablist">
       <button
         class="home__tab"
+        role="tab"
         [class.home__tab--active]="trendingTab() === 'all'"
+        [attr.aria-selected]="trendingTab() === 'all'"
         (click)="trendingTab.set('all')"
       >All</button>
       <button
         class="home__tab"
+        role="tab"
         [class.home__tab--active]="trendingTab() === 'movie'"
+        [attr.aria-selected]="trendingTab() === 'movie'"
         (click)="trendingTab.set('movie')"
       >Movies</button>
       <button
         class="home__tab"
+        role="tab"
         [class.home__tab--active]="trendingTab() === 'tv'"
+        [attr.aria-selected]="trendingTab() === 'tv'"
         (click)="trendingTab.set('tv')"
       >TV</button>
     </div>

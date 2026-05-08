@@ -1,6 +1,6 @@
 <article class="movie-card" [attr.aria-label]="movie().title">
   <a class="movie-card__poster-link" [routerLink]="detailRoute()">
-    @if (hasPoster) {
+    @if (hasPoster()) {
       <img class="movie-card__poster" [src]="movie().poster" [alt]="movie().title" loading="lazy" (error)="posterError.set(true)" />
     } @else {
       <div class="movie-card__poster-placeholder">

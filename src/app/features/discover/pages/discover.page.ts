@@ -17,6 +17,7 @@ export class DiscoverPage {
   private router = inject(Router);
 
   activeTab = signal<'movie' | 'tv'>('movie');
+  private tvDataFetched = false;
 
   selectedGenres = signal<number[]>([]);
   sortBy = signal('popularity.desc');
@@ -42,7 +43,8 @@ export class DiscoverPage {
     this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((p) => {
       const tab = p['type'] === 'tv' ? 'tv' : 'movie';
       this.activeTab.set(tab);
-      if (tab === 'tv' && this.tmdbService.trendingTv().length === 0) {
+      if (tab === 'tv' && !this.tvDataFetched) {
+        this.tvDataFetched = true;
         this.tmdbService.fetchTvGenres();
         this.tmdbService.fetchTrendingTv();
         this.tmdbService.fetchPopularTv();

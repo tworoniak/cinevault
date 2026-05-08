@@ -49,7 +49,7 @@
 
   @if (isMenuOpen()) {
     <div class="nav__backdrop" (click)="closeMenu()" aria-hidden="true"></div>
-    <div class="nav__mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation menu">
+    <div class="nav__mobile-menu" id="mobile-menu" role="navigation" aria-label="Navigation menu">
       <a routerLink="/home" routerLinkActive="nav__mobile-link--active" class="nav__mobile-link" (click)="closeMenu()">
         Home
       </a>
