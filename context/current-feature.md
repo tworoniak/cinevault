@@ -285,6 +285,17 @@ Not Started
 - "Born Today" carousel section added to `home.page.html` after "Popular Celebrities"; conditionally shown when `bornToday().length > 0`; reuses existing `.home__person-card` styles; `.home__person-age` added to `home.page.scss`
 - `fetchBornToday()` called in `HomePage` constructor alongside other fetch calls; `bornTodaySubtitle` computed formats "People born on May 7"
 
+### Feature 31 — Entertainment News Section
+
+- `NewsArticle`, `NewsCategory`, `GuardianApiResponse` interfaces added to `src/app/models/news.model.ts`
+- `EntertainmentNewsService` created in `src/app/core/services/`; signals: `news`, `newsLoading`, `newsError`, `activeCategory`; `fetchNews(category)` builds Guardian API params per category, maps `GuardianResult[]` → `NewsArticle[]`; `selectCategory()` delegates to `fetchNews()`
+- `guardianApiKey` added to `environment.ts` and `environment.example.ts`
+- `HomePage` injects `EntertainmentNewsService`, calls `fetchNews('top')` on init; `newsCategories` array of `{ id, label }` objects drives the filter pills
+- "Top News" section added to `home.page.html` immediately below the Born Today carousel: lead article (large 16:9 image + headline + excerpt + date), secondary 3-col grid (up to 6 articles), category filter pills; section follows the carousel pattern (`<section>` > `<div class="cv-container">`) so width and padding are consistent
+- Styles added to `home.page.scss`: `.news-section`, `.news-section__header/title/spinner/error`, `.news-filters`, `.news-filter__btn/--active`, `.news-lead/img/body/source/title/excerpt/date`, `.news-grid`, `.news-card/img/body/source/title/date`
+- `angular.json` component style budget raised from 10 kB → 14 kB warning to accommodate new styles
+- Root cause note: never co-locate `cv-container` on the same element as a component SCSS class that sets `padding` with `0` for horizontal sides — the component style overrides the global horizontal padding, causing full-bleed layout on mobile
+
 ### Feature 29 — TmdbService Split (S1)
 
 - `TmdbService` 764-line monolith deleted; replaced with 4 focused services composed via Angular DI
