@@ -1,27 +1,12 @@
-# Current Feature: Code Quality Fixes (S1–S8)
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- S1: Split `TmdbService` (~750 lines, 40+ public signals) into `TmdbMovieService`, `TmdbTvService`, `TmdbPeopleService`, and a shared `TmdbCoreService` for `params()` / `imageUrl()` helpers
-- S2: Extract a private `mapCredits(credits)` helper shared by `mapDetail()` and `mapTvDetail()` — both have identical cast/crew mapping logic
-- S3: Add `role="tablist"` / `role="tab"` / `[attr.aria-selected]` to the All/Movies/TV trending tab buttons on the home page (inconsistent with the correctly structured Discover tabs)
-- S4: Replace magic number `600` in `HorizontalCarouselComponent.scroll()` with a named constant `SCROLL_STEP_PX` or a value derived from `offsetWidth`
-- S5: Convert `hasPoster` plain getter in `MovieCardComponent` to a `computed` signal to avoid re-reading two signals every change detection cycle
-- S6: Fetch `/person/:id/tv_credits` alongside `/person/:id/movie_credits` in `fetchPersonCredits()` and merge/deduplicate results — TV actors currently show sparse/empty filmographies
-- S7: Fix TV tab re-fetch loop in `DiscoverPage` — replace `trendingTv().length === 0` guard with a `tvDataFetched` boolean flag so a failed load doesn't trigger infinite re-fetches on every tab switch
-- S8: Resolve `role="dialog"` on mobile nav in `NavComponent` — either implement CDK `FocusTrap` to match dialog semantics, or change to `role="navigation"` which does not require focus trapping
-
 ## Notes
-
-- Source: `context/code/scan-2026-05-07.md`, Suggestions section (S1–S8)
-- S1 is the largest change — impacts every component that injects `TmdbService`; do last or as a separate feature
-- S2 is a prerequisite cleanup for S1 (or can be done as part of it)
-- S3, S4, S5, S7, S8 are small targeted fixes
-- S6 requires a second HTTP call per person page load (TV credits endpoint)
 
 ## History
 
@@ -275,3 +260,14 @@ In Progress
 - W7: Already resolved in Feature 26 (`console.error` was removed from `MovieService`) — skipped
 - W8: Hero `[style.backgroundImage]` binding replaced with `<img class="hero__bg">` positioned absolutely inside `.hero` (`object-fit: cover; object-position: center top; z-index: 0`); `.hero__overlay` gains `position: relative; z-index: 1` — eliminates CSS injection risk, enables native lazy loading
 - W9: `@let knownFor = personKnownFor(person)` used in `home.page.html` person card loop — method is called once instead of twice per item per change detection cycle
+
+### Feature 28 — Code Quality Fixes (S2–S8)
+
+- S2: Extracted private `mapCredits(credits: TmdbCredits | undefined)` helper returning `{ cast, directors, writers }`; `mapDetail()` and `mapTvDetail()` now share it — eliminates verbatim duplication of cast sort/slice/map + director/writer extraction
+- S3: `<div class="home__tabs">` gains `role="tablist"`; each tab button gains `role="tab"` + `[attr.aria-selected]` — matches the correctly structured Discover tabs
+- S4: Magic `600` in `HorizontalCarouselComponent.scrollBy()` replaced with `private readonly SCROLL_STEP_PX = 600`
+- S5: `hasPoster` plain getter in `MovieCardComponent` converted to `computed(() => ...)` signal; template updated to `hasPoster()`
+- S6: `fetchPersonCredits()` rewritten to use `forkJoin` for parallel movie + TV credits fetches; results merged and deduplicated by `tmdbId`, sorted by `vote_average`, sliced to 20; `TmdbPersonTvCredit` / `TmdbPersonTvCreditsResponse` interfaces added to `tmdb.model.ts`
+- S7: `trendingTv().length === 0` guard in `DiscoverPage` replaced with `private tvDataFetched = false` boolean flag — prevents re-fetch loop on failed TV tab loads
+- S8: `role="dialog"` on mobile nav `div#mobile-menu` changed to `role="navigation"` — removes false focus-trap implication without requiring CDK dependency
+- S1 (TmdbService split into 4 focused services) deferred as a separate feature
