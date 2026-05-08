@@ -43,6 +43,11 @@ export class HomePage {
 
   trendingTab = signal<'all' | 'movie' | 'tv'>('all');
 
+  bornTodaySubtitle = computed(() => {
+    const today = new Date();
+    return `People born on ${today.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+  });
+
   filteredTrending = computed(() => {
     const tab = this.trendingTab();
     const all = this.movieService.trendingAll();
@@ -60,6 +65,7 @@ export class HomePage {
     this.movieService.fetchUpcoming();
     this.movieService.fetchTopRated();
     this.peopleService.fetchPopularPeople();
+    this.peopleService.fetchBornToday();
   }
 
   prevHero(): void {

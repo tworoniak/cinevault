@@ -272,6 +272,16 @@ export interface TmdbPersonPopularResponse {
   total_pages: number;
 }
 
+export interface TmdbBornTodayPerson {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  known_for_department: string;
+  known_for: TmdbPersonPopularKnownFor[];
+  birthday: string;
+  age: number;
+}
+
 export interface TmdbMovieDetailMapped {
   tmdbId: number;
   imdbId: string | null;

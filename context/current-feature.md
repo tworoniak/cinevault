@@ -2,15 +2,19 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- goals go here -->
+Feature 30 — Born Today Carousel
+
+Add a "Born Today" section to the home page that surfaces popular people whose birthday matches today's month/day. Fetches 3 pages of popular people (~60 IDs) then parallel-fetches their details via `forkJoin` to get birthday data. Section is conditionally shown only when at least one match is found.
 
 ## Notes
 
-<!-- notes go here -->
+- TMDB `/person/popular` does not include birthday — must fetch each person's detail to get it
+- With 60 people sampled, ~24% chance of at least 1 match per day; section hidden on days with no matches
+- `HorizontalCarouselComponent` gains a new optional `subtitle` input (used for "People born on May 7")
 
 ## History
 

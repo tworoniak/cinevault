@@ -37,6 +37,13 @@
   }
 }
 
+.carousel__subtitle {
+  font-size: 0.8125rem;
+  color: var(--cv-text-muted);
+  margin-top: 2px;
+  margin-bottom: var(--cv-space-3);
+}
+
 .carousel__see-all {
   font-size: 0.875rem;
   color: var(--cv-accent);

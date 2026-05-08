@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 export class HorizontalCarouselComponent {
   title = input.required<string>();
   seeAllRoute = input<string[] | null>(null);
+  subtitle = input<string | null>(null);
 
   private readonly SCROLL_STEP_PX = 600;
   private track = viewChild.required<ElementRef<HTMLElement>>('track');

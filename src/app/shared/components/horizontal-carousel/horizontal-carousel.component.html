@@ -2,6 +2,9 @@
   <div class="cv-container">
     <div class="carousel__header">
       <h2 class="carousel__title">{{ title() }}</h2>
+      @if (subtitle()) {
+        <p class="carousel__subtitle">{{ subtitle() }}</p>
+      }
       @if (seeAllRoute()) {
         <a class="carousel__see-all" [routerLink]="seeAllRoute()">See all ›</a>
       }

@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 import { TmdbCoreService } from './tmdb-core.service';
 import {
   TmdbMovie,
@@ -8,6 +9,7 @@ import {
   TmdbPersonTvCreditsResponse,
   TmdbPersonPopular,
   TmdbPersonPopularResponse,
+  TmdbBornTodayPerson,
 } from '../../models/tmdb.model';
 
 @Injectable({ providedIn: 'root' })
@@ -27,6 +29,9 @@ export class TmdbPeopleService {
 
   popularPeople = signal<TmdbPersonPopular[]>([]);
   popularPeopleLoading = signal(false);
+
+  bornToday = signal<TmdbBornTodayPerson[]>([]);
+  bornTodayLoading = signal(false);
 
   fetchPersonDetail(personId: number): void {
     this.personDetail.set(null);
@@ -119,5 +124,69 @@ export class TmdbPeopleService {
           this.popularPeopleLoading.set(false);
         },
       });
+  }
+
+  fetchBornToday(): void {
+    this.bornTodayLoading.set(true);
+    const today = new Date();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayMD = `${mm}-${dd}`;
+    const currentYear = today.getFullYear();
+
+    // Fetch popular (5 pages) + daily trending persons together for a larger pool.
+    // Trending persons on a given day often include people trending because it's their birthday.
+    forkJoin([
+      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '1' }) }),
+      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '2' }) }),
+      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '3' }) }),
+      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '4' }) }),
+      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '5' }) }),
+      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/trending/person/day`, { params: this.core.params({ page: '1' }) }),
+      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/trending/person/day`, { params: this.core.params({ page: '2' }) }),
+      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/trending/person/day`, { params: this.core.params({ page: '3' }) }),
+    ]).pipe(
+      switchMap((pages) => {
+        const seen = new Set<number>();
+        const pool: TmdbPersonPopular[] = [];
+        for (const page of pages) {
+          for (const p of page.results) {
+            if (!seen.has(p.id)) {
+              seen.add(p.id);
+              pool.push(p);
+            }
+          }
+        }
+        const popularMap = new Map<number, TmdbPersonPopular>(pool.map(p => [p.id, p]));
+        return forkJoin(
+          pool.map(p =>
+            this.core.http.get<TmdbPerson>(`${this.core.base}/person/${p.id}`, { params: this.core.params() })
+          )
+        ).pipe(map(details => ({ details, popularMap })));
+      })
+    ).subscribe({
+      next: ({ details, popularMap }) => {
+        const matched = details
+          .filter(d => d.birthday && d.birthday.slice(5) === todayMD)
+          .map(d => {
+            const pop = popularMap.get(d.id)!;
+            const birthYear = parseInt(d.birthday!.substring(0, 4), 10);
+            return {
+              id: d.id,
+              name: d.name,
+              profile_path: d.profile_path,
+              known_for_department: d.known_for_department,
+              known_for: pop.known_for,
+              birthday: d.birthday!,
+              age: currentYear - birthYear,
+            };
+          });
+        this.bornToday.set(matched);
+        this.bornTodayLoading.set(false);
+      },
+      error: () => {
+        this.bornTodayLoading.set(false);
+      },
+    });
   }
 }
