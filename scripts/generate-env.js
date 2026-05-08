@@ -5,6 +5,7 @@ const content = `export const environment = {
   tmdbReadToken: '${process.env.TMDB_READ_TOKEN || ''}',
   tmdbBaseUrl: 'https://api.themoviedb.org/3',
   tmdbImageBase: 'https://image.tmdb.org/t/p',
+  guardianApiKey: '${process.env.GUARDIAN_API_KEY || ''}',
 };`;
 
 fs.writeFileSync('src/environments/environment.ts', content);
