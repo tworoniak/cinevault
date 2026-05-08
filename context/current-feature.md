@@ -2,19 +2,15 @@
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-Feature 30 — Born Today Carousel
-
-Add a "Born Today" section to the home page that surfaces popular people whose birthday matches today's month/day. Fetches 3 pages of popular people (~60 IDs) then parallel-fetches their details via `forkJoin` to get birthday data. Section is conditionally shown only when at least one match is found.
+<!-- goals go here -->
 
 ## Notes
 
-- TMDB `/person/popular` does not include birthday — must fetch each person's detail to get it
-- With 60 people sampled, ~24% chance of at least 1 match per day; section hidden on days with no matches
-- `HorizontalCarouselComponent` gains a new optional `subtitle` input (used for "People born on May 7")
+<!-- notes go here -->
 
 ## History
 
@@ -279,6 +275,15 @@ Add a "Born Today" section to the home page that surfaces popular people whose b
 - S7: `trendingTv().length === 0` guard in `DiscoverPage` replaced with `private tvDataFetched = false` boolean flag — prevents re-fetch loop on failed TV tab loads
 - S8: `role="dialog"` on mobile nav `div#mobile-menu` changed to `role="navigation"` — removes false focus-trap implication without requiring CDK dependency
 - S1 (TmdbService split into 4 focused services) deferred as a separate feature
+
+### Feature 30 — Born Today Carousel
+
+- `TmdbBornTodayPerson` interface added to `tmdb.model.ts` (id, name, profile_path, known_for_department, known_for, birthday, age)
+- `bornToday` + `bornTodayLoading` signals and `fetchBornToday()` added to `TmdbPeopleService`
+- `fetchBornToday()` fetches 5 pages of `/person/popular` + 3 pages of `/trending/person/day` (~160 unique IDs after dedup), parallel-fetches all person details via `forkJoin`, filters by today's MM-DD birthday match, calculates age
+- `HorizontalCarouselComponent` gains optional `subtitle` input; rendered below the title with `.carousel__subtitle` style
+- "Born Today" carousel section added to `home.page.html` after "Popular Celebrities"; conditionally shown when `bornToday().length > 0`; reuses existing `.home__person-card` styles; `.home__person-age` added to `home.page.scss`
+- `fetchBornToday()` called in `HomePage` constructor alongside other fetch calls; `bornTodaySubtitle` computed formats "People born on May 7"
 
 ### Feature 29 — TmdbService Split (S1)
 
