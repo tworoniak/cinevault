@@ -5,10 +5,12 @@ import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
 import { TmdbTvService } from '../../../core/services/tmdb-tv.service';
 import { TmdbPeopleService } from '../../../core/services/tmdb-people.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
+import { EntertainmentNewsService } from '../../../core/services/entertainment-news.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
 import { HorizontalCarouselComponent } from '../../../shared/components/horizontal-carousel/horizontal-carousel.component';
 import { Movie } from '../../../models/movie.model';
 import { TmdbMovie, TmdbPersonPopular } from '../../../models/tmdb.model';
+import { NewsCategory } from '../../../models/news.model';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +24,14 @@ export class HomePage {
   tvService = inject(TmdbTvService);
   peopleService = inject(TmdbPeopleService);
   watchlistService = inject(WatchlistService);
+  newsService = inject(EntertainmentNewsService);
+
+  readonly newsCategories: { id: NewsCategory; label: string }[] = [
+    { id: 'top', label: 'Top News' },
+    { id: 'movie', label: 'Movie News' },
+    { id: 'tv', label: 'TV News' },
+    { id: 'celebrity', label: 'Celebrity News' },
+  ];
 
   heroIndex = signal(0);
 
@@ -66,6 +76,7 @@ export class HomePage {
     this.movieService.fetchTopRated();
     this.peopleService.fetchPopularPeople();
     this.peopleService.fetchBornToday();
+    this.newsService.fetchNews('top');
   }
 
   prevHero(): void {

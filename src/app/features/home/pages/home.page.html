@@ -201,6 +201,69 @@
     </app-horizontal-carousel>
   }
 
+  <!-- Entertainment News -->
+  <section class="news-section" aria-label="Entertainment News">
+  <div class="cv-container">
+    <div class="news-section__header">
+      <h2 class="news-section__title">Top News</h2>
+      <div class="news-filters" role="group" aria-label="Filter news">
+        @for (cat of newsCategories; track cat.id) {
+          <button
+            class="news-filter__btn"
+            [class.news-filter__btn--active]="newsService.activeCategory() === cat.id"
+            (click)="newsService.selectCategory(cat.id)"
+          >{{ cat.label }}</button>
+        }
+      </div>
+    </div>
+
+    @if (newsService.newsLoading() && newsService.news().length === 0) {
+      <div class="news-section__spinner">
+        <div class="news-section__spin"></div>
+      </div>
+    }
+
+    @if (newsService.newsError()) {
+      <p class="news-section__error">{{ newsService.newsError() }}</p>
+    }
+
+    @if (newsService.news().length > 0) {
+      @let articles = newsService.news();
+
+      <!-- Lead story -->
+      <a class="news-lead" [href]="articles[0].articleUrl" target="_blank" rel="noopener noreferrer">
+        @if (articles[0].imageUrl) {
+          <img class="news-lead__img" [src]="articles[0].imageUrl" [alt]="articles[0].title" loading="lazy" />
+        }
+        <div class="news-lead__body">
+          <p class="news-lead__source">{{ articles[0].sourceLabel }}</p>
+          <h3 class="news-lead__title">{{ articles[0].title }}</h3>
+          @if (articles[0].excerpt) {
+            <p class="news-lead__excerpt" [innerHTML]="articles[0].excerpt"></p>
+          }
+          <span class="news-lead__date">{{ articles[0].publishedAt | date:'mediumDate' }}</span>
+        </div>
+      </a>
+
+      <!-- Secondary articles -->
+      <div class="news-grid">
+        @for (article of articles.slice(1, 7); track article.id) {
+          <a class="news-card" [href]="article.articleUrl" target="_blank" rel="noopener noreferrer">
+            @if (article.imageUrl) {
+              <img class="news-card__img" [src]="article.imageUrl" [alt]="article.title" loading="lazy" />
+            }
+            <div class="news-card__body">
+              <p class="news-card__source">{{ article.sourceLabel }}</p>
+              <h4 class="news-card__title">{{ article.title }}</h4>
+              <span class="news-card__date">{{ article.publishedAt | date:'mediumDate' }}</span>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </div>
+  </section>
+
   <!-- Now Playing -->
   <app-horizontal-carousel title="Now Playing in Theaters">
     @for (movie of movieService.nowPlaying(); track movie.tmdbId) {
