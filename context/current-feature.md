@@ -1,28 +1,12 @@
-# Current Feature — Feature 27: Warning Fixes (W1–W9)
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- W1: Add load guards to `TmdbService` fetch methods to skip redundant API calls when data is already loaded (Home ↔ Discover navigation)
-- W2: Add `.pipe(takeUntilDestroyed())` to `DiscoverPage` `queryParams.subscribe()` to match every other subscription in the codebase
-- W3: Split shared `watchProviders` signal into `movieWatchProviders` and `tvWatchProviders` (or reset before each page's route effect) to eliminate race condition
-- W4: Reset `similar` signal in `DiscoverTvDetailPage` constructor/effect so stale movie recommendations don't carry over
-- W5: Wrap `StorageService.set()` and `remove()` in try/catch to handle `QuotaExceededError` / `SecurityError` without silent crashes
-- W6: Replace `$any($event.target).value` in `discover.page.html` with a typed `onSortChange(event: Event)` class method
-- W7: Remove `console.error(err)` from `MovieService` (already removed per Feature 26 — verify and skip if gone)
-- W8: Replace `[style.backgroundImage]` on hero banner (`home.page.html`) with an absolutely-positioned `<img>` to eliminate CSS injection risk and enable native lazy loading
-- W9: Use `@let knownFor = personKnownFor(person)` in `home.page.html` (Angular `@let`) or a pure pipe to avoid calling the method twice per item per cycle
-
 ## Notes
-
-- Source: `context/code/scan-2026-05-07.md` — 🟡 Warnings section
-- W7 was resolved in Feature 26; verify the `console.error` is gone and skip if it is
-- W3 fix: prefer explicitly resetting the shared signal at the top of each page's route effect (simpler than splitting the signal, unless signal split is cleaner after reading the current code)
-- W8: match the `<img>` + `object-fit: cover` pattern already used on detail pages
-- Implement in the recommended order from the scan: W5 → W2 → W6 → W3/W4 → W1 → W8/W9
 
 ## History
 
@@ -264,3 +248,15 @@ In Progress
 - `discover-detail.page.ts` / `discover-tv-detail.page.ts`: `Number.isFinite(numId) && numId > 0` guard before all fetch calls
 - `discover-person-detail.page.ts`: `personId` signal returns `null` for invalid/missing route params; effect guards on `if (!id)`
 - `TmdbService.fetchVideos()`: YouTube trailer key validated with `/^[A-Za-z0-9_-]{6,20}$/` before `trailerKey` signal is set
+
+### Feature 27 — Warning Fixes (W1–W9)
+
+- W1: Load guards added to `fetchGenres()`, `fetchPopular()`, `fetchTopRated()`, `fetchNowPlaying()`, `fetchUpcoming()` in `TmdbService` — page=1 calls skip the HTTP request when data is already loaded, eliminating ~8–10 redundant API calls on Home↔Discover navigation
+- W2: `takeUntilDestroyed()` added to `DiscoverPage` `queryParams.subscribe()` — the only subscription in the codebase missing explicit cleanup
+- W3: `this.tmdbService.watchProviders.set(null)` added to both `DiscoverDetailPage` and `DiscoverTvDetailPage` constructors (before the effect) — eliminates the stale provider flash window between component creation and first effect run
+- W4: `this.tmdbService.similar.set([])` added to `DiscoverTvDetailPage` constructor — prevents stale movie "More Like This" data from carrying over to TV detail pages
+- W5: `StorageService.set()` and `remove()` wrapped in try/catch — prevents `QuotaExceededError` / `SecurityError` from crashing watchlist add/remove silently
+- W6: `$any($event.target).value` replaced with typed `onSortChange(event: Event)` method in `DiscoverPage`; template binding updated to `(change)="onSortChange($event)"`
+- W7: Already resolved in Feature 26 (`console.error` was removed from `MovieService`) — skipped
+- W8: Hero `[style.backgroundImage]` binding replaced with `<img class="hero__bg">` positioned absolutely inside `.hero` (`object-fit: cover; object-position: center top; z-index: 0`); `.hero__overlay` gains `position: relative; z-index: 1` — eliminates CSS injection risk, enables native lazy loading
+- W9: `@let knownFor = personKnownFor(person)` used in `home.page.html` person card loop — method is called once instead of twice per item per change detection cycle
