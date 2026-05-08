@@ -120,6 +120,7 @@ export class TmdbService {
   }
 
   fetchGenres(): void {
+    if (this.genres().size > 0) return;
     this.http
       .get<TmdbGenreListResponse>(`${this.base}/genre/movie/list`, {
         params: this.params(),
@@ -162,6 +163,7 @@ export class TmdbService {
   }
 
   fetchPopular(page = 1): void {
+    if (this.popular().length && page === 1) return;
     this.popularLoading.set(true);
     this.popularError.set(null);
     this.http
@@ -272,6 +274,7 @@ export class TmdbService {
   }
 
   fetchTopRated(page = 1): void {
+    if (this.topRated().length && page === 1) return;
     this.topRatedLoading.set(true);
     this.topRatedError.set(null);
     this.http
@@ -299,6 +302,7 @@ export class TmdbService {
   }
 
   fetchUpcoming(page = 1): void {
+    if (this.upcoming().length && page === 1) return;
     this.upcomingLoading.set(true);
     this.upcomingError.set(null);
     this.http
@@ -326,6 +330,7 @@ export class TmdbService {
   }
 
   fetchNowPlaying(page = 1): void {
+    if (this.nowPlaying().length && page === 1) return;
     this.nowPlayingLoading.set(true);
     this.nowPlayingError.set(null);
     this.http

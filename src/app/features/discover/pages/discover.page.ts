@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TmdbService } from '../../../core/services/tmdb.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
 
@@ -38,7 +39,7 @@ export class DiscoverPage {
   ];
 
   constructor() {
-    this.route.queryParams.subscribe((p) => {
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((p) => {
       const tab = p['type'] === 'tv' ? 'tv' : 'movie';
       this.activeTab.set(tab);
       if (tab === 'tv' && this.tmdbService.trendingTv().length === 0) {
@@ -72,6 +73,10 @@ export class DiscoverPage {
     this.selectedGenres.update((current) =>
       current.includes(id) ? current.filter((g) => g !== id) : [...current, id]
     );
+  }
+
+  onSortChange(event: Event): void {
+    this.sortBy.set((event.target as HTMLSelectElement).value);
   }
 
   clearFilters(): void {

@@ -36,6 +36,8 @@ export class DiscoverTvDetailPage {
   });
 
   constructor() {
+    this.tmdbService.watchProviders.set(null);
+    this.tmdbService.similar.set([]);
     effect(() => {
       const numId = Number(this.params()?.get('tmdbId'));
       if (!numId || !Number.isFinite(numId)) return;

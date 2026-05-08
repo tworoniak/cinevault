@@ -46,7 +46,7 @@
         <select
           id="discover-sort"
           class="discover-filters__sort"
-          (change)="sortBy.set($any($event.target).value)"
+          (change)="onSortChange($event)"
         >
           @for (opt of sortOptions; track opt.value) {
             <option [value]="opt.value" [selected]="sortBy() === opt.value">

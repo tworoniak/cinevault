@@ -43,6 +43,7 @@ export class DiscoverDetailPage {
   });
 
   constructor() {
+    this.tmdbService.watchProviders.set(null);
     effect(() => {
       const numId = Number(this.params()?.get('tmdbId'));
       if (!numId || !Number.isFinite(numId)) return;

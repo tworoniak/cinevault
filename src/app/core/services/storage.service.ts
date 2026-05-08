@@ -12,10 +12,18 @@ export class StorageService {
   }
 
   set<T>(key: string, value: T): void {
-    localStorage.setItem(key, JSON.stringify(value));
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // QuotaExceededError or SecurityError (private browsing)
+    }
   }
 
   remove(key: string): void {
-    localStorage.removeItem(key);
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      // SecurityError in restricted contexts
+    }
   }
 }

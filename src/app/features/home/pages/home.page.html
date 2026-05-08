@@ -8,9 +8,15 @@
 @if (currentHero(); as hero) {
   <section
     class="hero"
-    [style.backgroundImage]="'url(' + hero.backdrop + ')'"
     aria-label="Featured: {{ hero.title }}"
   >
+    <img
+      class="hero__bg"
+      [src]="hero.backdrop"
+      alt=""
+      aria-hidden="true"
+      loading="eager"
+    />
     <div class="hero__overlay">
       <div class="cv-container">
         <div class="hero__content">
@@ -120,8 +126,9 @@
           }
         </div>
         <p class="home__person-name">{{ person.name }}</p>
-        @if (personKnownFor(person)) {
-          <p class="home__person-known-for">{{ personKnownFor(person) }}</p>
+        @let knownFor = personKnownFor(person);
+        @if (knownFor) {
+          <p class="home__person-known-for">{{ knownFor }}</p>
         }
       </a>
     }

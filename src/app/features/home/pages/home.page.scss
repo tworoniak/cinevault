@@ -9,15 +9,24 @@
 .hero {
   position: relative;
   min-height: 380px;
-  background-size: cover;
-  background-position: center top;
   background-color: var(--cv-bg-elevated);
   display: flex;
   align-items: flex-end;
+  overflow: hidden;
 
   @include breakpoint-md {
     min-height: 480px;
   }
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 0;
 }
 
 .hero--loading {
@@ -35,6 +44,8 @@
 }
 
 .hero__overlay {
+  position: relative;
+  z-index: 1;
   width: 100%;
   padding: var(--cv-space-8) 0 var(--cv-space-6);
   background: linear-gradient(
