@@ -1,21 +1,12 @@
-# Current Feature — Security Fixes (C1–C4)
+# Current Feature
 
 ## Status
 
-Complete
+Not Started
 
 ## Goals
 
-- C1+C2: Move TMDB API key from query string to `Authorization: Bearer` header via HTTP interceptor
-- C3: Guard unvalidated route params before passing to TMDB fetch calls
-- C4: Validate YouTube trailer key with regex before setting `trailerKey` signal
-- W7: Remove `console.error` that leaks the API key URL in logs
-
 ## Notes
-
-- C1 note: key will still be in the JS bundle for a client-side SPA — the interceptor stops it appearing in URLs, network logs, and referrer headers, which is the achievable fix without a proxy backend
-- Interceptor: functional, registered via `withInterceptors([])` in `app.config.ts`
-- Only intercepts requests to `api.themoviedb.org`
 
 ## History
 
@@ -247,3 +238,13 @@ Complete
 - `<ul class="tmdb-card__genres">` `aria-label="Genres"` replaced with `aria-hidden="true"` — prevents list-landmark being announced 20+ times across a card grid
 - `MovieCardComponent` title `<a>` converted to `<span>`; poster link is now the single focusable navigation target per card; stale `:hover` and `:focus-visible` rules removed from `.movie-card__title`
 - Issue 23 (hero spinner centering) confirmed already handled by `@include flex-center` in `.hero--loading` — no code change required
+
+### Feature 26 — Security Fixes (C1–C4)
+
+- `tmdb-auth.interceptor.ts` created in `src/app/core/interceptors/`; registered via `withInterceptors([])` in `app.config.ts`; uses `Authorization: Bearer tmdbReadToken` when set, falls back to `api_key` query param — API key no longer appears in any request URL
+- `tmdbReadToken` field added to `environment.ts` and `environment.example.ts`
+- `TmdbService.apiKey` field and `api_key` from `params()` helper removed — auth is fully owned by the interceptor
+- `MovieService`: URL template literal replaced with clean `HttpParams`; `console.error` removed (was leaking request URL containing API key)
+- `discover-detail.page.ts` / `discover-tv-detail.page.ts`: `Number.isFinite(numId) && numId > 0` guard before all fetch calls
+- `discover-person-detail.page.ts`: `personId` signal returns `null` for invalid/missing route params; effect guards on `if (!id)`
+- `TmdbService.fetchVideos()`: YouTube trailer key validated with `/^[A-Za-z0-9_-]{6,20}$/` before `trailerKey` signal is set
