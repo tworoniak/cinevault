@@ -272,6 +272,11 @@ export interface TmdbPersonPopularResponse {
   total_pages: number;
 }
 
+export interface TmdbPersonSearchResponse {
+  results: TmdbPersonPopular[];
+  total_results: number;
+}
+
 export interface TmdbBornTodayPerson {
   id: number;
   name: string;

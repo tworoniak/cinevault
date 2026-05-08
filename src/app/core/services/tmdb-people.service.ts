@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { forkJoin } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { switchMap, map, catchError } from 'rxjs/operators';
 import { TmdbCoreService } from './tmdb-core.service';
 import {
   TmdbMovie,
@@ -9,8 +9,19 @@ import {
   TmdbPersonTvCreditsResponse,
   TmdbPersonPopular,
   TmdbPersonPopularResponse,
+  TmdbPersonSearchResponse,
   TmdbBornTodayPerson,
 } from '../../models/tmdb.model';
+
+interface WikiBirth {
+  text: string;
+  year: number;
+  pages: Array<{ title: string }>;
+}
+
+interface WikiBirthsResponse {
+  births: WikiBirth[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class TmdbPeopleService {
@@ -129,64 +140,60 @@ export class TmdbPeopleService {
   fetchBornToday(): void {
     this.bornTodayLoading.set(true);
     const today = new Date();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const todayMD = `${mm}-${dd}`;
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    const mm = String(month).padStart(2, '0');
+    const dd = String(day).padStart(2, '0');
     const currentYear = today.getFullYear();
 
-    // Fetch popular (5 pages) + daily trending persons together for a larger pool.
-    // Trending persons on a given day often include people trending because it's their birthday.
-    forkJoin([
-      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '1' }) }),
-      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '2' }) }),
-      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '3' }) }),
-      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '4' }) }),
-      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, { params: this.core.params({ page: '5' }) }),
-      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/trending/person/day`, { params: this.core.params({ page: '1' }) }),
-      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/trending/person/day`, { params: this.core.params({ page: '2' }) }),
-      this.core.http.get<TmdbPersonPopularResponse>(`${this.core.base}/trending/person/day`, { params: this.core.params({ page: '3' }) }),
-    ]).pipe(
-      switchMap((pages) => {
-        const seen = new Set<number>();
-        const pool: TmdbPersonPopular[] = [];
-        for (const page of pages) {
-          for (const p of page.results) {
-            if (!seen.has(p.id)) {
-              seen.add(p.id);
-              pool.push(p);
-            }
-          }
-        }
-        const popularMap = new Map<number, TmdbPersonPopular>(pool.map(p => [p.id, p]));
-        return forkJoin(
-          pool.map(p =>
-            this.core.http.get<TmdbPerson>(`${this.core.base}/person/${p.id}`, { params: this.core.params() })
-          )
-        ).pipe(map(details => ({ details, popularMap })));
-      })
-    ).subscribe({
-      next: ({ details, popularMap }) => {
-        const matched = details
-          .filter(d => d.birthday && d.birthday.slice(5) === todayMD)
-          .map(d => {
-            const pop = popularMap.get(d.id)!;
-            const birthYear = parseInt(d.birthday!.substring(0, 4), 10);
-            return {
-              id: d.id,
-              name: d.name,
-              profile_path: d.profile_path,
-              known_for_department: d.known_for_department,
-              known_for: pop.known_for,
-              birthday: d.birthday!,
-              age: currentYear - birthYear,
-            };
-          });
-        this.bornToday.set(matched);
-        this.bornTodayLoading.set(false);
-      },
-      error: () => {
-        this.bornTodayLoading.set(false);
-      },
-    });
+    // Wikipedia's "On This Day" API returns a curated list of people born today,
+    // ordered by notability. We take the top 30, then search TMDB for each by name
+    // to get their profile photo and TMDB ID. Far more reliable than sampling
+    // TMDB's popularity list, which doesn't index by birthday.
+    this.core.http
+      .get<WikiBirthsResponse>(
+        `https://en.wikipedia.org/api/rest_v1/feed/onthisday/births/${month}/${day}`
+      )
+      .pipe(
+        switchMap((wikiRes) => {
+          const births = wikiRes.births.slice(0, 30);
+          if (births.length === 0) return of([] as (TmdbBornTodayPerson | null)[]);
+          return forkJoin(
+            births.map((birth) => {
+              const name = birth.pages?.[0]?.title ?? birth.text.split(',')[0].trim();
+              return this.core.http
+                .get<TmdbPersonSearchResponse>(
+                  `${this.core.base}/search/person`,
+                  { params: this.core.params({ query: name }) }
+                )
+                .pipe(
+                  map((res): TmdbBornTodayPerson | null => {
+                    const match = res.results.find((r) => r.profile_path !== null);
+                    if (!match) return null;
+                    return {
+                      id: match.id,
+                      name: match.name,
+                      profile_path: match.profile_path,
+                      known_for_department: match.known_for_department,
+                      known_for: match.known_for,
+                      birthday: `${birth.year}-${mm}-${dd}`,
+                      age: currentYear - birth.year,
+                    };
+                  }),
+                  catchError(() => of(null))
+                );
+            })
+          );
+        })
+      )
+      .subscribe({
+        next: (results) => {
+          this.bornToday.set(results.filter((r): r is TmdbBornTodayPerson => r !== null));
+          this.bornTodayLoading.set(false);
+        },
+        error: () => {
+          this.bornTodayLoading.set(false);
+        },
+      });
   }
 }

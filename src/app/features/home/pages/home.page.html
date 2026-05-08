@@ -140,6 +140,35 @@
     }
   </app-horizontal-carousel>
 
+  <!-- From Your Watchlist -->
+  @if (watchlistService.watchlist().length > 0) {
+    <app-horizontal-carousel title="From Your Watchlist" [seeAllRoute]="['/watchlist']">
+      @for (item of watchlistService.watchlist(); track item.tmdbId) {
+        <div class="home__card-wrap">
+          <app-tmdb-card [movie]="{ tmdbId: item.tmdbId, title: item.title, year: item.year, poster: item.poster, backdrop: '', rating: '', overview: '', mediaType: item.mediaType }" />
+        </div>
+      }
+    </app-horizontal-carousel>
+  }
+
+  <!-- Popular Movies -->
+  <app-horizontal-carousel title="Popular Right Now" [seeAllRoute]="['/discover']">
+    @for (movie of movieService.popular(); track movie.tmdbId) {
+      <div class="home__card-wrap">
+        <app-tmdb-card [movie]="movie" />
+      </div>
+    }
+  </app-horizontal-carousel>
+
+  <!-- Popular TV -->
+  <app-horizontal-carousel title="Popular TV Shows" [seeAllRoute]="['/discover']">
+    @for (movie of tvService.popularTv(); track movie.tmdbId) {
+      <div class="home__card-wrap">
+        <app-tmdb-card [movie]="movie" />
+      </div>
+    }
+  </app-horizontal-carousel>
+
   <!-- Born Today -->
   @if (peopleService.bornToday().length > 0) {
     <app-horizontal-carousel title="Born Today" [subtitle]="bornTodaySubtitle()">
@@ -171,35 +200,6 @@
       }
     </app-horizontal-carousel>
   }
-
-  <!-- From Your Watchlist -->
-  @if (watchlistService.watchlist().length > 0) {
-    <app-horizontal-carousel title="From Your Watchlist" [seeAllRoute]="['/watchlist']">
-      @for (item of watchlistService.watchlist(); track item.tmdbId) {
-        <div class="home__card-wrap">
-          <app-tmdb-card [movie]="{ tmdbId: item.tmdbId, title: item.title, year: item.year, poster: item.poster, backdrop: '', rating: '', overview: '', mediaType: item.mediaType }" />
-        </div>
-      }
-    </app-horizontal-carousel>
-  }
-
-  <!-- Popular Movies -->
-  <app-horizontal-carousel title="Popular Right Now" [seeAllRoute]="['/discover']">
-    @for (movie of movieService.popular(); track movie.tmdbId) {
-      <div class="home__card-wrap">
-        <app-tmdb-card [movie]="movie" />
-      </div>
-    }
-  </app-horizontal-carousel>
-
-  <!-- Popular TV -->
-  <app-horizontal-carousel title="Popular TV Shows" [seeAllRoute]="['/discover']">
-    @for (movie of tvService.popularTv(); track movie.tmdbId) {
-      <div class="home__card-wrap">
-        <app-tmdb-card [movie]="movie" />
-      </div>
-    }
-  </app-horizontal-carousel>
 
   <!-- Now Playing -->
   <app-horizontal-carousel title="Now Playing in Theaters">
