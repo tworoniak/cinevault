@@ -1,12 +1,14 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { TmdbService } from '../../../core/services/tmdb.service';
+import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
+import { TmdbTvService } from '../../../core/services/tmdb-tv.service';
+import { TmdbPeopleService } from '../../../core/services/tmdb-people.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
 import { HorizontalCarouselComponent } from '../../../shared/components/horizontal-carousel/horizontal-carousel.component';
 import { Movie } from '../../../models/movie.model';
-import { TmdbMovie } from '../../../models/tmdb.model';
+import { TmdbMovie, TmdbPersonPopular } from '../../../models/tmdb.model';
 
 @Component({
   selector: 'app-home',
@@ -16,12 +18,14 @@ import { TmdbMovie } from '../../../models/tmdb.model';
   styleUrl: './home.page.scss',
 })
 export class HomePage {
-  tmdbService = inject(TmdbService);
+  movieService = inject(TmdbMovieService);
+  tvService = inject(TmdbTvService);
+  peopleService = inject(TmdbPeopleService);
   watchlistService = inject(WatchlistService);
 
   heroIndex = signal(0);
 
-  heroes = computed(() => this.tmdbService.trendingAll().slice(0, 5));
+  heroes = computed(() => this.movieService.trendingAll().slice(0, 5));
   currentHero = computed(() => this.heroes()[this.heroIndex()] ?? null);
 
   heroDetailRoute = computed(() => {
@@ -41,21 +45,21 @@ export class HomePage {
 
   filteredTrending = computed(() => {
     const tab = this.trendingTab();
-    const all = this.tmdbService.trendingAll();
+    const all = this.movieService.trendingAll();
     if (tab === 'all') return all;
     return all.filter((m) => m.mediaType === tab);
   });
 
   constructor() {
-    this.tmdbService.fetchGenres();
-    this.tmdbService.fetchTvGenres();
-    this.tmdbService.fetchTrendingAll();
-    this.tmdbService.fetchPopular();
-    this.tmdbService.fetchPopularTv();
-    this.tmdbService.fetchNowPlaying();
-    this.tmdbService.fetchUpcoming();
-    this.tmdbService.fetchTopRated();
-    this.tmdbService.fetchPopularPeople();
+    this.movieService.fetchGenres();
+    this.tvService.fetchTvGenres();
+    this.movieService.fetchTrendingAll();
+    this.movieService.fetchPopular();
+    this.tvService.fetchPopularTv();
+    this.movieService.fetchNowPlaying();
+    this.movieService.fetchUpcoming();
+    this.movieService.fetchTopRated();
+    this.peopleService.fetchPopularPeople();
   }
 
   prevHero(): void {
@@ -88,7 +92,7 @@ export class HomePage {
     this.watchlistService.add(movie);
   }
 
-  personKnownFor(person: ReturnType<typeof this.tmdbService.popularPeople>[number]): string {
+  personKnownFor(person: TmdbPersonPopular): string {
     return person.known_for
       .slice(0, 2)
       .map((k) => k.title ?? k.name ?? '')
@@ -97,7 +101,7 @@ export class HomePage {
   }
 
   personPhotoUrl(profilePath: string | null): string {
-    return this.tmdbService.imageUrl(profilePath, 'w185');
+    return this.peopleService.imageUrl(profilePath, 'w185');
   }
 
   trackByTmdbId(_: number, item: TmdbMovie): number {

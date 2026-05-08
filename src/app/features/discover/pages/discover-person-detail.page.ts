@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
-import { TmdbService } from '../../../core/services/tmdb.service';
+import { TmdbPeopleService } from '../../../core/services/tmdb-people.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
 
 @Component({
@@ -14,7 +14,7 @@ import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-car
   styleUrl: './discover-person-detail.page.scss',
 })
 export class DiscoverPersonDetailPage {
-  tmdbService = inject(TmdbService);
+  peopleService = inject(TmdbPeopleService);
   location = inject(Location);
   private route = inject(ActivatedRoute);
 
@@ -33,8 +33,8 @@ export class DiscoverPersonDetailPage {
     effect(() => {
       const id = this.personId();
       if (!id) return;
-      this.tmdbService.fetchPersonDetail(id);
-      this.tmdbService.fetchPersonCredits(id);
+      this.peopleService.fetchPersonDetail(id);
+      this.peopleService.fetchPersonCredits(id);
     });
   }
 

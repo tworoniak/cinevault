@@ -65,25 +65,25 @@
       <section class="discover-page__section">
         <h2 class="discover-page__section-title">Browse Results</h2>
 
-        @if (tmdbService.discoverLoading() && tmdbService.discoverResults().length === 0) {
+        @if (movieService.discoverLoading() && movieService.discoverResults().length === 0) {
           <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
-        } @else if (tmdbService.discoverError()) {
-          <p class="discover-page__error">{{ tmdbService.discoverError() }}</p>
-        } @else if (tmdbService.discoverResults().length) {
+        } @else if (movieService.discoverError()) {
+          <p class="discover-page__error">{{ movieService.discoverError() }}</p>
+        } @else if (movieService.discoverResults().length) {
           <div class="discover-page__grid">
-            @for (movie of tmdbService.discoverResults(); track movie.tmdbId) {
+            @for (movie of movieService.discoverResults(); track movie.tmdbId) {
               <app-tmdb-card [movie]="movie" />
             }
           </div>
           @if (
-            !tmdbService.discoverLoading() &&
-            tmdbService.discoverPage() < tmdbService.discoverTotalPages()
+            !movieService.discoverLoading() &&
+            movieService.discoverPage() < movieService.discoverTotalPages()
           ) {
             <div class="discover-section__load-more">
               <button class="discover__load-more-btn" (click)="loadMoreDiscover()">Load More</button>
             </div>
           }
-          @if (tmdbService.discoverLoading()) {
+          @if (movieService.discoverLoading()) {
             <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
           }
         } @else {
@@ -95,25 +95,25 @@
     <section class="discover-page__section">
       <h2 class="discover-page__section-title">Trending This Week</h2>
 
-      @if (tmdbService.trendingLoading() && tmdbService.trending().length === 0) {
+      @if (movieService.trendingLoading() && movieService.trending().length === 0) {
         <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
-      } @else if (tmdbService.trendingError()) {
-        <p class="discover-page__error">{{ tmdbService.trendingError() }}</p>
+      } @else if (movieService.trendingError()) {
+        <p class="discover-page__error">{{ movieService.trendingError() }}</p>
       } @else {
         <div class="discover-page__grid">
-          @for (movie of tmdbService.trending(); track movie.tmdbId) {
+          @for (movie of movieService.trending(); track movie.tmdbId) {
             <app-tmdb-card [movie]="movie" />
           }
         </div>
         @if (
-          !tmdbService.trendingLoading() &&
-          tmdbService.trendingPage() < tmdbService.trendingTotalPages()
+          !movieService.trendingLoading() &&
+          movieService.trendingPage() < movieService.trendingTotalPages()
         ) {
           <div class="discover-section__load-more">
             <button class="discover__load-more-btn" (click)="loadMoreTrending()">Load More</button>
           </div>
         }
-        @if (tmdbService.trendingLoading() && tmdbService.trending().length > 0) {
+        @if (movieService.trendingLoading() && movieService.trending().length > 0) {
           <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
         }
       }
@@ -122,25 +122,25 @@
     <section class="discover-page__section">
       <h2 class="discover-page__section-title">Popular Right Now</h2>
 
-      @if (tmdbService.popularLoading() && tmdbService.popular().length === 0) {
+      @if (movieService.popularLoading() && movieService.popular().length === 0) {
         <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
-      } @else if (tmdbService.popularError()) {
-        <p class="discover-page__error">{{ tmdbService.popularError() }}</p>
+      } @else if (movieService.popularError()) {
+        <p class="discover-page__error">{{ movieService.popularError() }}</p>
       } @else {
         <div class="discover-page__grid">
-          @for (movie of tmdbService.popular(); track movie.tmdbId) {
+          @for (movie of movieService.popular(); track movie.tmdbId) {
             <app-tmdb-card [movie]="movie" />
           }
         </div>
         @if (
-          !tmdbService.popularLoading() &&
-          tmdbService.popularPage() < tmdbService.popularTotalPages()
+          !movieService.popularLoading() &&
+          movieService.popularPage() < movieService.popularTotalPages()
         ) {
           <div class="discover-section__load-more">
             <button class="discover__load-more-btn" (click)="loadMorePopular()">Load More</button>
           </div>
         }
-        @if (tmdbService.popularLoading() && tmdbService.popular().length > 0) {
+        @if (movieService.popularLoading() && movieService.popular().length > 0) {
           <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
         }
       }
@@ -149,25 +149,25 @@
     <section class="discover-page__section">
       <h2 class="discover-page__section-title">Top Rated</h2>
 
-      @if (tmdbService.topRatedLoading() && tmdbService.topRated().length === 0) {
+      @if (movieService.topRatedLoading() && movieService.topRated().length === 0) {
         <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
-      } @else if (tmdbService.topRatedError()) {
-        <p class="discover-page__error">{{ tmdbService.topRatedError() }}</p>
+      } @else if (movieService.topRatedError()) {
+        <p class="discover-page__error">{{ movieService.topRatedError() }}</p>
       } @else {
         <div class="discover-page__grid">
-          @for (movie of tmdbService.topRated(); track movie.tmdbId) {
+          @for (movie of movieService.topRated(); track movie.tmdbId) {
             <app-tmdb-card [movie]="movie" />
           }
         </div>
         @if (
-          !tmdbService.topRatedLoading() &&
-          tmdbService.topRatedPage() < tmdbService.topRatedTotalPages()
+          !movieService.topRatedLoading() &&
+          movieService.topRatedPage() < movieService.topRatedTotalPages()
         ) {
           <div class="discover-section__load-more">
             <button class="discover__load-more-btn" (click)="loadMoreTopRated()">Load More</button>
           </div>
         }
-        @if (tmdbService.topRatedLoading() && tmdbService.topRated().length > 0) {
+        @if (movieService.topRatedLoading() && movieService.topRated().length > 0) {
           <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
         }
       }
@@ -176,25 +176,25 @@
     <section class="discover-page__section">
       <h2 class="discover-page__section-title">Now Playing</h2>
 
-      @if (tmdbService.nowPlayingLoading() && tmdbService.nowPlaying().length === 0) {
+      @if (movieService.nowPlayingLoading() && movieService.nowPlaying().length === 0) {
         <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
-      } @else if (tmdbService.nowPlayingError()) {
-        <p class="discover-page__error">{{ tmdbService.nowPlayingError() }}</p>
+      } @else if (movieService.nowPlayingError()) {
+        <p class="discover-page__error">{{ movieService.nowPlayingError() }}</p>
       } @else {
         <div class="discover-page__grid">
-          @for (movie of tmdbService.nowPlaying(); track movie.tmdbId) {
+          @for (movie of movieService.nowPlaying(); track movie.tmdbId) {
             <app-tmdb-card [movie]="movie" />
           }
         </div>
         @if (
-          !tmdbService.nowPlayingLoading() &&
-          tmdbService.nowPlayingPage() < tmdbService.nowPlayingTotalPages()
+          !movieService.nowPlayingLoading() &&
+          movieService.nowPlayingPage() < movieService.nowPlayingTotalPages()
         ) {
           <div class="discover-section__load-more">
             <button class="discover__load-more-btn" (click)="loadMoreNowPlaying()">Load More</button>
           </div>
         }
-        @if (tmdbService.nowPlayingLoading() && tmdbService.nowPlaying().length > 0) {
+        @if (movieService.nowPlayingLoading() && movieService.nowPlaying().length > 0) {
           <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
         }
       }
@@ -203,25 +203,25 @@
     <section class="discover-page__section">
       <h2 class="discover-page__section-title">Coming Soon</h2>
 
-      @if (tmdbService.upcomingLoading() && tmdbService.upcoming().length === 0) {
+      @if (movieService.upcomingLoading() && movieService.upcoming().length === 0) {
         <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
-      } @else if (tmdbService.upcomingError()) {
-        <p class="discover-page__error">{{ tmdbService.upcomingError() }}</p>
+      } @else if (movieService.upcomingError()) {
+        <p class="discover-page__error">{{ movieService.upcomingError() }}</p>
       } @else {
         <div class="discover-page__grid">
-          @for (movie of tmdbService.upcoming(); track movie.tmdbId) {
+          @for (movie of movieService.upcoming(); track movie.tmdbId) {
             <app-tmdb-card [movie]="movie" />
           }
         </div>
         @if (
-          !tmdbService.upcomingLoading() &&
-          tmdbService.upcomingPage() < tmdbService.upcomingTotalPages()
+          !movieService.upcomingLoading() &&
+          movieService.upcomingPage() < movieService.upcomingTotalPages()
         ) {
           <div class="discover-section__load-more">
             <button class="discover__load-more-btn" (click)="loadMoreUpcoming()">Load More</button>
           </div>
         }
-        @if (tmdbService.upcomingLoading() && tmdbService.upcoming().length > 0) {
+        @if (movieService.upcomingLoading() && movieService.upcoming().length > 0) {
           <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
         }
       }
@@ -236,25 +236,25 @@
     <section class="discover-page__section">
       <h2 class="discover-page__section-title">Trending TV This Week</h2>
 
-      @if (tmdbService.trendingTvLoading() && tmdbService.trendingTv().length === 0) {
+      @if (tvService.trendingTvLoading() && tvService.trendingTv().length === 0) {
         <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
-      } @else if (tmdbService.trendingTvError()) {
-        <p class="discover-page__error">{{ tmdbService.trendingTvError() }}</p>
+      } @else if (tvService.trendingTvError()) {
+        <p class="discover-page__error">{{ tvService.trendingTvError() }}</p>
       } @else {
         <div class="discover-page__grid">
-          @for (show of tmdbService.trendingTv(); track show.tmdbId) {
+          @for (show of tvService.trendingTv(); track show.tmdbId) {
             <app-tmdb-card [movie]="show" />
           }
         </div>
         @if (
-          !tmdbService.trendingTvLoading() &&
-          tmdbService.trendingTvPage() < tmdbService.trendingTvTotalPages()
+          !tvService.trendingTvLoading() &&
+          tvService.trendingTvPage() < tvService.trendingTvTotalPages()
         ) {
           <div class="discover-section__load-more">
             <button class="discover__load-more-btn" (click)="loadMoreTrendingTv()">Load More</button>
           </div>
         }
-        @if (tmdbService.trendingTvLoading() && tmdbService.trendingTv().length > 0) {
+        @if (tvService.trendingTvLoading() && tvService.trendingTv().length > 0) {
           <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
         }
       }
@@ -263,25 +263,25 @@
     <section class="discover-page__section">
       <h2 class="discover-page__section-title">Popular TV Shows</h2>
 
-      @if (tmdbService.popularTvLoading() && tmdbService.popularTv().length === 0) {
+      @if (tvService.popularTvLoading() && tvService.popularTv().length === 0) {
         <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
-      } @else if (tmdbService.popularTvError()) {
-        <p class="discover-page__error">{{ tmdbService.popularTvError() }}</p>
+      } @else if (tvService.popularTvError()) {
+        <p class="discover-page__error">{{ tvService.popularTvError() }}</p>
       } @else {
         <div class="discover-page__grid">
-          @for (show of tmdbService.popularTv(); track show.tmdbId) {
+          @for (show of tvService.popularTv(); track show.tmdbId) {
             <app-tmdb-card [movie]="show" />
           }
         </div>
         @if (
-          !tmdbService.popularTvLoading() &&
-          tmdbService.popularTvPage() < tmdbService.popularTvTotalPages()
+          !tvService.popularTvLoading() &&
+          tvService.popularTvPage() < tvService.popularTvTotalPages()
         ) {
           <div class="discover-section__load-more">
             <button class="discover__load-more-btn" (click)="loadMorePopularTv()">Load More</button>
           </div>
         }
-        @if (tmdbService.popularTvLoading() && tmdbService.popularTv().length > 0) {
+        @if (tvService.popularTvLoading() && tvService.popularTv().length > 0) {
           <div class="discover-page__spinner" role="status" aria-label="Loading more"></div>
         }
       }

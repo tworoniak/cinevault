@@ -1,5 +1,5 @@
 <div class="discover-detail">
-  @if (tmdbService.tvDetail(); as detail) {
+  @if (tvService.tvDetail(); as detail) {
     @if (detail.backdrop) {
       <div class="discover-detail__backdrop">
         <img [src]="detail.backdrop" [alt]="detail.title + ' backdrop'" class="discover-detail__backdrop-img" />
@@ -12,15 +12,15 @@
     <div class="cv-container">
       <a class="discover-detail__back" routerLink="/discover" [queryParams]="{ type: 'tv' }">← Back</a>
 
-      @if (tmdbService.tvDetailLoading()) {
+      @if (tvService.tvDetailLoading()) {
         <div class="discover-detail__spinner" role="status" aria-label="Loading"></div>
       }
 
-      @if (tmdbService.tvDetailError()) {
-        <p class="discover-detail__error">{{ tmdbService.tvDetailError() }}</p>
+      @if (tvService.tvDetailError()) {
+        <p class="discover-detail__error">{{ tvService.tvDetailError() }}</p>
       }
 
-      @if (tmdbService.tvDetail(); as detail) {
+      @if (tvService.tvDetail(); as detail) {
         <div class="discover-detail__hero">
           <div class="discover-detail__poster-wrap">
             @if (detail.poster !== '' && !posterError()) {
@@ -159,7 +159,7 @@
                     <li>
                       <img
                         class="detail-page__provider-logo"
-                        [src]="tmdbService.imageUrl(p.logo_path, 'w92')"
+                        [src]="tvService.imageUrl(p.logo_path, 'w92')"
                         [alt]="p.provider_name"
                         [title]="p.provider_name"
                       />
@@ -177,7 +177,7 @@
                     <li>
                       <img
                         class="detail-page__provider-logo"
-                        [src]="tmdbService.imageUrl(p.logo_path, 'w92')"
+                        [src]="tvService.imageUrl(p.logo_path, 'w92')"
                         [alt]="p.provider_name"
                         [title]="p.provider_name"
                       />

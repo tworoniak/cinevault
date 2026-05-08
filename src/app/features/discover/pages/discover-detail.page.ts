@@ -1,7 +1,7 @@
 import { Component, inject, effect, computed, signal, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TmdbService } from '../../../core/services/tmdb.service';
+import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
 import { Movie } from '../../../models/movie.model';
 import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
@@ -15,7 +15,7 @@ import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-car
 })
 export class DiscoverDetailPage {
   private route = inject(ActivatedRoute);
-  tmdbService = inject(TmdbService);
+  movieService = inject(TmdbMovieService);
   watchlistService = inject(WatchlistService);
 
   private params = toSignal(this.route.paramMap);
@@ -24,10 +24,10 @@ export class DiscoverDetailPage {
 
   @ViewChild('trailerBackdrop') private trailerBackdropEl?: ElementRef<HTMLDivElement>;
 
-  canAddToWatchlist = computed(() => !!this.tmdbService.movieDetail());
+  canAddToWatchlist = computed(() => !!this.movieService.movieDetail());
 
   providers = computed(() => {
-    const wp = this.tmdbService.watchProviders();
+    const wp = this.movieService.watchProviders();
     if (!wp) return null;
     return {
       streaming: (wp.flatrate ?? []).slice(0, 6),
@@ -37,22 +37,22 @@ export class DiscoverDetailPage {
   });
 
   isInWatchlist = computed(() => {
-    const detail = this.tmdbService.movieDetail();
+    const detail = this.movieService.movieDetail();
     if (!detail) return false;
     return this.watchlistService.watchlistIds().has(detail.tmdbId);
   });
 
   constructor() {
-    this.tmdbService.watchProviders.set(null);
+    this.movieService.watchProviders.set(null);
     effect(() => {
       const numId = Number(this.params()?.get('tmdbId'));
       if (!numId || !Number.isFinite(numId)) return;
       this.posterError.set(false);
       this.showTrailer.set(false);
-      this.tmdbService.fetchMovieDetail(numId);
-      this.tmdbService.fetchVideos(numId);
-      this.tmdbService.fetchWatchProviders(numId);
-      this.tmdbService.fetchSimilar(numId);
+      this.movieService.fetchMovieDetail(numId);
+      this.movieService.fetchVideos(numId);
+      this.movieService.fetchWatchProviders(numId);
+      this.movieService.fetchSimilar(numId);
     });
   }
 
@@ -66,7 +66,7 @@ export class DiscoverDetailPage {
   }
 
   addToWatchlist() {
-    const detail = this.tmdbService.movieDetail();
+    const detail = this.movieService.movieDetail();
     if (!detail) return;
     const movie: Movie = {
       tmdbId: detail.tmdbId,

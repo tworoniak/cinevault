@@ -2,21 +2,21 @@
   <div class="cv-container">
     <button class="person-detail__back" (click)="location.back()">← Back</button>
 
-    @if (tmdbService.personDetailLoading()) {
+    @if (peopleService.personDetailLoading()) {
       <div class="person-detail__spinner" role="status" aria-label="Loading"></div>
     }
 
-    @if (tmdbService.personDetailError()) {
-      <p class="person-detail__error">{{ tmdbService.personDetailError() }}</p>
+    @if (peopleService.personDetailError()) {
+      <p class="person-detail__error">{{ peopleService.personDetailError() }}</p>
     }
 
-    @if (tmdbService.personDetail(); as person) {
+    @if (peopleService.personDetail(); as person) {
       <div class="person-detail__hero">
         <div class="person-detail__photo-wrap">
           @if (person.profile_path) {
             <img
               class="person-detail__photo"
-              [src]="tmdbService.imageUrl(person.profile_path, 'w342')"
+              [src]="peopleService.imageUrl(person.profile_path, 'w342')"
               [alt]="person.name"
             />
           } @else {
@@ -60,11 +60,11 @@
         </div>
       </div>
 
-      @if (tmdbService.personCredits().length) {
+      @if (peopleService.personCredits().length) {
         <section class="person-detail__credits" aria-label="Filmography">
           <h2 class="person-detail__credits-heading">Known For</h2>
           <div class="person-detail__credits-grid">
-            @for (movie of tmdbService.personCredits(); track movie.tmdbId) {
+            @for (movie of peopleService.personCredits(); track movie.tmdbId) {
               <app-tmdb-card [movie]="movie" />
             }
           </div>

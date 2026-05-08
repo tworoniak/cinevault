@@ -1,7 +1,7 @@
 import { Component, inject, effect, computed, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TmdbService } from '../../../core/services/tmdb.service';
+import { TmdbTvService } from '../../../core/services/tmdb-tv.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
 import { Movie } from '../../../models/movie.model';
 
@@ -13,14 +13,14 @@ import { Movie } from '../../../models/movie.model';
 })
 export class DiscoverTvDetailPage {
   private route = inject(ActivatedRoute);
-  tmdbService = inject(TmdbService);
+  tvService = inject(TmdbTvService);
   watchlistService = inject(WatchlistService);
 
   private params = toSignal(this.route.paramMap);
   posterError = signal(false);
 
   providers = computed(() => {
-    const wp = this.tmdbService.watchProviders();
+    const wp = this.tvService.tvWatchProviders();
     if (!wp) return null;
     return {
       streaming: (wp.flatrate ?? []).slice(0, 6),
@@ -30,25 +30,23 @@ export class DiscoverTvDetailPage {
   });
 
   isInWatchlist = computed(() => {
-    const detail = this.tmdbService.tvDetail();
+    const detail = this.tvService.tvDetail();
     if (!detail) return false;
     return this.watchlistService.watchlistIds().has(detail.tmdbId);
   });
 
   constructor() {
-    this.tmdbService.watchProviders.set(null);
-    this.tmdbService.similar.set([]);
     effect(() => {
       const numId = Number(this.params()?.get('tmdbId'));
       if (!numId || !Number.isFinite(numId)) return;
       this.posterError.set(false);
-      this.tmdbService.fetchTvDetail(numId);
-      this.tmdbService.fetchTvWatchProviders(numId);
+      this.tvService.fetchTvDetail(numId);
+      this.tvService.fetchTvWatchProviders(numId);
     });
   }
 
   addToWatchlist(): void {
-    const detail = this.tmdbService.tvDetail();
+    const detail = this.tvService.tvDetail();
     if (!detail) return;
     const movie: Movie = {
       tmdbId: detail.tmdbId,

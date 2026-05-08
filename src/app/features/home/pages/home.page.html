@@ -1,5 +1,5 @@
 <!-- Hero Banner -->
-@if (tmdbService.trendingAllLoading() && !currentHero()) {
+@if (movieService.trendingAllLoading() && !currentHero()) {
   <div class="hero hero--loading">
     <div class="hero__spinner"></div>
   </div>
@@ -109,7 +109,7 @@
 
   <!-- Popular Celebrities -->
   <app-horizontal-carousel title="Popular Celebrities">
-    @for (person of tmdbService.popularPeople(); track person.id) {
+    @for (person of peopleService.popularPeople(); track person.id) {
       <a
         class="home__person-card"
         [routerLink]="['/discover', 'person', person.id]"
@@ -153,7 +153,7 @@
 
   <!-- Popular Movies -->
   <app-horizontal-carousel title="Popular Right Now" [seeAllRoute]="['/discover']">
-    @for (movie of tmdbService.popular(); track movie.tmdbId) {
+    @for (movie of movieService.popular(); track movie.tmdbId) {
       <div class="home__card-wrap">
         <app-tmdb-card [movie]="movie" />
       </div>
@@ -162,7 +162,7 @@
 
   <!-- Popular TV -->
   <app-horizontal-carousel title="Popular TV Shows" [seeAllRoute]="['/discover']">
-    @for (movie of tmdbService.popularTv(); track movie.tmdbId) {
+    @for (movie of tvService.popularTv(); track movie.tmdbId) {
       <div class="home__card-wrap">
         <app-tmdb-card [movie]="movie" />
       </div>
@@ -171,7 +171,7 @@
 
   <!-- Now Playing -->
   <app-horizontal-carousel title="Now Playing in Theaters">
-    @for (movie of tmdbService.nowPlaying(); track movie.tmdbId) {
+    @for (movie of movieService.nowPlaying(); track movie.tmdbId) {
       <div class="home__card-wrap">
         <app-tmdb-card [movie]="movie" />
       </div>
@@ -180,7 +180,7 @@
 
   <!-- Coming Soon -->
   <app-horizontal-carousel title="Coming Soon">
-    @for (movie of tmdbService.upcoming(); track movie.tmdbId) {
+    @for (movie of movieService.upcoming(); track movie.tmdbId) {
       <div class="home__card-wrap home__card-wrap--with-date">
         <app-tmdb-card [movie]="movie" />
         @if (movie.releaseDate) {
@@ -192,7 +192,7 @@
 
   <!-- Top Rated -->
   <app-horizontal-carousel title="Top Rated of All Time">
-    @for (movie of tmdbService.topRated(); track movie.tmdbId) {
+    @for (movie of movieService.topRated(); track movie.tmdbId) {
       <div class="home__card-wrap">
         <app-tmdb-card [movie]="movie" />
       </div>

@@ -1,5 +1,5 @@
 <div class="discover-detail">
-  @if (tmdbService.movieDetail(); as detail) {
+  @if (movieService.movieDetail(); as detail) {
     @if (detail.backdrop) {
       <div class="discover-detail__backdrop">
         <img [src]="detail.backdrop" [alt]="detail.title + ' backdrop'" class="discover-detail__backdrop-img" />
@@ -12,15 +12,15 @@
     <div class="cv-container">
       <a class="discover-detail__back" routerLink="/discover">← Back</a>
 
-      @if (tmdbService.detailLoading()) {
+      @if (movieService.detailLoading()) {
         <div class="discover-detail__spinner" role="status" aria-label="Loading"></div>
       }
 
-      @if (tmdbService.detailError()) {
-        <p class="discover-detail__error">{{ tmdbService.detailError() }}</p>
+      @if (movieService.detailError()) {
+        <p class="discover-detail__error">{{ movieService.detailError() }}</p>
       }
 
-      @if (tmdbService.movieDetail(); as detail) {
+      @if (movieService.movieDetail(); as detail) {
         <div class="discover-detail__hero">
           <div class="discover-detail__poster-wrap">
             @if (detail.poster !== '' && !posterError()) {
@@ -85,7 +85,7 @@
             }
 
             <div class="discover-detail__actions">
-              @if (tmdbService.trailerKey()) {
+              @if (movieService.trailerKey()) {
                 <button class="discover-detail__btn discover-detail__btn--trailer" (click)="openTrailer()">
                   ▶ Watch Trailer
                 </button>
@@ -146,12 +146,12 @@
           </section>
         }
 
-        @if (tmdbService.similar().length) {
+        @if (movieService.similar().length) {
           <section class="detail-page__similar" aria-label="More like this">
             <h2 class="detail-page__similar-heading">More Like This</h2>
 
             <ul class="detail-page__similar-list">
-              @for (movie of tmdbService.similar(); track movie.tmdbId) {
+              @for (movie of movieService.similar(); track movie.tmdbId) {
                 <li class="detail-page__similar-item">
                   <app-tmdb-card [movie]="movie" />
                 </li>
@@ -172,7 +172,7 @@
                     <li>
                       <img
                         class="detail-page__provider-logo"
-                        [src]="tmdbService.imageUrl(p.logo_path, 'w92')"
+                        [src]="movieService.imageUrl(p.logo_path, 'w92')"
                         [alt]="p.provider_name"
                         [title]="p.provider_name"
                       />
@@ -190,7 +190,7 @@
                     <li>
                       <img
                         class="detail-page__provider-logo"
-                        [src]="tmdbService.imageUrl(p.logo_path, 'w92')"
+                        [src]="movieService.imageUrl(p.logo_path, 'w92')"
                         [alt]="p.provider_name"
                         [title]="p.provider_name"
                       />
@@ -225,7 +225,7 @@
         <button class="trailer-modal__close" (click)="closeTrailer()" aria-label="Close trailer">✕</button>
         <iframe
           class="trailer-modal__iframe"
-          [src]="'https://www.youtube.com/embed/' + tmdbService.trailerKey() + '?autoplay=1' | safe:'resourceUrl'"
+          [src]="'https://www.youtube.com/embed/' + movieService.trailerKey() + '?autoplay=1' | safe:'resourceUrl'"
           allow="autoplay; encrypted-media"
           allowfullscreen
           title="Movie trailer"

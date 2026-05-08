@@ -1,7 +1,8 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TmdbService } from '../../../core/services/tmdb.service';
+import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
+import { TmdbTvService } from '../../../core/services/tmdb-tv.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
 
 @Component({
@@ -12,7 +13,8 @@ import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-car
   styleUrl: './discover.page.scss',
 })
 export class DiscoverPage {
-  tmdbService = inject(TmdbService);
+  movieService = inject(TmdbMovieService);
+  tvService = inject(TmdbTvService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -27,7 +29,7 @@ export class DiscoverPage {
   );
 
   genreList = computed(() =>
-    Array.from(this.tmdbService.genres().entries())
+    Array.from(this.movieService.genres().entries())
       .map(([id, name]) => ({ id, name }))
       .sort((a, b) => a.name.localeCompare(b.name))
   );
@@ -45,24 +47,24 @@ export class DiscoverPage {
       this.activeTab.set(tab);
       if (tab === 'tv' && !this.tvDataFetched) {
         this.tvDataFetched = true;
-        this.tmdbService.fetchTvGenres();
-        this.tmdbService.fetchTrendingTv();
-        this.tmdbService.fetchPopularTv();
+        this.tvService.fetchTvGenres();
+        this.tvService.fetchTrendingTv();
+        this.tvService.fetchPopularTv();
       }
     });
 
-    this.tmdbService.fetchGenres();
-    this.tmdbService.fetchTrending();
-    this.tmdbService.fetchPopular();
-    this.tmdbService.fetchTopRated();
-    this.tmdbService.fetchNowPlaying();
-    this.tmdbService.fetchUpcoming();
+    this.movieService.fetchGenres();
+    this.movieService.fetchTrending();
+    this.movieService.fetchPopular();
+    this.movieService.fetchTopRated();
+    this.movieService.fetchNowPlaying();
+    this.movieService.fetchUpcoming();
 
     effect(() => {
       const genres = this.selectedGenres();
       const sort = this.sortBy();
       if (genres.length || sort !== 'popularity.desc') {
-        this.tmdbService.fetchDiscover({ genreIds: genres, sortBy: sort });
+        this.movieService.fetchDiscover({ genreIds: genres, sortBy: sort });
       }
     });
   }
@@ -84,15 +86,15 @@ export class DiscoverPage {
   clearFilters(): void {
     this.selectedGenres.set([]);
     this.sortBy.set('popularity.desc');
-    this.tmdbService.discoverResults.set([]);
+    this.movieService.discoverResults.set([]);
   }
 
-  loadMoreTrending = () => this.tmdbService.loadMoreTrending();
-  loadMorePopular = () => this.tmdbService.loadMorePopular();
-  loadMoreTopRated = () => this.tmdbService.loadMoreTopRated();
-  loadMoreNowPlaying = () => this.tmdbService.loadMoreNowPlaying();
-  loadMoreUpcoming = () => this.tmdbService.loadMoreUpcoming();
-  loadMoreDiscover = () => this.tmdbService.loadMoreDiscover();
-  loadMoreTrendingTv = () => this.tmdbService.loadMoreTrendingTv();
-  loadMorePopularTv = () => this.tmdbService.loadMorePopularTv();
+  loadMoreTrending = () => this.movieService.loadMoreTrending();
+  loadMorePopular = () => this.movieService.loadMorePopular();
+  loadMoreTopRated = () => this.movieService.loadMoreTopRated();
+  loadMoreNowPlaying = () => this.movieService.loadMoreNowPlaying();
+  loadMoreUpcoming = () => this.movieService.loadMoreUpcoming();
+  loadMoreDiscover = () => this.movieService.loadMoreDiscover();
+  loadMoreTrendingTv = () => this.tvService.loadMoreTrendingTv();
+  loadMorePopularTv = () => this.tvService.loadMorePopularTv();
 }
