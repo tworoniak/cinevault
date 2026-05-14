@@ -1,31 +1,30 @@
-# Current Feature — Feature 36: Skeleton Loading System
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a global shimmer animation utility to the SCSS base layer
-- Create a reusable `SkeletonCardComponent` that mirrors the `TmdbCardComponent` layout
-- Apply skeleton cards to all horizontal carousels on the Home page while data loads
-- Apply skeleton cards to all Discover page grids while data loads
-- Apply a skeleton hero to the Home page while `trendingAll` loads
-- Apply a skeleton hero to movie and TV detail pages while detail data loads
-- Apply a skeleton layout to the news section while news loads
+<!-- Add goals here -->
 
 ## Notes
 
-- Branch: `feature/skeleton-loading`
-- `.skeleton` CSS utility is the only shared primitive — all layout shapes are component-local
-- `aria-hidden="true"` on every skeleton root — screen readers skip them entirely
-- Skeletons replace the initial-load spinner only; error states are untouched
-- `skeletonItems = Array(6).fill(0)` for home carousels, `Array(8).fill(0)` for discover grids
-- Detail page skeletons replace the existing CSS spinner div — remove spinner markup when adding skeleton
-- Check `angular.json` style budgets after adding detail page SCSS — may need a bump
-- "From Your Watchlist" and "Born Today" carousels — skip skeleton (local/low-latency data)
+<!-- Add notes here -->
 
 ## History
+
+### Feature 36 — Skeleton Loading System
+
+- Global `@keyframes shimmer` + `.skeleton` utility class appended to `src/styles/base/_reset.scss` — sweeps a gradient across using existing `--cv-bg-elevated`/`--cv-bg-surface` tokens, no new colour variables
+- `SkeletonCardComponent` created at `src/app/shared/components/skeleton-card/` (ts/html/scss) — mirrors `TmdbCardComponent` layout with 2:3 poster area, two title lines, a meta row; `aria-hidden="true"` on the root
+- Home page hero: `hero--loading` spinner replaced with `hero--skeleton` shimmer layout (bg fill + title + subtitle + two action buttons); `hero__skeleton-*` styles added to `home.page.scss`
+- 7 home carousels updated with `@if (loading) { skeleton row } @else { real cards }` pattern: Trending This Week, Popular Celebrities, Popular Right Now, Popular TV Shows, Now Playing, Coming Soon, Top Rated; `skeletonItems = Array(6).fill(0)` added to `HomePage`; `SkeletonCardComponent` imported
+- Popular Celebrities carousel: skeleton shown while `popularPeopleLoading()` is true; person cards appear in the `@else` branch (no `@if/else` wrapping needed since the cards were already ungated)
+- 7 discover section grids updated with skeleton grids replacing initial-load spinners: Trending, Popular, Top Rated, Now Playing, Upcoming (movies), Trending TV, Popular TV; `skeletonItems = Array(8).fill(0)` added to `DiscoverPage`; `SkeletonCardComponent` imported
+- Movie detail page: `discover-detail__spinner` replaced with full hero skeleton (backdrop block + poster + meta lines + action buttons); `discover-detail__skeleton-*` styles added to `discover-detail.page.scss`
+- TV detail page: same skeleton pattern applied using `tvService.tvDetailLoading()`; `discover-detail__skeleton-*` styles added to `discover-tv-detail.page.scss`
+- News section: `news-section__spinner` replaced with `news-skeleton` layout (lead rectangle + 6-card grid); `news-skeleton__*` styles added to `home.page.scss`
 
 ### Feature 35 — Low Priority Fixes (L1–L12)
 
