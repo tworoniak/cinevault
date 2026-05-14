@@ -57,7 +57,7 @@
             }
           </div>
 
-          <div class="hero__nav" aria-label="Hero navigation">
+          <div class="hero__nav" aria-label="Featured content slideshow navigation">
             <button class="hero__nav-arrow" (click)="prevHero()" aria-label="Previous">‹</button>
             @for (h of heroes(); track h.tmdbId; let i = $index) {
               <button
@@ -200,7 +200,7 @@
             }
           </div>
           <p class="home__person-name">{{ person.name }}</p>
-          <p class="home__person-age">{{ person.age }}</p>
+          <p class="home__person-age" [attr.aria-label]="'Turns ' + person.age + ' today'">{{ person.age }}</p>
         </a>
       }
     </app-horizontal-carousel>
@@ -218,6 +218,7 @@
           <button
             class="news-filter__btn"
             [class.news-filter__btn--active]="newsService.activeCategory() === cat.id"
+            [attr.aria-pressed]="newsService.activeCategory() === cat.id"
             (click)="newsService.selectCategory(cat.id)"
           >{{ cat.label }}</button>
         }

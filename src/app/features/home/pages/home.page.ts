@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal, DestroyRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
 import { TmdbTvService } from '../../../core/services/tmdb-tv.service';
 import { TmdbPeopleService } from '../../../core/services/tmdb-people.service';
@@ -27,6 +28,7 @@ export class HomePage {
   watchlistService = inject(WatchlistService);
   newsService = inject(EntertainmentNewsService);
   private destroyRef = inject(DestroyRef);
+  private titleService = inject(Title);
 
   readonly newsCategories: { id: NewsCategory; label: string }[] = [
     { id: 'top', label: 'Top News' },
@@ -73,6 +75,7 @@ export class HomePage {
   });
 
   constructor() {
+    this.titleService.setTitle('CineVault');
     this.movieService.fetchGenres();
     this.tvService.fetchTvGenres();
     this.movieService.fetchTrendingAll();

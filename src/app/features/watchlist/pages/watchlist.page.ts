@@ -1,5 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { WatchlistService } from '../../../core/services/watchlist.service';
 import { MovieCardComponent } from '../../../shared/components/movie-card/movie-card.component';
 
@@ -11,6 +12,11 @@ import { MovieCardComponent } from '../../../shared/components/movie-card/movie-
 })
 export class WatchlistPage {
   watchlistService = inject(WatchlistService);
+  private titleService = inject(Title);
+
+  constructor() {
+    this.titleService.setTitle('Watchlist — CineVault');
+  }
 
   movies = computed(() => this.watchlistService.watchlist().filter((m) => m.type === 'movie'));
   series = computed(() => this.watchlistService.watchlist().filter((m) => m.type === 'series'));

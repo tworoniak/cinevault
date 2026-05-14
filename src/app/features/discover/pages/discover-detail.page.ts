@@ -1,6 +1,7 @@
 import { Component, inject, effect, computed, signal, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
@@ -19,6 +20,7 @@ export class DiscoverDetailPage {
   movieService = inject(TmdbMovieService);
   watchlistService = inject(WatchlistService);
   location = inject(Location);
+  private titleService = inject(Title);
 
   private params = toSignal(this.route.paramMap);
   posterError = signal(false);
@@ -57,6 +59,10 @@ export class DiscoverDetailPage {
       this.movieService.fetchVideos(numId);
       this.movieService.fetchWatchProviders(numId);
       this.movieService.fetchSimilar(numId);
+    });
+    effect(() => {
+      const detail = this.movieService.movieDetail();
+      if (detail) this.titleService.setTitle(`${detail.title} — CineVault`);
     });
   }
 

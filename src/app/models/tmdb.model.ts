@@ -146,7 +146,7 @@ export interface TmdbMovie {
   year: string;
   releaseDate?: string;
   poster: string;
-  backdrop: string;
+  backdrop?: string;
   rating: string;
   overview: string;
   genres?: string[];
@@ -272,6 +272,7 @@ export interface TmdbPersonPopularResponse {
   total_pages: number;
 }
 
+// TmdbPersonPopular shape matches the Person Search result shape — same TMDB endpoint response
 export interface TmdbPersonSearchResponse {
   results: TmdbPersonPopular[];
   total_results: number;
