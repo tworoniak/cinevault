@@ -16,8 +16,22 @@
     <div class="cv-container">
       <button class="discover-detail__back" (click)="location.back()">← Back</button>
 
-      @if (tvService.tvDetailLoading()) {
-        <div class="discover-detail__spinner" role="status" aria-label="Loading"></div>
+      @if (tvService.tvDetailLoading() && !tvService.tvDetail()) {
+        <div class="discover-detail__skeleton" aria-hidden="true">
+          <div class="discover-detail__skeleton-backdrop skeleton"></div>
+          <div class="discover-detail__skeleton-body">
+            <div class="discover-detail__skeleton-poster skeleton"></div>
+            <div class="discover-detail__skeleton-meta">
+              <div class="discover-detail__skeleton-title skeleton"></div>
+              <div class="discover-detail__skeleton-line skeleton"></div>
+              <div class="discover-detail__skeleton-line discover-detail__skeleton-line--short skeleton"></div>
+              <div class="discover-detail__skeleton-actions">
+                <div class="discover-detail__skeleton-btn skeleton"></div>
+                <div class="discover-detail__skeleton-btn skeleton"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       }
 
       @if (tvService.tvDetailError()) {

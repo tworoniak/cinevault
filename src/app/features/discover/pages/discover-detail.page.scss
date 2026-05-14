@@ -490,3 +490,67 @@
     width: 130px;
   }
 }
+
+// ─── Detail Hero Skeleton ──────────────────────────────────────────────────
+
+.discover-detail__skeleton {
+  position: relative;
+}
+
+.discover-detail__skeleton-backdrop {
+  height: 420px;
+  width: 100%;
+  border-radius: 0;
+
+  @include breakpoint-md {
+    height: 520px;
+  }
+}
+
+.discover-detail__skeleton-body {
+  max-width: 900px;
+  margin: var(--cv-space-6) auto;
+  padding: 0 var(--cv-space-5);
+  display: flex;
+  gap: var(--cv-space-6);
+}
+
+.discover-detail__skeleton-poster {
+  width: 200px;
+  flex-shrink: 0;
+  aspect-ratio: 2 / 3;
+}
+
+.discover-detail__skeleton-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cv-space-4);
+  padding-top: var(--cv-space-4);
+}
+
+.discover-detail__skeleton-title {
+  height: 2rem;
+  width: 65%;
+}
+
+.discover-detail__skeleton-line {
+  height: 1rem;
+  width: 80%;
+
+  &--short {
+    width: 45%;
+  }
+}
+
+.discover-detail__skeleton-actions {
+  display: flex;
+  gap: var(--cv-space-3);
+  margin-top: var(--cv-space-2);
+}
+
+.discover-detail__skeleton-btn {
+  height: 2.5rem;
+  width: 140px;
+  border-radius: var(--cv-radius-md);
+}

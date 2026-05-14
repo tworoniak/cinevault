@@ -8,6 +8,7 @@ import { TmdbPeopleService } from '../../../core/services/tmdb-people.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
 import { EntertainmentNewsService } from '../../../core/services/entertainment-news.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
+import { SkeletonCardComponent } from '../../../shared/components/skeleton-card/skeleton-card.component';
 import { HorizontalCarouselComponent } from '../../../shared/components/horizontal-carousel/horizontal-carousel.component';
 import { StripHtmlPipe } from '../../../shared/pipes/strip-html.pipe';
 import { Movie } from '../../../models/movie.model';
@@ -17,7 +18,7 @@ import { NewsCategory } from '../../../models/news.model';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, DatePipe, TmdbCardComponent, HorizontalCarouselComponent, StripHtmlPipe],
+  imports: [RouterLink, DatePipe, TmdbCardComponent, SkeletonCardComponent, HorizontalCarouselComponent, StripHtmlPipe],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
 })
@@ -29,6 +30,8 @@ export class HomePage {
   newsService = inject(EntertainmentNewsService);
   private destroyRef = inject(DestroyRef);
   private titleService = inject(Title);
+
+  readonly skeletonItems = Array(6).fill(0);
 
   readonly newsCategories: { id: NewsCategory; label: string }[] = [
     { id: 'top', label: 'Top News' },

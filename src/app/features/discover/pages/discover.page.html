@@ -96,7 +96,9 @@
       <h2 class="discover-page__section-title">Trending This Week</h2>
 
       @if (movieService.trendingLoading() && movieService.trending().length === 0) {
-        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+        <div class="discover-page__grid" aria-hidden="true">
+          @for (s of skeletonItems; track s) { <app-skeleton-card /> }
+        </div>
       } @else if (movieService.trendingError()) {
         <p class="discover-page__error">{{ movieService.trendingError() }}</p>
       } @else {
@@ -123,7 +125,9 @@
       <h2 class="discover-page__section-title">Popular Right Now</h2>
 
       @if (movieService.popularLoading() && movieService.popular().length === 0) {
-        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+        <div class="discover-page__grid" aria-hidden="true">
+          @for (s of skeletonItems; track s) { <app-skeleton-card /> }
+        </div>
       } @else if (movieService.popularError()) {
         <p class="discover-page__error">{{ movieService.popularError() }}</p>
       } @else {
@@ -150,7 +154,9 @@
       <h2 class="discover-page__section-title">Top Rated</h2>
 
       @if (movieService.topRatedLoading() && movieService.topRated().length === 0) {
-        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+        <div class="discover-page__grid" aria-hidden="true">
+          @for (s of skeletonItems; track s) { <app-skeleton-card /> }
+        </div>
       } @else if (movieService.topRatedError()) {
         <p class="discover-page__error">{{ movieService.topRatedError() }}</p>
       } @else {
@@ -177,7 +183,9 @@
       <h2 class="discover-page__section-title">Now Playing</h2>
 
       @if (movieService.nowPlayingLoading() && movieService.nowPlaying().length === 0) {
-        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+        <div class="discover-page__grid" aria-hidden="true">
+          @for (s of skeletonItems; track s) { <app-skeleton-card /> }
+        </div>
       } @else if (movieService.nowPlayingError()) {
         <p class="discover-page__error">{{ movieService.nowPlayingError() }}</p>
       } @else {
@@ -204,7 +212,9 @@
       <h2 class="discover-page__section-title">Coming Soon</h2>
 
       @if (movieService.upcomingLoading() && movieService.upcoming().length === 0) {
-        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+        <div class="discover-page__grid" aria-hidden="true">
+          @for (s of skeletonItems; track s) { <app-skeleton-card /> }
+        </div>
       } @else if (movieService.upcomingError()) {
         <p class="discover-page__error">{{ movieService.upcomingError() }}</p>
       } @else {
@@ -237,7 +247,9 @@
       <h2 class="discover-page__section-title">Trending TV This Week</h2>
 
       @if (tvService.trendingTvLoading() && tvService.trendingTv().length === 0) {
-        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+        <div class="discover-page__grid" aria-hidden="true">
+          @for (s of skeletonItems; track s) { <app-skeleton-card /> }
+        </div>
       } @else if (tvService.trendingTvError()) {
         <p class="discover-page__error">{{ tvService.trendingTvError() }}</p>
       } @else {
@@ -264,7 +276,9 @@
       <h2 class="discover-page__section-title">Popular TV Shows</h2>
 
       @if (tvService.popularTvLoading() && tvService.popularTv().length === 0) {
-        <div class="discover-page__spinner" role="status" aria-label="Loading"></div>
+        <div class="discover-page__grid" aria-hidden="true">
+          @for (s of skeletonItems; track s) { <app-skeleton-card /> }
+        </div>
       } @else if (tvService.popularTvError()) {
         <p class="discover-page__error">{{ tvService.popularTvError() }}</p>
       } @else {

@@ -1,16 +1,29 @@
-# Current Feature
+# Current Feature — Feature 36: Skeleton Loading System
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- goals go here -->
+- Add a global shimmer animation utility to the SCSS base layer
+- Create a reusable `SkeletonCardComponent` that mirrors the `TmdbCardComponent` layout
+- Apply skeleton cards to all horizontal carousels on the Home page while data loads
+- Apply skeleton cards to all Discover page grids while data loads
+- Apply a skeleton hero to the Home page while `trendingAll` loads
+- Apply a skeleton hero to movie and TV detail pages while detail data loads
+- Apply a skeleton layout to the news section while news loads
 
 ## Notes
 
-<!-- notes go here -->
+- Branch: `feature/skeleton-loading`
+- `.skeleton` CSS utility is the only shared primitive — all layout shapes are component-local
+- `aria-hidden="true"` on every skeleton root — screen readers skip them entirely
+- Skeletons replace the initial-load spinner only; error states are untouched
+- `skeletonItems = Array(6).fill(0)` for home carousels, `Array(8).fill(0)` for discover grids
+- Detail page skeletons replace the existing CSS spinner div — remove spinner markup when adding skeleton
+- Check `angular.json` style budgets after adding detail page SCSS — may need a bump
+- "From Your Watchlist" and "Born Today" carousels — skip skeleton (local/low-latency data)
 
 ## History
 

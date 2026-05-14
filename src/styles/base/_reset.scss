@@ -65,3 +65,20 @@ select {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--cv-bg-elevated) 25%,
+    var(--cv-bg-surface)  50%,
+    var(--cv-bg-elevated) 75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--cv-radius-sm);
+}
