@@ -1,26 +1,56 @@
-# Current Feature — Feature 33: High Priority Fixes (H1–H5)
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- H1: Add a wildcard 404 route so unknown paths don't render a blank screen
-- H2: Chunk `fetchBornToday()` parallel requests to respect TMDB rate limits; add `bornTodayError` signal
-- H3: Add URL shape validation inside `SafeUrlPipe` so it self-defends regardless of caller
-- H4: Add load guard to `fetchTvGenres()` to prevent redundant fetches on every TV tab switch
-- H5: Fix HTTP race condition where stale responses can overwrite current detail page data
+<!-- goals go here -->
 
 ## Notes
 
-- Branch: `fix/high-priority-audit`
-- H4 is a one-line change — ship it first
-- H1 (wildcard route) is the highest-visibility fix for users; tackle second
-- H5 is the most complex; if time-constrained, a simpler mitigation is resetting `movieDetail.set(null)` and `movieDetailLoading.set(true)` at the top of each fetch
-- The `bufferCount` + `concatMap` pattern in H2 is also useful if `fetchPersonCredits()` ever needs pagination
+<!-- notes go here -->
 
 ## History
+
+### Feature 35 — Low Priority Fixes (L1–L12)
+
+- L1: Meta description + Open Graph (title, description, type, image) + Twitter Card tags added to `src/index.html`
+- L2: `Title` service injected into all 8 page components — static titles set in constructors (`Search — CineVault`, `Watchlist — CineVault`, `Dashboard — CineVault`, `Discover — CineVault`, `CineVault`); detail pages set titles in effects after signal populates (`${detail.title} — CineVault`, `${person.name} — CineVault`)
+- L3: `TmdbCardComponent` — `[routerLink]` removed from `<article>`; poster wrapped in `<a class="tmdb-card__link">` (the single focusable target); title wrapped in `<a class="tmdb-card__title-link" tabindex="-1" aria-hidden="true">`; `.tmdb-card__link` gains `:focus-visible` ring in SCSS
+- L4: Dead `.discover-detail__no-imdb` rule block deleted from `discover-detail.page.scss`
+- L5: `MovieService` no longer imports `environment`; `private core = inject(TmdbCoreService)` used for `core.base`, `core.http`, and `core.imageUrl()`
+- L6: `aria-label="Hero navigation"` → `"Featured content slideshow navigation"` in `home.page.html`
+- L7: `[attr.aria-pressed]="newsService.activeCategory() === cat.id"` added to news filter pill buttons
+- L8: `stats.other` removed from `WatchlistService` computed; "Other" stat card removed from `dashboard.page.html`
+- L9: `TmdbMovie.backdrop` changed from `backdrop: string` to `backdrop?: string` — reflects that person credit mappings have no backdrop value
+- L10: `aria-disabled` "In Watchlist" button in `MovieCardComponent` gains `[attr.aria-describedby]`; paired `.sr-only` `<span>` with matching `[id]` reads "This title is already in your watchlist."
+- L11: Born Today age `<p>` gets `[attr.aria-label]="'Turns ' + person.age + ' today'"` — screen readers announce the full label instead of bare number
+- L12: JSDoc comment added above `TmdbPersonSearchResponse` noting the type reuse from `TmdbPersonPopular`
+
+### Feature 34 — Medium Priority Fixes (M1–M10)
+
+- M1: Hero banner auto-advances every 7 s via `setInterval` started in constructor; `pauseHeroAutoAdvance()` / `resumeHeroAutoAdvance()` methods bound to `(mouseenter)`/`(mouseleave)`/`(focusin)`/`(focusout)` on the hero `<section>`; interval cancelled via `DestroyRef.onDestroy` — satisfies WCAG 2.2.2
+- M2: `clearSearch()` added to `MovieService` (clears `movies` + `totalResults`); search pipeline in `MovieSearchPage` updated — `filter((v) => v.length > 2)` removed, empty input calls `clearSearch()`, 1–2 char inputs silently skipped
+- M3: Watchlist empty-state `<p>` now contains `<a routerLink="/movies">Search for movies</a>`; `RouterLink` added to `WatchlistPage` imports
+- M4: `lastSearchQuery` + `lastSearchTime` signals added to `MovieService`, set on each successful search; dashboard section heading now shows `Results for "query" · time` via `DatePipe`; `DatePipe` added to `DashboardPage` imports
+- M5: `Location` injected into `DiscoverDetailPage` and `DiscoverTvDetailPage`; back `<a routerLink>` replaced with `<button (click)="location.back()">` in both HTML templates; `.discover-detail__back` SCSS gains `background: none; border: none; cursor: pointer; font-family: inherit` button reset
+- M6: `activeNewsLabel` computed signal added to `HomePage` — maps `newsService.activeCategory()` to the matching category label; news section `<h2>` now renders `{{ activeNewsLabel() }}` instead of hardcoded "Top News"
+- M7: `backdropError` signal added to both detail pages; backdrop `<img>` gets `(error)="backdropError.set(true)"` with a `.discover-detail__backdrop-fallback` dark-placeholder div as fallback; `.discover-detail__backdrop-fallback` style added to `discover-detail.page.scss`; cast photos get `(error)="onCastPhotoError($event)"` (typed method, sets `visibility: hidden` on the broken element); both reset on navigation
+- M8: `fetchDiscover()` effect in `DiscoverPage` now returns early when `movieService.genres().size === 0` — prevents firing before the genre map is populated
+- M9: `fetchPopularPeople()` in `TmdbPeopleService` guards with `if (this.popularPeople().length > 0) return` — prevents re-fetch on every Home page visit
+- M10: `toTmdbCard(item: Movie): TmdbMovie` method added to `HomePage`; watchlist carousel loop uses `@let card = toTmdbCard(item)` instead of an inline object literal — eliminates new-object-per-change-detection-cycle allocation
+
+### Feature 33 — High Priority Fixes (H1–H5)
+
+- H1: `NotFoundPage` created at `src/app/features/home/pages/not-found.page.ts/html/scss`; wildcard `path: '**'` route added as last entry in `app.routes.ts` — unknown paths now show a user-friendly "Page not found" screen with a link back to `/home`
+- H2: `fetchBornToday()` in `TmdbPeopleService` now chunks Wikipedia-sourced names into batches of 8 via `bufferCount(8) + concatMap(forkJoin(...))` — serial batches replace a 30-request parallel burst to respect TMDB's 40 req/10 s rate limit; `bornTodayError` signal added; `home.page.html` Born Today section shows error text via `@else if (peopleService.bornTodayError())`; `.home__section-error` style added to `home.page.scss`
+- H3: `SafeUrlPipe.transform()` now validates the input URL against `/^https:\/\/www\.youtube\.com\/embed\/[A-Za-z0-9_-]{6,20}(\?.*)?$/` before bypassing Angular's sanitizer — non-matching URLs are replaced with `about:blank`
+- H4: `if (this.tvGenres().size > 0) return;` guard added to `fetchTvGenres()` in `TmdbCoreService` — matches the existing pattern on `fetchGenres()`; eliminates redundant HTTP calls on every TV tab switch
+- H5: Request ID counters (`private detailRequestId`, `videosRequestId`, `watchProvidersRequestId`, `similarRequestId`) added to `TmdbMovieService`; `private tvDetailRequestId`, `tvWatchProvidersRequestId` added to `TmdbTvService` — each fetch increments its counter and the `subscribe` callback discards the response if the counter has since advanced
+
+
 
 ### Feature 1 — App Shell & Global Styles
 
