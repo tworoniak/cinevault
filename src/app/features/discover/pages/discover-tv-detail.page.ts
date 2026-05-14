@@ -1,6 +1,7 @@
 import { Component, inject, effect, computed, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TmdbTvService } from '../../../core/services/tmdb-tv.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
@@ -17,6 +18,7 @@ export class DiscoverTvDetailPage {
   tvService = inject(TmdbTvService);
   watchlistService = inject(WatchlistService);
   location = inject(Location);
+  private titleService = inject(Title);
 
   private params = toSignal(this.route.paramMap);
   posterError = signal(false);
@@ -46,6 +48,10 @@ export class DiscoverTvDetailPage {
       this.backdropError.set(false);
       this.tvService.fetchTvDetail(numId);
       this.tvService.fetchTvWatchProviders(numId);
+    });
+    effect(() => {
+      const detail = this.tvService.tvDetail();
+      if (detail) this.titleService.setTitle(`${detail.title} — CineVault`);
     });
   }
 

@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Title } from '@angular/platform-browser';
 import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
 import { TmdbTvService } from '../../../core/services/tmdb-tv.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
@@ -17,6 +18,7 @@ export class DiscoverPage {
   tvService = inject(TmdbTvService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private titleService = inject(Title);
 
   activeTab = signal<'movie' | 'tv'>('movie');
   private tvDataFetched = false;
@@ -42,6 +44,7 @@ export class DiscoverPage {
   ];
 
   constructor() {
+    this.titleService.setTitle('Discover — CineVault');
     this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((p) => {
       const tab = p['type'] === 'tv' ? 'tv' : 'movie';
       this.activeTab.set(tab);

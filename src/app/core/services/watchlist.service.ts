@@ -18,7 +18,6 @@ export class WatchlistService {
       total: list.length,
       movies: list.filter((m) => m.type === 'movie').length,
       series: list.filter((m) => m.type === 'series').length,
-      other: list.filter((m) => m.type !== 'movie' && m.type !== 'series').length,
     };
   });
 
