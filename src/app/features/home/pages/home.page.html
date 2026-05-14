@@ -1,7 +1,15 @@
 <!-- Hero Banner -->
 @if (movieService.trendingAllLoading() && !currentHero()) {
-  <div class="hero hero--loading">
-    <div class="hero__spinner"></div>
+  <div class="hero hero--skeleton" aria-hidden="true">
+    <div class="hero__skeleton-bg skeleton"></div>
+    <div class="hero__skeleton-body">
+      <div class="hero__skeleton-title skeleton"></div>
+      <div class="hero__skeleton-subtitle skeleton"></div>
+      <div class="hero__skeleton-actions">
+        <div class="hero__skeleton-btn skeleton"></div>
+        <div class="hero__skeleton-btn skeleton"></div>
+      </div>
+    </div>
   </div>
 }
 
@@ -104,15 +112,26 @@
         (click)="trendingTab.set('tv')"
       >TV</button>
     </div>
-    @for (movie of filteredTrending(); track movie.tmdbId) {
-      <div class="home__card-wrap">
-        <app-tmdb-card [movie]="movie" />
-      </div>
+    @if (movieService.trendingAllLoading()) {
+      @for (s of skeletonItems; track s) {
+        <div class="home__card-wrap"><app-skeleton-card /></div>
+      }
+    } @else {
+      @for (movie of filteredTrending(); track movie.tmdbId) {
+        <div class="home__card-wrap">
+          <app-tmdb-card [movie]="movie" />
+        </div>
+      }
     }
   </app-horizontal-carousel>
 
   <!-- Popular Celebrities -->
   <app-horizontal-carousel title="Popular Celebrities">
+    @if (peopleService.popularPeopleLoading()) {
+      @for (s of skeletonItems; track s) {
+        <div class="home__card-wrap"><app-skeleton-card /></div>
+      }
+    }
     @for (person of peopleService.popularPeople(); track person.id) {
       <a
         class="home__person-card"
@@ -158,19 +177,31 @@
 
   <!-- Popular Movies -->
   <app-horizontal-carousel title="Popular Right Now" [seeAllRoute]="['/discover']">
-    @for (movie of movieService.popular(); track movie.tmdbId) {
-      <div class="home__card-wrap">
-        <app-tmdb-card [movie]="movie" />
-      </div>
+    @if (movieService.popularLoading()) {
+      @for (s of skeletonItems; track s) {
+        <div class="home__card-wrap"><app-skeleton-card /></div>
+      }
+    } @else {
+      @for (movie of movieService.popular(); track movie.tmdbId) {
+        <div class="home__card-wrap">
+          <app-tmdb-card [movie]="movie" />
+        </div>
+      }
     }
   </app-horizontal-carousel>
 
   <!-- Popular TV -->
   <app-horizontal-carousel title="Popular TV Shows" [seeAllRoute]="['/discover']">
-    @for (movie of tvService.popularTv(); track movie.tmdbId) {
-      <div class="home__card-wrap">
-        <app-tmdb-card [movie]="movie" />
-      </div>
+    @if (tvService.popularTvLoading()) {
+      @for (s of skeletonItems; track s) {
+        <div class="home__card-wrap"><app-skeleton-card /></div>
+      }
+    } @else {
+      @for (movie of tvService.popularTv(); track movie.tmdbId) {
+        <div class="home__card-wrap">
+          <app-tmdb-card [movie]="movie" />
+        </div>
+      }
     }
   </app-horizontal-carousel>
 
@@ -226,8 +257,13 @@
     </div>
 
     @if (newsService.newsLoading() && newsService.news().length === 0) {
-      <div class="news-section__spinner">
-        <div class="news-section__spin"></div>
+      <div class="news-skeleton" aria-hidden="true">
+        <div class="news-skeleton__lead skeleton"></div>
+        <div class="news-skeleton__grid">
+          @for (s of skeletonItems; track s) {
+            <div class="news-skeleton__card skeleton"></div>
+          }
+        </div>
       </div>
     }
 
@@ -274,31 +310,49 @@
 
   <!-- Now Playing -->
   <app-horizontal-carousel title="Now Playing in Theaters">
-    @for (movie of movieService.nowPlaying(); track movie.tmdbId) {
-      <div class="home__card-wrap">
-        <app-tmdb-card [movie]="movie" />
-      </div>
+    @if (movieService.nowPlayingLoading()) {
+      @for (s of skeletonItems; track s) {
+        <div class="home__card-wrap"><app-skeleton-card /></div>
+      }
+    } @else {
+      @for (movie of movieService.nowPlaying(); track movie.tmdbId) {
+        <div class="home__card-wrap">
+          <app-tmdb-card [movie]="movie" />
+        </div>
+      }
     }
   </app-horizontal-carousel>
 
   <!-- Coming Soon -->
   <app-horizontal-carousel title="Coming Soon">
-    @for (movie of movieService.upcoming(); track movie.tmdbId) {
-      <div class="home__card-wrap home__card-wrap--with-date">
-        <app-tmdb-card [movie]="movie" />
-        @if (movie.releaseDate) {
-          <span class="home__release-date">{{ movie.releaseDate | date: 'MMM d' }}</span>
-        }
-      </div>
+    @if (movieService.upcomingLoading()) {
+      @for (s of skeletonItems; track s) {
+        <div class="home__card-wrap"><app-skeleton-card /></div>
+      }
+    } @else {
+      @for (movie of movieService.upcoming(); track movie.tmdbId) {
+        <div class="home__card-wrap home__card-wrap--with-date">
+          <app-tmdb-card [movie]="movie" />
+          @if (movie.releaseDate) {
+            <span class="home__release-date">{{ movie.releaseDate | date: 'MMM d' }}</span>
+          }
+        </div>
+      }
     }
   </app-horizontal-carousel>
 
   <!-- Top Rated -->
   <app-horizontal-carousel title="Top Rated of All Time">
-    @for (movie of movieService.topRated(); track movie.tmdbId) {
-      <div class="home__card-wrap">
-        <app-tmdb-card [movie]="movie" />
-      </div>
+    @if (movieService.topRatedLoading()) {
+      @for (s of skeletonItems; track s) {
+        <div class="home__card-wrap"><app-skeleton-card /></div>
+      }
+    } @else {
+      @for (movie of movieService.topRated(); track movie.tmdbId) {
+        <div class="home__card-wrap">
+          <app-tmdb-card [movie]="movie" />
+        </div>
+      }
     }
   </app-horizontal-carousel>
 

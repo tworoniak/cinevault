@@ -5,11 +5,12 @@ import { Title } from '@angular/platform-browser';
 import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
 import { TmdbTvService } from '../../../core/services/tmdb-tv.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
+import { SkeletonCardComponent } from '../../../shared/components/skeleton-card/skeleton-card.component';
 
 @Component({
   selector: 'app-discover-page',
   standalone: true,
-  imports: [TmdbCardComponent],
+  imports: [TmdbCardComponent, SkeletonCardComponent],
   templateUrl: './discover.page.html',
   styleUrl: './discover.page.scss',
 })
@@ -19,6 +20,8 @@ export class DiscoverPage {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private titleService = inject(Title);
+
+  readonly skeletonItems = Array(8).fill(0);
 
   activeTab = signal<'movie' | 'tv'>('movie');
   private tvDataFetched = false;

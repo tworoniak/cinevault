@@ -1,0 +1,43 @@
+:host {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.skeleton-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--cv-bg-surface);
+  border: 1px solid var(--cv-border);
+  border-radius: var(--cv-radius-md);
+  overflow: hidden;
+}
+
+.skeleton-card__poster {
+  aspect-ratio: 2 / 3;
+  width: 100%;
+  border-radius: 0;
+}
+
+.skeleton-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cv-space-2);
+  padding: var(--cv-space-3);
+}
+
+.skeleton-card__title-line {
+  height: 0.875rem;
+  width: 90%;
+
+  &--short {
+    width: 60%;
+  }
+}
+
+.skeleton-card__meta {
+  height: 0.75rem;
+  width: 50%;
+  margin-top: var(--cv-space-1);
+}
