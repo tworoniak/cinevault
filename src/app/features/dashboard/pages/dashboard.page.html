@@ -30,7 +30,12 @@
 
   @if (movieService.movies().length > 0) {
     <section class="dashboard-page__section">
-      <h2 class="dashboard-page__section-title">Current Search Results</h2>
+      <h2 class="dashboard-page__section-title">
+        Results for "{{ movieService.lastSearchQuery() }}"
+        <span class="dashboard-page__search-time">
+          · {{ movieService.lastSearchTime() | date:'shortTime' }}
+        </span>
+      </h2>
       <div class="dashboard-page__grid">
         @for (movie of movieService.movies(); track movie.tmdbId) {
           <app-movie-card [movie]="movie" mode="preview" />

@@ -2,7 +2,11 @@
   @if (movieService.movieDetail(); as detail) {
     @if (detail.backdrop) {
       <div class="discover-detail__backdrop">
-        <img [src]="detail.backdrop" [alt]="detail.title + ' backdrop'" class="discover-detail__backdrop-img" />
+        @if (!backdropError()) {
+          <img class="discover-detail__backdrop-img" [src]="detail.backdrop" [alt]="detail.title + ' backdrop'" (error)="backdropError.set(true)" />
+        } @else {
+          <div class="discover-detail__backdrop-fallback"></div>
+        }
         <div class="discover-detail__backdrop-overlay"></div>
       </div>
     }
@@ -10,7 +14,7 @@
 
   <div class="cv-page">
     <div class="cv-container">
-      <a class="discover-detail__back" routerLink="/discover">← Back</a>
+      <button class="discover-detail__back" (click)="location.back()">← Back</button>
 
       @if (movieService.detailLoading()) {
         <div class="discover-detail__spinner" role="status" aria-label="Loading"></div>
@@ -114,6 +118,7 @@
                         class="detail-page__cast-photo"
                         [src]="member.photo"
                         [alt]="member.name"
+                        (error)="onCastPhotoError($event)"
                       />
                     } @else {
                       <div class="detail-page__cast-photo detail-page__cast-photo--placeholder" aria-hidden="true">

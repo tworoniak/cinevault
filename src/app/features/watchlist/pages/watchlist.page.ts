@@ -1,10 +1,11 @@
 import { Component, inject, computed } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { WatchlistService } from '../../../core/services/watchlist.service';
 import { MovieCardComponent } from '../../../shared/components/movie-card/movie-card.component';
 
 @Component({
   standalone: true,
-  imports: [MovieCardComponent],
+  imports: [RouterLink, MovieCardComponent],
   templateUrl: './watchlist.page.html',
   styleUrl: './watchlist.page.scss',
 })

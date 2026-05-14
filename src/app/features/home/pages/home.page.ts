@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, DestroyRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
@@ -26,6 +26,7 @@ export class HomePage {
   peopleService = inject(TmdbPeopleService);
   watchlistService = inject(WatchlistService);
   newsService = inject(EntertainmentNewsService);
+  private destroyRef = inject(DestroyRef);
 
   readonly newsCategories: { id: NewsCategory; label: string }[] = [
     { id: 'top', label: 'Top News' },
@@ -35,6 +36,11 @@ export class HomePage {
   ];
 
   heroIndex = signal(0);
+  private heroInterval: ReturnType<typeof setInterval> | null = null;
+
+  activeNewsLabel = computed(
+    () => this.newsCategories.find((c) => c.id === this.newsService.activeCategory())?.label ?? 'Top News'
+  );
 
   heroes = computed(() => this.movieService.trendingAll().slice(0, 5));
   currentHero = computed(() => this.heroes()[this.heroIndex()] ?? null);
@@ -78,6 +84,35 @@ export class HomePage {
     this.peopleService.fetchPopularPeople();
     this.peopleService.fetchBornToday();
     this.newsService.fetchNews('top');
+    this.startHeroAutoAdvance();
+  }
+
+  private startHeroAutoAdvance(): void {
+    this.heroInterval = setInterval(() => this.nextHero(), 7000);
+    this.destroyRef.onDestroy(() => {
+      if (this.heroInterval) clearInterval(this.heroInterval);
+    });
+  }
+
+  pauseHeroAutoAdvance(): void {
+    if (this.heroInterval) { clearInterval(this.heroInterval); this.heroInterval = null; }
+  }
+
+  resumeHeroAutoAdvance(): void {
+    if (!this.heroInterval) this.startHeroAutoAdvance();
+  }
+
+  toTmdbCard(item: Movie): TmdbMovie {
+    return {
+      tmdbId: item.tmdbId,
+      title: item.title,
+      poster: item.poster ?? '',
+      year: item.year,
+      backdrop: '',
+      rating: '',
+      overview: '',
+      mediaType: item.mediaType,
+    };
   }
 
   prevHero(): void {

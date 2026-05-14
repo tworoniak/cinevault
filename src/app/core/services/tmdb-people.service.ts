@@ -122,6 +122,7 @@ export class TmdbPeopleService {
   }
 
   fetchPopularPeople(): void {
+    if (this.popularPeople().length > 0) return;
     this.popularPeopleLoading.set(true);
     this.core.http
       .get<TmdbPersonPopularResponse>(`${this.core.base}/person/popular`, {

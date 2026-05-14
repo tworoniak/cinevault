@@ -1,5 +1,6 @@
 import { Component, inject, effect, computed, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TmdbTvService } from '../../../core/services/tmdb-tv.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
@@ -15,9 +16,11 @@ export class DiscoverTvDetailPage {
   private route = inject(ActivatedRoute);
   tvService = inject(TmdbTvService);
   watchlistService = inject(WatchlistService);
+  location = inject(Location);
 
   private params = toSignal(this.route.paramMap);
   posterError = signal(false);
+  backdropError = signal(false);
 
   providers = computed(() => {
     const wp = this.tvService.tvWatchProviders();
@@ -40,9 +43,14 @@ export class DiscoverTvDetailPage {
       const numId = Number(this.params()?.get('tmdbId'));
       if (!numId || !Number.isFinite(numId)) return;
       this.posterError.set(false);
+      this.backdropError.set(false);
       this.tvService.fetchTvDetail(numId);
       this.tvService.fetchTvWatchProviders(numId);
     });
+  }
+
+  onCastPhotoError(event: Event): void {
+    (event.target as HTMLImageElement).style.visibility = 'hidden';
   }
 
   addToWatchlist(): void {
