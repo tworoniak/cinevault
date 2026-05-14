@@ -427,6 +427,12 @@
   margin-top: 2px;
 }
 
+.home__section-error {
+  padding: var(--cv-space-4) var(--cv-space-5);
+  color: var(--cv-text-muted);
+  font-size: 0.875rem;
+}
+
 // ─── News section ──────────────────────────────────────────────────────────
 
 .news-section {

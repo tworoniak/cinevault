@@ -199,6 +199,8 @@
         </a>
       }
     </app-horizontal-carousel>
+  } @else if (peopleService.bornTodayError()) {
+    <p class="home__section-error">{{ peopleService.bornTodayError() }}</p>
   }
 
   <!-- Entertainment News -->

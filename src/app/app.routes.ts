@@ -25,4 +25,9 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
   },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./features/home/pages/not-found.page').then((m) => m.NotFoundPage),
+  },
 ];
