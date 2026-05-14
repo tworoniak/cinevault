@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Feature 32 — Critical Fixes (C1–C2)
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- goals go here -->
+- C1: Rotate TMDB and Guardian API credentials (process fix — no code change required)
+- C1: Verify `src/environments/environment.ts` is untracked and not in git history
+- C2: Create `StripHtmlPipe` at `src/app/shared/pipes/strip-html.pipe.ts`
+- C2: Replace `[innerHTML]="article.excerpt"` bindings in `home.page.html` with `{{ article.excerpt | stripHtml }}`
+- C2: Add `StripHtmlPipe` to `HomePage` imports
 
 ## Notes
 
-<!-- notes go here -->
+- **C1 is a process fix** — no source files change. The gitignore is already correct and `environment.ts` was never committed. Credential rotation is precautionary before any future public exposure risk.
+- **C2 eliminates the XSS vector** from Guardian API content rendered via `[innerHTML]`. The pipe uses `DOMParser` to strip HTML tags and return plain text — no sanitizer bypass, no side effects.
+- `StripHtmlPipe` should be placed in `src/app/shared/pipes/` so it can be reused for any future external API text content.
+- Branch: `fix/critical-audit`
 
 ## History
 
@@ -276,6 +283,16 @@ Not Started
 - S8: `role="dialog"` on mobile nav `div#mobile-menu` changed to `role="navigation"` — removes false focus-trap implication without requiring CDK dependency
 - S1 (TmdbService split into 4 focused services) deferred as a separate feature
 
+### Feature 29 — TmdbService Split (S1)
+
+- `TmdbService` 764-line monolith deleted; replaced with 4 focused services composed via Angular DI
+- `TmdbCoreService` created with shared utilities: `http`, `base`, `imageUrl()`, `params()`, `mapCredits()`, `genres`/`tvGenres` signals, `fetchGenres()`/`fetchTvGenres()` — genre signals placed here to avoid circular dependency across domain services
+- `TmdbMovieService` created; owns all movie/discover/trending-all signals, fetch/loadMore methods, and private mappers; delegates HTTP to `TmdbCoreService`
+- `TmdbTvService` created; owns all TV signals, fetch/loadMore methods, and private mappers; `watchProviders`/`watchProvidersLoading` renamed to `tvWatchProviders`/`tvWatchProvidersLoading` — properly resolves the W3 race condition at the source rather than via constructor resets
+- `TmdbPeopleService` created; owns person detail, credits (parallel `forkJoin` fetch), and popular people signals/methods
+- 5 consumer TS files updated: `DiscoverDetailPage` → `movieService`, `DiscoverTvDetailPage` → `tvService` (removed now-unnecessary `watchProviders.set(null)` and `similar.set([])` resets), `DiscoverPersonDetailPage` → `peopleService`, `DiscoverPage` → `movieService` + `tvService`, `HomePage` → `movieService` + `tvService` + `peopleService`
+- 5 consumer HTML templates updated: all `tmdbService.` bindings replaced with correct domain service prefix
+
 ### Feature 30 — Born Today Carousel
 
 - `TmdbBornTodayPerson` interface added to `tmdb.model.ts` (id, name, profile_path, known_for_department, known_for, birthday, age)
@@ -295,13 +312,3 @@ Not Started
 - Styles added to `home.page.scss`: `.news-section`, `.news-section__header/title/spinner/error`, `.news-filters`, `.news-filter__btn/--active`, `.news-lead/img/body/source/title/excerpt/date`, `.news-grid`, `.news-card/img/body/source/title/date`
 - `angular.json` component style budget raised from 10 kB → 14 kB warning to accommodate new styles
 - Root cause note: never co-locate `cv-container` on the same element as a component SCSS class that sets `padding` with `0` for horizontal sides — the component style overrides the global horizontal padding, causing full-bleed layout on mobile
-
-### Feature 29 — TmdbService Split (S1)
-
-- `TmdbService` 764-line monolith deleted; replaced with 4 focused services composed via Angular DI
-- `TmdbCoreService` created with shared utilities: `http`, `base`, `imageUrl()`, `params()`, `mapCredits()`, `genres`/`tvGenres` signals, `fetchGenres()`/`fetchTvGenres()` — genre signals placed here to avoid circular dependency across domain services
-- `TmdbMovieService` created; owns all movie/discover/trending-all signals, fetch/loadMore methods, and private mappers; delegates HTTP to `TmdbCoreService`
-- `TmdbTvService` created; owns all TV signals, fetch/loadMore methods, and private mappers; `watchProviders`/`watchProvidersLoading` renamed to `tvWatchProviders`/`tvWatchProvidersLoading` — properly resolves the W3 race condition at the source rather than via constructor resets
-- `TmdbPeopleService` created; owns person detail, credits (parallel `forkJoin` fetch), and popular people signals/methods
-- 5 consumer TS files updated: `DiscoverDetailPage` → `movieService`, `DiscoverTvDetailPage` → `tvService` (removed now-unnecessary `watchProviders.set(null)` and `similar.set([])` resets), `DiscoverPersonDetailPage` → `peopleService`, `DiscoverPage` → `movieService` + `tvService`, `HomePage` → `movieService` + `tvService` + `peopleService`
-- 5 consumer HTML templates updated: all `tmdbService.` bindings replaced with correct domain service prefix

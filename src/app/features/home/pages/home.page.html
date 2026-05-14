@@ -239,7 +239,7 @@
           <p class="news-lead__source">{{ articles[0].sourceLabel }}</p>
           <h3 class="news-lead__title">{{ articles[0].title }}</h3>
           @if (articles[0].excerpt) {
-            <p class="news-lead__excerpt" [innerHTML]="articles[0].excerpt"></p>
+            <p class="news-lead__excerpt">{{ articles[0].excerpt | stripHtml }}</p>
           }
           <span class="news-lead__date">{{ articles[0].publishedAt | date:'mediumDate' }}</span>
         </div>

@@ -8,6 +8,7 @@ import { WatchlistService } from '../../../core/services/watchlist.service';
 import { EntertainmentNewsService } from '../../../core/services/entertainment-news.service';
 import { TmdbCardComponent } from '../../../shared/components/tmdb-card/tmdb-card.component';
 import { HorizontalCarouselComponent } from '../../../shared/components/horizontal-carousel/horizontal-carousel.component';
+import { StripHtmlPipe } from '../../../shared/pipes/strip-html.pipe';
 import { Movie } from '../../../models/movie.model';
 import { TmdbMovie, TmdbPersonPopular } from '../../../models/tmdb.model';
 import { NewsCategory } from '../../../models/news.model';
@@ -15,7 +16,7 @@ import { NewsCategory } from '../../../models/news.model';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, DatePipe, TmdbCardComponent, HorizontalCarouselComponent],
+  imports: [RouterLink, DatePipe, TmdbCardComponent, HorizontalCarouselComponent, StripHtmlPipe],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
 })
