@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MovieService } from '../../../core/services/movie.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
@@ -23,9 +23,16 @@ export class MovieSearchPage {
     this.search$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      filter((v) => v.length > 2),
       takeUntilDestroyed(),
-    ).subscribe((query) => this.movieService.searchMovies(query));
+    ).subscribe((query) => {
+      if (!query) {
+        this.movieService.clearSearch();
+        return;
+      }
+      if (query.length > 2) {
+        this.movieService.searchMovies(query);
+      }
+    });
   }
 
   onSearch(event: Event) {

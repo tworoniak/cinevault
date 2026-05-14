@@ -28,6 +28,12 @@
   background: linear-gradient(to bottom, rgba(15, 15, 17, 0.2), rgba(15, 15, 17, 0.95));
 }
 
+.discover-detail__backdrop-fallback {
+  width: 100%;
+  height: 100%;
+  background: var(--cv-bg-elevated);
+}
+
 .discover-detail__back {
   display: inline-block;
   font-size: 0.875rem;
@@ -35,6 +41,10 @@
   padding: var(--cv-space-3) var(--cv-space-2);
   margin-bottom: var(--cv-space-5);
   transition: color 0.15s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 
   &:hover {
     color: var(--cv-accent);

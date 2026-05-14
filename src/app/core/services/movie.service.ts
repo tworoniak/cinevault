@@ -14,6 +14,13 @@ export class MovieService {
   loading = signal(false);
   error = signal<string | null>(null);
   totalResults = signal<number>(0);
+  lastSearchQuery = signal<string>('');
+  lastSearchTime = signal<Date | null>(null);
+
+  clearSearch(): void {
+    this.movies.set([]);
+    this.totalResults.set(0);
+  }
 
   searchMovies(query: string) {
     this.loading.set(true);
@@ -26,6 +33,8 @@ export class MovieService {
         const results = res.results.filter((r) => r.media_type === 'movie' || r.media_type === 'tv');
         this.movies.set(results.map((r) => this.mapResult(r)));
         this.totalResults.set(res.total_results);
+        this.lastSearchQuery.set(query);
+        this.lastSearchTime.set(new Date());
         this.loading.set(false);
       },
       error: () => {

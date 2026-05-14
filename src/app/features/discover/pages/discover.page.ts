@@ -61,6 +61,7 @@ export class DiscoverPage {
     this.movieService.fetchUpcoming();
 
     effect(() => {
+      if (!this.movieService.genres().size) return;
       const genres = this.selectedGenres();
       const sort = this.sortBy();
       if (genres.length || sort !== 'popularity.desc') {

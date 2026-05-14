@@ -2,7 +2,10 @@
   <h1 class="watchlist-page__title">My Watchlist</h1>
 
   @if (watchlistService.watchlist().length === 0) {
-    <p class="watchlist-page__empty">Your watchlist is empty. Search for movies to add them.</p>
+    <p class="watchlist-page__empty">
+      Your watchlist is empty.
+      <a routerLink="/movies">Search for movies</a> to add them.
+    </p>
   } @else {
     @if (movies().length > 0) {
       <section class="watchlist-page__section">

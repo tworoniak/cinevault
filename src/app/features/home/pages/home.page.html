@@ -9,6 +9,10 @@
   <section
     class="hero"
     aria-label="Featured: {{ hero.title }}"
+    (mouseenter)="pauseHeroAutoAdvance()"
+    (mouseleave)="resumeHeroAutoAdvance()"
+    (focusin)="pauseHeroAutoAdvance()"
+    (focusout)="resumeHeroAutoAdvance()"
   >
     <img
       class="hero__bg"
@@ -144,8 +148,9 @@
   @if (watchlistService.watchlist().length > 0) {
     <app-horizontal-carousel title="From Your Watchlist" [seeAllRoute]="['/watchlist']">
       @for (item of watchlistService.watchlist(); track item.tmdbId) {
+        @let card = toTmdbCard(item);
         <div class="home__card-wrap">
-          <app-tmdb-card [movie]="{ tmdbId: item.tmdbId, title: item.title, year: item.year, poster: item.poster, backdrop: '', rating: '', overview: '', mediaType: item.mediaType }" />
+          <app-tmdb-card [movie]="card" />
         </div>
       }
     </app-horizontal-carousel>
@@ -207,7 +212,7 @@
   <section class="news-section" aria-label="Entertainment News">
   <div class="cv-container">
     <div class="news-section__header">
-      <h2 class="news-section__title">Top News</h2>
+      <h2 class="news-section__title">{{ activeNewsLabel() }}</h2>
       <div class="news-filters" role="group" aria-label="Filter news">
         @for (cat of newsCategories; track cat.id) {
           <button

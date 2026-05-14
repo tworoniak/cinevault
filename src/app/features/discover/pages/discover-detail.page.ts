@@ -1,5 +1,6 @@
 import { Component, inject, effect, computed, signal, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TmdbMovieService } from '../../../core/services/tmdb-movie.service';
 import { WatchlistService } from '../../../core/services/watchlist.service';
@@ -17,9 +18,11 @@ export class DiscoverDetailPage {
   private route = inject(ActivatedRoute);
   movieService = inject(TmdbMovieService);
   watchlistService = inject(WatchlistService);
+  location = inject(Location);
 
   private params = toSignal(this.route.paramMap);
   posterError = signal(false);
+  backdropError = signal(false);
   showTrailer = signal(false);
 
   @ViewChild('trailerBackdrop') private trailerBackdropEl?: ElementRef<HTMLDivElement>;
@@ -48,6 +51,7 @@ export class DiscoverDetailPage {
       const numId = Number(this.params()?.get('tmdbId'));
       if (!numId || !Number.isFinite(numId)) return;
       this.posterError.set(false);
+      this.backdropError.set(false);
       this.showTrailer.set(false);
       this.movieService.fetchMovieDetail(numId);
       this.movieService.fetchVideos(numId);
@@ -63,6 +67,10 @@ export class DiscoverDetailPage {
 
   closeTrailer(): void {
     this.showTrailer.set(false);
+  }
+
+  onCastPhotoError(event: Event): void {
+    (event.target as HTMLImageElement).style.visibility = 'hidden';
   }
 
   addToWatchlist() {
