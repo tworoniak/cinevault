@@ -67,6 +67,7 @@ export class TmdbCoreService {
   }
 
   fetchTvGenres(): void {
+    if (this.tvGenres().size > 0) return;
     this.http
       .get<TmdbGenreListResponse>(`${this.base}/genre/tv/list`, { params: this.params() })
       .subscribe({

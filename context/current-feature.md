@@ -1,4 +1,4 @@
-# Current Feature: Feature 32 — Critical Fixes (C1–C2)
+# Current Feature — Feature 33: High Priority Fixes (H1–H5)
 
 ## Status
 
@@ -6,18 +6,19 @@ In Progress
 
 ## Goals
 
-- C1: Rotate TMDB and Guardian API credentials (process fix — no code change required)
-- C1: Verify `src/environments/environment.ts` is untracked and not in git history
-- C2: Create `StripHtmlPipe` at `src/app/shared/pipes/strip-html.pipe.ts`
-- C2: Replace `[innerHTML]="article.excerpt"` bindings in `home.page.html` with `{{ article.excerpt | stripHtml }}`
-- C2: Add `StripHtmlPipe` to `HomePage` imports
+- H1: Add a wildcard 404 route so unknown paths don't render a blank screen
+- H2: Chunk `fetchBornToday()` parallel requests to respect TMDB rate limits; add `bornTodayError` signal
+- H3: Add URL shape validation inside `SafeUrlPipe` so it self-defends regardless of caller
+- H4: Add load guard to `fetchTvGenres()` to prevent redundant fetches on every TV tab switch
+- H5: Fix HTTP race condition where stale responses can overwrite current detail page data
 
 ## Notes
 
-- **C1 is a process fix** — no source files change. The gitignore is already correct and `environment.ts` was never committed. Credential rotation is precautionary before any future public exposure risk.
-- **C2 eliminates the XSS vector** from Guardian API content rendered via `[innerHTML]`. The pipe uses `DOMParser` to strip HTML tags and return plain text — no sanitizer bypass, no side effects.
-- `StripHtmlPipe` should be placed in `src/app/shared/pipes/` so it can be reused for any future external API text content.
-- Branch: `fix/critical-audit`
+- Branch: `fix/high-priority-audit`
+- H4 is a one-line change — ship it first
+- H1 (wildcard route) is the highest-visibility fix for users; tackle second
+- H5 is the most complex; if time-constrained, a simpler mitigation is resetting `movieDetail.set(null)` and `movieDetailLoading.set(true)` at the top of each fetch
+- The `bufferCount` + `concatMap` pattern in H2 is also useful if `fetchPersonCredits()` ever needs pagination
 
 ## History
 
@@ -301,6 +302,13 @@ In Progress
 - `HorizontalCarouselComponent` gains optional `subtitle` input; rendered below the title with `.carousel__subtitle` style
 - "Born Today" carousel section added to `home.page.html` after "Popular Celebrities"; conditionally shown when `bornToday().length > 0`; reuses existing `.home__person-card` styles; `.home__person-age` added to `home.page.scss`
 - `fetchBornToday()` called in `HomePage` constructor alongside other fetch calls; `bornTodaySubtitle` computed formats "People born on May 7"
+
+### Feature 32 — Critical Fixes (C1–C2)
+
+- C1: `environment.ts` confirmed untracked with no git history; `.gitignore` line 46 covers it — credential rotation recommended as precautionary step
+- C2: `StripHtmlPipe` created at `src/app/shared/pipes/strip-html.pipe.ts` using `DOMParser` to strip HTML tags to plain text
+- C2: `[innerHTML]="articles[0].excerpt"` binding in `home.page.html` replaced with `{{ articles[0].excerpt | stripHtml }}` — eliminates XSS vector from Guardian API content
+- C2: `StripHtmlPipe` added to `HomePage` component imports
 
 ### Feature 31 — Entertainment News Section
 

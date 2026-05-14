@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { forkJoin, of } from 'rxjs';
-import { switchMap, map, catchError } from 'rxjs/operators';
+import { forkJoin, from, of } from 'rxjs';
+import { bufferCount, catchError, concatMap, map, switchMap, toArray } from 'rxjs/operators';
 import { TmdbCoreService } from './tmdb-core.service';
 import {
   TmdbMovie,
@@ -43,6 +43,7 @@ export class TmdbPeopleService {
 
   bornToday = signal<TmdbBornTodayPerson[]>([]);
   bornTodayLoading = signal(false);
+  bornTodayError = signal<string | null>(null);
 
   fetchPersonDetail(personId: number): void {
     this.personDetail.set(null);
@@ -138,7 +139,10 @@ export class TmdbPeopleService {
   }
 
   fetchBornToday(): void {
+    if (this.bornTodayLoading()) return;
     this.bornTodayLoading.set(true);
+    this.bornTodayError.set(null);
+
     const today = new Date();
     const month = today.getMonth() + 1;
     const day = today.getDate();
@@ -148,8 +152,7 @@ export class TmdbPeopleService {
 
     // Wikipedia's "On This Day" API returns a curated list of people born today,
     // ordered by notability. We take the top 30, then search TMDB for each by name
-    // to get their profile photo and TMDB ID. Far more reliable than sampling
-    // TMDB's popularity list, which doesn't index by birthday.
+    // in serial batches of 8 to respect the TMDB rate limit (40 req/10 s).
     this.core.http
       .get<WikiBirthsResponse>(
         `https://en.wikipedia.org/api/rest_v1/feed/onthisday/births/${month}/${day}`
@@ -157,32 +160,39 @@ export class TmdbPeopleService {
       .pipe(
         switchMap((wikiRes) => {
           const births = wikiRes.births.slice(0, 30);
-          if (births.length === 0) return of([] as (TmdbBornTodayPerson | null)[]);
-          return forkJoin(
-            births.map((birth) => {
-              const name = birth.pages?.[0]?.title ?? birth.text.split(',')[0].trim();
-              return this.core.http
-                .get<TmdbPersonSearchResponse>(
-                  `${this.core.base}/search/person`,
-                  { params: this.core.params({ query: name }) }
-                )
-                .pipe(
-                  map((res): TmdbBornTodayPerson | null => {
-                    const match = res.results.find((r) => r.profile_path !== null);
-                    if (!match) return null;
-                    return {
-                      id: match.id,
-                      name: match.name,
-                      profile_path: match.profile_path,
-                      known_for_department: match.known_for_department,
-                      known_for: match.known_for,
-                      birthday: `${birth.year}-${mm}-${dd}`,
-                      age: currentYear - birth.year,
-                    };
-                  }),
-                  catchError(() => of(null))
-                );
-            })
+          if (births.length === 0) return of([] as (TmdbBornTodayPerson | null)[][]);
+          return from(births).pipe(
+            bufferCount(8),
+            concatMap((batch) =>
+              forkJoin(
+                batch.map((birth) => {
+                  const name = birth.pages?.[0]?.title ?? birth.text.split(',')[0].trim();
+                  return this.core.http
+                    .get<TmdbPersonSearchResponse>(
+                      `${this.core.base}/search/person`,
+                      { params: this.core.params({ query: name }) }
+                    )
+                    .pipe(
+                      map((res): TmdbBornTodayPerson | null => {
+                        const match = res.results.find((r) => r.profile_path !== null);
+                        if (!match) return null;
+                        return {
+                          id: match.id,
+                          name: match.name,
+                          profile_path: match.profile_path,
+                          known_for_department: match.known_for_department,
+                          known_for: match.known_for,
+                          birthday: `${birth.year}-${mm}-${dd}`,
+                          age: currentYear - birth.year,
+                        };
+                      }),
+                      catchError(() => of(null))
+                    );
+                })
+              )
+            ),
+            toArray(),
+            map((chunks) => chunks.flat())
           );
         })
       )
@@ -191,7 +201,9 @@ export class TmdbPeopleService {
           this.bornToday.set(results.filter((r): r is TmdbBornTodayPerson => r !== null));
           this.bornTodayLoading.set(false);
         },
-        error: () => {
+        error: (err) => {
+          console.error('fetchBornToday error', err);
+          this.bornTodayError.set('Could not load birthdays.');
           this.bornTodayLoading.set(false);
         },
       });

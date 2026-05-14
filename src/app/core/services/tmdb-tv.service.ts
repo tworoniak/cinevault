@@ -42,6 +42,9 @@ export class TmdbTvService {
   tvWatchProviders = signal<TmdbWatchProviderResult | null>(null);
   tvWatchProvidersLoading = signal(false);
 
+  private tvDetailRequestId = 0;
+  private tvWatchProvidersRequestId = 0;
+
   fetchTrendingTv(page = 1): void {
     this.trendingTvLoading.set(true);
     this.trendingTvError.set(null);
@@ -97,6 +100,7 @@ export class TmdbTvService {
   }
 
   fetchTvDetail(tmdbId: number): void {
+    const requestId = ++this.tvDetailRequestId;
     this.tvDetailLoading.set(true);
     this.tvDetailError.set(null);
     this.tvDetail.set(null);
@@ -106,10 +110,12 @@ export class TmdbTvService {
       })
       .subscribe({
         next: (res) => {
+          if (requestId !== this.tvDetailRequestId) return;
           this.tvDetail.set(this.mapTvDetail(res));
           this.tvDetailLoading.set(false);
         },
         error: () => {
+          if (requestId !== this.tvDetailRequestId) return;
           this.tvDetailError.set('Failed to load show details.');
           this.tvDetailLoading.set(false);
         },
@@ -117,6 +123,7 @@ export class TmdbTvService {
   }
 
   fetchTvWatchProviders(tmdbId: number): void {
+    const requestId = ++this.tvWatchProvidersRequestId;
     this.tvWatchProviders.set(null);
     this.tvWatchProvidersLoading.set(true);
     this.core.http
@@ -125,10 +132,12 @@ export class TmdbTvService {
       })
       .subscribe({
         next: (res) => {
+          if (requestId !== this.tvWatchProvidersRequestId) return;
           this.tvWatchProviders.set(res.results[this.core.watchCountry] ?? null);
           this.tvWatchProvidersLoading.set(false);
         },
         error: () => {
+          if (requestId !== this.tvWatchProvidersRequestId) return;
           this.tvWatchProviders.set(null);
           this.tvWatchProvidersLoading.set(false);
         },

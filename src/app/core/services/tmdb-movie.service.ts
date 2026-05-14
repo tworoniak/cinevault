@@ -80,6 +80,11 @@ export class TmdbMovieService {
   trendingAll = signal<TmdbMovie[]>([]);
   trendingAllLoading = signal(false);
 
+  private detailRequestId = 0;
+  private videosRequestId = 0;
+  private watchProvidersRequestId = 0;
+  private similarRequestId = 0;
+
   fetchTrending(page = 1): void {
     this.trendingLoading.set(true);
     this.trendingError.set(null);
@@ -136,6 +141,7 @@ export class TmdbMovieService {
   }
 
   fetchMovieDetail(tmdbId: number): void {
+    const requestId = ++this.detailRequestId;
     this.detailLoading.set(true);
     this.detailError.set(null);
     this.movieDetail.set(null);
@@ -145,10 +151,12 @@ export class TmdbMovieService {
       })
       .subscribe({
         next: (res) => {
+          if (requestId !== this.detailRequestId) return;
           this.movieDetail.set(this.mapDetail(res));
           this.detailLoading.set(false);
         },
         error: () => {
+          if (requestId !== this.detailRequestId) return;
           this.detailError.set('Failed to load movie details.');
           this.detailLoading.set(false);
         },
@@ -156,6 +164,7 @@ export class TmdbMovieService {
   }
 
   fetchVideos(tmdbId: number): void {
+    const requestId = ++this.videosRequestId;
     this.trailerKey.set(null);
     this.trailerLoading.set(true);
     this.core.http
@@ -164,6 +173,7 @@ export class TmdbMovieService {
       })
       .subscribe({
         next: (res) => {
+          if (requestId !== this.videosRequestId) return;
           const YOUTUBE_KEY_RE = /^[A-Za-z0-9_-]{6,20}$/;
           const trailer =
             res.results.find((v) => v.site === 'YouTube' && v.type === 'Trailer' && v.official) ??
@@ -174,6 +184,7 @@ export class TmdbMovieService {
           this.trailerLoading.set(false);
         },
         error: () => {
+          if (requestId !== this.videosRequestId) return;
           this.trailerKey.set(null);
           this.trailerLoading.set(false);
         },
@@ -181,6 +192,7 @@ export class TmdbMovieService {
   }
 
   fetchWatchProviders(tmdbId: number): void {
+    const requestId = ++this.watchProvidersRequestId;
     this.watchProviders.set(null);
     this.watchProvidersLoading.set(true);
     this.core.http
@@ -189,10 +201,12 @@ export class TmdbMovieService {
       })
       .subscribe({
         next: (res) => {
+          if (requestId !== this.watchProvidersRequestId) return;
           this.watchProviders.set(res.results[this.watchCountry] ?? null);
           this.watchProvidersLoading.set(false);
         },
         error: () => {
+          if (requestId !== this.watchProvidersRequestId) return;
           this.watchProviders.set(null);
           this.watchProvidersLoading.set(false);
         },
@@ -200,6 +214,7 @@ export class TmdbMovieService {
   }
 
   fetchSimilar(tmdbId: number): void {
+    const requestId = ++this.similarRequestId;
     this.similar.set([]);
     this.similarLoading.set(true);
     this.core.http
@@ -208,10 +223,12 @@ export class TmdbMovieService {
       })
       .subscribe({
         next: (res) => {
+          if (requestId !== this.similarRequestId) return;
           this.similar.set(res.results.slice(0, 8).map((r) => this.mapMovie(r)));
           this.similarLoading.set(false);
         },
         error: () => {
+          if (requestId !== this.similarRequestId) return;
           this.similar.set([]);
           this.similarLoading.set(false);
         },

@@ -1,0 +1,30 @@
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cv-space-5);
+  padding: var(--cv-space-10) 0;
+  text-align: center;
+
+  &__heading {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  &__message {
+    color: var(--cv-text-muted);
+  }
+
+  &__link {
+    padding: var(--cv-space-3) var(--cv-space-6);
+    border: 1px solid var(--cv-accent);
+    border-radius: var(--cv-radius);
+    color: var(--cv-accent);
+    text-decoration: none;
+    font-size: 0.875rem;
+
+    &:hover { background: rgba(var(--cv-accent-rgb), 0.1); }
+    &:focus-visible { outline: 2px solid var(--cv-accent); outline-offset: 2px; }
+  }
+}
